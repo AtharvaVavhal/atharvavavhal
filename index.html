@@ -3,1586 +3,466 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CampusCopy — Print Automation for Indian Colleges</title>
+<title>CampusCopy — College Print Automation</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Gloock&family=Manrope:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;0,9..144,900;1,9..144,400&display=swap" rel="stylesheet">
 <style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
+/* ─── RESET & TOKENS ─────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 16px; }
 
-:root{
-  --void:  #080B12;
-  --void2: #0D1220;
-  --void3: #111828;
-  --void4: #162030;
-  --coral: #FF4F33;
-  --coral2:#FF7055;
-  --cg:    rgba(255,79,51,.22);
-  --teal:  #00D4AA;
-  --tg:    rgba(0,212,170,.18);
-  --gold:  #FFB800;
-  --gg:    rgba(255,184,0,.18);
-  --cream: #F2F5FF;
-  --mu:    rgba(242,245,255,.5);
-  --dim:   rgba(242,245,255,.24);
-  --vdim:  rgba(242,245,255,.1);
-  --bd:    rgba(242,245,255,.08);
-  --bdc:   rgba(255,79,51,.3);
-  --glass: rgba(255,255,255,.04);
-  --r8:8px;--r14:14px;--r20:20px;--r28:28px;--r999:999px;
+:root {
+  --ink: #050811;
+  --ink-2: #0f1729;
+  --blue: #2563eb;
+  --blue-light: #3b82f6;
+  --blue-glow: rgba(37,99,235,0.35);
+  --electric: #60a5fa;
+  --violet: #7c3aed;
+  --teal: #14b8a6;
+  --gold: #f59e0b;
+  --white: #ffffff;
+  --mist: #f0f4ff;
+  --ghost: rgba(255,255,255,0.06);
+  --ghost-border: rgba(255,255,255,0.10);
+  --r12: 12px;
+  --r20: 20px;
+  --r999: 999px;
 }
 
-body{
-  font-family:'Manrope',system-ui,sans-serif;
-  background:var(--void);color:var(--cream);
-  overflow-x:hidden;-webkit-font-smoothing:antialiased;cursor:none;
-}
-a{color:inherit;text-decoration:none}
-
-/* ── GRAIN ──────────────────────────────────────────── */
-body::after{
-  content:'';position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.02;
-  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  background-size:180px;
+body {
+  font-family: 'Space Grotesk', sans-serif;
+  background: var(--ink);
+  color: var(--white);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* ── AURORA CANVAS ──────────────────────────────────── */
-#aurora{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.6}
+h1,h2,h3,h4,.brand { font-family: 'Fraunces', serif; }
+a { color: inherit; text-decoration: none; }
 
-/* ── CURSOR ─────────────────────────────────────────── */
-#cur{
-  position:fixed;width:9px;height:9px;background:var(--coral);
-  border-radius:50%;pointer-events:none;z-index:9999;
-  transform:translate(-50%,-50%);
-  transition:width .18s,height .18s,background .18s;
-}
-#cur-r{
-  position:fixed;width:34px;height:34px;
-  border:1.5px solid rgba(255,79,51,.4);
-  border-radius:50%;pointer-events:none;z-index:9998;
-  transform:translate(-50%,-50%);
-  transition:width .28s,height .28s,border-color .28s;
-}
-body:has(a:hover) #cur,body:has(button:hover) #cur{width:16px;height:16px}
-body:has(a:hover) #cur-r,body:has(button:hover) #cur-r{width:50px;height:50px;border-color:rgba(255,79,51,.75)}
-
-/* ── PROGRESS ───────────────────────────────────────── */
-#prog{position:fixed;top:0;left:0;height:2px;z-index:9200;background:linear-gradient(90deg,var(--coral),var(--teal));width:0}
-
-/* ── FLOATING PILL NAV ──────────────────────────────── */
-.nav-wrap{
-  position:fixed;top:20px;left:50%;transform:translateX(-50%);
-  z-index:500;display:flex;justify-content:center;
-  width:auto;min-width:min(880px,90vw);
-  transition:all .35s;
-}
-.nav-pill{
-  display:flex;align-items:center;gap:0;
-  background:rgba(13,18,32,.85);
-  backdrop-filter:blur(24px);
-  border:1px solid var(--bd);
-  border-radius:var(--r999);
-  padding:6px 6px 6px 18px;
-  box-shadow:0 8px 40px rgba(0,0,0,.5),0 0 0 1px rgba(255,255,255,.05);
-  width:100%;justify-content:space-between;
-  transition:all .3s;
-}
-.nav-pill:hover{border-color:rgba(255,79,51,.2)}
-
-.nav-logo{
-  display:flex;align-items:center;gap:9px;
-  font-family:'Gloock',serif;font-size:1.05rem;color:var(--cream);
-  white-space:nowrap;
-}
-.nav-mark{
-  width:28px;height:28px;background:var(--coral);border-radius:7px;
-  display:flex;align-items:center;justify-content:center;
-  box-shadow:0 0 16px var(--cg);
-}
-.nav-mark svg{width:15px;height:15px;fill:white}
-
-.nav-links{display:flex;align-items:center;gap:4px}
-.nav-links a{
-  font-size:.82rem;font-weight:600;color:var(--mu);
-  padding:7px 14px;border-radius:var(--r999);
-  transition:all .2s;letter-spacing:-.01em;
-}
-.nav-links a:hover{color:var(--cream);background:rgba(255,255,255,.06)}
-
-.nav-cta{display:flex;align-items:center;gap:8px}
-
-.btn{
-  display:inline-flex;align-items:center;gap:7px;
-  padding:9px 20px;border-radius:var(--r999);
-  font-family:'Manrope',sans-serif;font-size:.82rem;font-weight:700;
-  cursor:none;transition:all .2s;border:none;white-space:nowrap;
-  letter-spacing:-.01em;position:relative;overflow:hidden;
-}
-.btn::after{
-  content:'';position:absolute;inset:0;
-  background:linear-gradient(135deg,rgba(255,255,255,.12) 0%,transparent 55%);
-  opacity:0;transition:opacity .2s;
-}
-.btn:hover::after{opacity:1}
-
-.bcoral{background:var(--coral);color:white;box-shadow:0 0 0 0 var(--cg)}
-.bcoral:hover{background:var(--coral2);box-shadow:0 0 24px var(--cg);transform:translateY(-1px)}
-.bglass{background:rgba(255,255,255,.07);border:1px solid var(--bd);color:var(--mu);backdrop-filter:blur(8px)}
-.bglass:hover{background:rgba(255,255,255,.12);border-color:var(--bdc);color:var(--cream);transform:translateY(-1px)}
-.bteal{background:var(--teal);color:var(--void);font-weight:800}
-.bteal:hover{background:#00EABB;transform:translateY(-1px);box-shadow:0 4px 20px var(--tg)}
-.bgold{background:var(--gold);color:var(--void);font-weight:800}
-.bgold:hover{background:#FFC522;transform:translateY(-1px);box-shadow:0 4px 20px var(--gg)}
-.bwhite{background:var(--cream);color:var(--void);font-weight:800}
-.bwhite:hover{background:#fff;transform:translateY(-1px);box-shadow:0 8px 28px rgba(0,0,0,.3)}
-.blg{padding:13px 28px;font-size:.95rem}
-.bxl{padding:16px 36px;font-size:1rem}
-
-.ham-wrap{display:none}
-.ham{display:none;cursor:none;flex-direction:column;gap:5px;background:rgba(255,255,255,.07);border:1px solid var(--bd);border-radius:10px;padding:10px;width:42px;height:42px;align-items:center;justify-content:center}
-.ham span{width:20px;height:1.5px;background:var(--mu);border-radius:2px;display:block;transition:all .3s}
-.ham.open span:nth-child(1){transform:translateY(6px) rotate(45deg)}
-.ham.open span:nth-child(2){opacity:0}
-.ham.open span:nth-child(3){transform:translateY(-6px) rotate(-45deg)}
-
-/* ── HERO ───────────────────────────────────────────── */
-.hero{
-  min-height:100vh;display:flex;align-items:center;
-  padding:110px 5% 80px;position:relative;z-index:10;overflow:hidden;
-}
-.hero-in{
-  max-width:1200px;margin:0 auto;width:100%;
-  display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center;
+.bg-grid {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background-image:
+    linear-gradient(rgba(37,99,235,0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(37,99,235,0.06) 1px, transparent 1px);
+  background-size: 60px 60px;
+  animation: gridDrift 20s ease-in-out infinite alternate;
 }
 
-/* hero content */
-.hleft{display:flex;flex-direction:column;align-items:flex-start}
-
-.h-eyebrow{
-  display:inline-flex;align-items:center;gap:9px;
-  background:rgba(255,79,51,.1);border:1px solid rgba(255,79,51,.28);
-  color:var(--coral2);border-radius:var(--r999);
-  padding:6px 16px;font-family:'JetBrains Mono',monospace;
-  font-size:.67rem;letter-spacing:.09em;text-transform:uppercase;margin-bottom:30px;
-  animation:fadeUp .6s ease both .1s;
-}
-.ldot{width:7px;height:7px;background:var(--coral);border-radius:50%;animation:lp 2s ease-in-out infinite}
-@keyframes lp{0%,100%{box-shadow:0 0 0 0 rgba(255,79,51,.7)}50%{box-shadow:0 0 0 8px rgba(255,79,51,0)}}
-
-/* word-split headline */
-.hero-headline{margin-bottom:28px}
-.h-word-row{overflow:hidden;display:block;line-height:1}
-.h-word{
-  display:inline-block;
-  font-family:'Gloock',serif;
-  animation:wordReveal .9s cubic-bezier(.22,1,.36,1) both;
-}
-.h-word.serif{
-  font-size:clamp(3rem,5.8vw,5.4rem);
-  letter-spacing:-.03em;color:var(--cream);
-  font-style:italic;font-weight:400;
-}
-.h-word.sans{
-  font-family:'Manrope',sans-serif;
-  font-size:clamp(3rem,5.8vw,5.4rem);
-  letter-spacing:-.05em;font-weight:800;color:var(--cream);
-}
-.h-word.accent{
-  background:linear-gradient(135deg,var(--coral) 0%,var(--coral2) 40%,var(--gold) 100%);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-}
-@keyframes wordReveal{
-  from{opacity:0;transform:translateY(100%) skewY(4deg)}
-  to{opacity:1;transform:translateY(0) skewY(0)}
+@keyframes gridDrift {
+  from { background-position: 0 0; }
+  to { background-position: 60px 60px; }
 }
 
-.h-sub{
-  font-size:1.05rem;color:var(--mu);line-height:1.78;max-width:500px;
-  margin-bottom:38px;font-weight:400;animation:fadeUp .8s ease both .7s;
-}
-.h-ctas{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:48px;animation:fadeUp .8s ease both .82s}
+.blob { position: fixed; border-radius: 50%; filter: blur(80px); pointer-events: none; z-index: 0; }
+.blob-1 { width: 600px; height: 600px; background: radial-gradient(circle, rgba(37,99,235,0.18) 0%, transparent 70%); top: -200px; right: -200px; animation: blobFloat1 12s ease-in-out infinite alternate; }
+.blob-2 { width: 500px; height: 500px; background: radial-gradient(circle, rgba(124,58,237,0.12) 0%, transparent 70%); bottom: 20%; left: -200px; animation: blobFloat2 15s ease-in-out infinite alternate; }
+.blob-3 { width: 400px; height: 400px; background: radial-gradient(circle, rgba(20,184,166,0.1) 0%, transparent 70%); bottom: -100px; right: 20%; animation: blobFloat3 10s ease-in-out infinite alternate; }
 
-/* hero live counter */
-.h-live{
-  display:flex;align-items:center;gap:16px;
-  padding:16px 20px;
-  background:var(--glass);border:1px solid var(--bd);border-radius:var(--r14);
-  backdrop-filter:blur(12px);
-  animation:fadeUp .8s ease both .94s;
-}
-.h-live-dot{
-  width:8px;height:8px;background:var(--teal);border-radius:50%;
-  flex-shrink:0;animation:lp 2s infinite;
-  box-shadow:0 0 0 0 rgba(0,212,170,.7);
-}
-@keyframes lpT{0%,100%{box-shadow:0 0 0 0 rgba(0,212,170,.7)}50%{box-shadow:0 0 0 8px rgba(0,212,170,0)}}
-.h-live-dot{animation:lpT 2s infinite}
-.h-live-text{font-size:.8rem;color:var(--mu);font-weight:500}
-.h-live-text span{color:var(--cream);font-weight:700}
-.h-live-divider{width:1px;height:24px;background:var(--bd)}
-.h-live-amt{font-family:'JetBrains Mono',monospace;font-size:.9rem;font-weight:700;color:var(--teal)}
+@keyframes blobFloat1 { from { transform: translate(0,0) scale(1); } to { transform: translate(-60px, 80px) scale(1.2); } }
+@keyframes blobFloat2 { from { transform: translate(0,0) scale(1); } to { transform: translate(80px, -60px) scale(1.15); } }
+@keyframes blobFloat3 { from { transform: translate(0,0) scale(1); } to { transform: translate(-40px, 60px) scale(0.9); } }
 
-@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
-
-/* ── HERO RIGHT — CINEMATIC CARD STACK ──────────────── */
-.hright{position:relative;animation:fadeUp 1s ease both .4s}
-
-.card-stage{
-  position:relative;max-width:400px;margin:0 auto;
-  height:560px;perspective:1200px;
+body::before {
+  content: '';
+  position: fixed; inset: 0; z-index: 1; pointer-events: none;
+  opacity: 0.03;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
 }
 
-/* Back notification cards */
-.back-cards{
-  position:absolute;top:20px;left:10px;right:-30px;
-  display:flex;flex-direction:column;gap:10px;
-  transform:rotate(4deg) translateZ(-20px);
-  z-index:0;
-}
-.ncard{
-  background:var(--void3);border:1px solid var(--bd);
-  border-radius:var(--r14);padding:13px 16px;
-  display:flex;align-items:center;gap:12px;
-  box-shadow:0 4px 24px rgba(0,0,0,.4);
-  opacity:0;animation:ncardIn .5s ease both;
-}
-.ncard:nth-child(1){animation-delay:1.2s}
-.ncard:nth-child(2){animation-delay:1.5s}
-.ncard:nth-child(3){animation-delay:1.8s}
-@keyframes ncardIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
-.nc-dot{width:36px;height:36px;border-radius:10px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.95rem}
-.nc-g{background:rgba(74,222,128,.12)}
-.nc-c{background:rgba(255,79,51,.12)}
-.nc-t{background:rgba(0,212,170,.12)}
-.nc-info{flex:1}
-.nc-title{font-size:.76rem;font-weight:600;color:var(--cream);margin-bottom:2px}
-.nc-sub{font-size:.65rem;color:var(--dim);font-family:'JetBrains Mono',monospace}
-.nc-amt{font-size:.8rem;font-weight:700;font-family:'JetBrains Mono',monospace;color:var(--teal)}
-
-/* Main front card */
-.main-card{
-  position:absolute;top:0;left:0;right:0;
-  background:linear-gradient(160deg,var(--void3) 0%,var(--void2) 100%);
-  border:1px solid rgba(255,255,255,.1);
-  border-radius:24px;
-  box-shadow:
-    0 50px 100px rgba(0,0,0,.65),
-    0 0 0 1px rgba(255,255,255,.04),
-    inset 0 1px 0 rgba(255,255,255,.08);
-  overflow:hidden;z-index:1;
-  height:500px;
-}
-.mc-accent{position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent 5%,var(--coral) 35%,var(--gold) 65%,transparent 95%)}
-.mc-top{display:flex;align-items:center;justify-content:space-between;padding:16px 20px 14px;border-bottom:1px solid var(--bd)}
-.mc-logo{font-family:'Gloock',serif;font-size:1.1rem;color:var(--cream)}
-.mc-logo span{color:var(--coral)}
-.mc-status{display:flex;align-items:center;gap:6px;background:rgba(0,212,170,.1);border:1px solid rgba(0,212,170,.25);border-radius:var(--r999);padding:3px 10px;font-family:'JetBrains Mono',monospace;font-size:.58rem;font-weight:700;letter-spacing:.08em;color:var(--teal)}
-.mc-body{padding:18px}
-
-.mc-upzone{
-  border:1.5px dashed rgba(255,79,51,.3);border-radius:14px;
-  padding:20px 16px;text-align:center;background:rgba(255,79,51,.04);
-  margin-bottom:14px;animation:ub2 3.5s ease-in-out infinite;
-}
-@keyframes ub2{0%,100%{border-color:rgba(255,79,51,.25);box-shadow:none}50%{border-color:rgba(255,79,51,.6);box-shadow:0 0 20px rgba(255,79,51,.09)}}
-.mc-upzone-i{font-size:1.9rem;display:block;margin-bottom:7px}
-.mc-upzone-l{font-size:.8rem;font-weight:600;color:var(--cream);margin-bottom:2px}
-.mc-upzone-s{font-size:.68rem;color:var(--dim)}
-
-.mc-opts{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:13px}
-.mc-opt{background:rgba(255,255,255,.04);border:1px solid var(--bd);border-radius:8px;padding:9px 10px}
-.mc-opt-l{font-size:.58rem;font-weight:700;color:var(--dim);text-transform:uppercase;letter-spacing:.07em;margin-bottom:2px}
-.mc-opt-v{font-size:.83rem;font-weight:700;color:var(--cream);font-family:'JetBrains Mono',monospace}
-
-.mc-price{
-  display:flex;justify-content:space-between;align-items:center;
-  background:rgba(255,79,51,.09);border:1px solid rgba(255,79,51,.22);
-  border-radius:10px;padding:11px 14px;margin-bottom:12px;
-}
-.mc-price-l{font-size:.76rem;font-weight:500;color:var(--mu)}
-.mc-price-v{font-size:1.1rem;font-weight:700;color:var(--coral);font-family:'JetBrains Mono',monospace;letter-spacing:-.02em}
-
-.mc-btn{
-  width:100%;padding:13px;background:var(--coral);color:white;
-  border:none;border-radius:11px;cursor:none;
-  font-family:'Manrope',sans-serif;font-size:.88rem;font-weight:700;
-  box-shadow:0 4px 20px var(--cg);
-  animation:cblink 2.5s ease-in-out infinite;
-}
-@keyframes cblink{0%,100%{box-shadow:0 4px 14px rgba(255,79,51,.3)}50%{box-shadow:0 4px 30px rgba(255,79,51,.55)}}
-
-/* floating stat */
-.hero-stat-float{
-  position:absolute;top:-16px;right:-28px;
-  background:var(--void3);border:1px solid rgba(255,79,51,.22);
-  border-radius:var(--r14);padding:14px 18px;
-  box-shadow:0 16px 44px rgba(0,0,0,.55);
-  animation:floatY 5s ease-in-out infinite;
-  z-index:2;text-align:center;
-}
-@keyframes floatY{0%,100%{transform:translateY(0) rotate(-.5deg)}50%{transform:translateY(-10px) rotate(.5deg)}}
-.hsf-n{font-family:'Gloock',serif;font-size:2.2rem;letter-spacing:-.04em;color:var(--coral);line-height:1;margin-bottom:3px}
-.hsf-l{font-size:.65rem;color:var(--dim);font-weight:500;line-height:1.4}
-
-/* ── CAMPUS TICKER ──────────────────────────────────── */
-.ticker{
-  position:relative;z-index:10;overflow:hidden;padding:13px 0;
-  background:var(--void2);border-top:1px solid var(--bd);border-bottom:1px solid var(--bd);
-  mask-image:linear-gradient(90deg,transparent,black 6%,black 94%,transparent);
-  -webkit-mask-image:linear-gradient(90deg,transparent,black 6%,black 94%,transparent);
-}
-.tt{display:flex;gap:0;width:max-content;animation:ta 28s linear infinite}
-.tt:hover{animation-play-state:paused}
-@keyframes ta{to{transform:translateX(-50%)}}
-.ti{display:inline-flex;align-items:center;gap:7px;padding:0 24px;font-size:.76rem;font-weight:500;color:var(--dim);white-space:nowrap;border-right:1px solid var(--bd);letter-spacing:-.01em}
-.ti .hc{color:var(--coral)}
-.ti .ht{color:var(--teal)}
-.ti .hg{color:var(--gold)}
-
-/* ── METRIC RINGS ───────────────────────────────────── */
-.rings-section{
-  padding:70px 5%;position:relative;z-index:10;
-}
-.rings-inner{
-  max-width:1120px;margin:0 auto;
-  display:grid;grid-template-columns:repeat(4,1fr);gap:20px;
-}
-.ring-card{
-  background:var(--void2);border:1px solid var(--bd);
-  border-radius:var(--r20);padding:32px 20px;
-  text-align:center;transition:all .35s cubic-bezier(.22,1,.36,1);
-  position:relative;overflow:hidden;
-}
-.ring-card:hover{transform:translateY(-5px);border-color:var(--bdc);box-shadow:0 20px 50px rgba(0,0,0,.4)}
-.ring-svg{width:90px;height:90px;margin:0 auto 18px;display:block}
-.ring-track{fill:none;stroke:rgba(255,79,51,.12);stroke-width:6}
-.ring-fill{
-  fill:none;stroke-width:6;stroke-linecap:round;
-  transform:rotate(-90deg);transform-origin:50% 50%;
-  stroke-dasharray:220;stroke-dashoffset:220;
-  transition:stroke-dashoffset 1.5s cubic-bezier(.22,1,.36,1);
-}
-.ring-c{stroke:url(#ringGrad)}
-.ring-val{
-  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
-  font-family:'Gloock',serif;font-size:1.2rem;letter-spacing:-.04em;
-  color:var(--coral);line-height:1;top:calc(50% - 9px);
-}
-.ring-label{font-size:.75rem;font-weight:600;color:var(--mu);text-transform:uppercase;letter-spacing:.07em}
-.ring-desc{font-size:.8rem;color:var(--dim);margin-top:6px;line-height:1.5}
-
-/* ── SECTIONS ───────────────────────────────────────── */
-.s{padding:100px 5%;position:relative;z-index:10}
-.inn{max-width:1120px;margin:0 auto}
-.inn-sm{max-width:820px;margin:0 auto}
-
-.sec-eyebrow{
-  display:inline-flex;align-items:center;gap:8px;
-  background:rgba(255,79,51,.09);border:1px solid rgba(255,79,51,.22);
-  color:var(--coral2);border-radius:var(--r999);
-  padding:5px 14px;font-family:'JetBrains Mono',monospace;
-  font-size:.67rem;letter-spacing:.09em;text-transform:uppercase;margin-bottom:16px;
-}
-.sec-title{
-  font-family:'Gloock',serif;font-weight:400;
-  font-size:clamp(2.2rem,4.5vw,3.8rem);letter-spacing:-.03em;line-height:1.05;
-  color:var(--cream);margin-bottom:14px;
-}
-.sec-title em{font-style:italic;color:var(--coral)}
-.sec-title strong{font-style:normal;color:var(--teal)}
-.sec-sub{font-size:1rem;color:var(--mu);max-width:520px;line-height:1.75;font-weight:400}
-.sec-ctr{text-align:center}.sec-ctr .sec-sub{margin:0 auto}
-
-.div-line{width:100%;height:1px;background:linear-gradient(90deg,transparent,var(--bd),transparent);position:relative;z-index:10}
-.div-coral{background:linear-gradient(90deg,transparent,rgba(255,79,51,.22),rgba(0,212,170,.15),transparent)}
-
-/* reveal */
-.rv{opacity:0;transform:translateY(26px);transition:opacity .7s cubic-bezier(.22,1,.36,1),transform .7s cubic-bezier(.22,1,.36,1)}
-.rv.on{opacity:1;transform:translateY(0)}
-.rvl{opacity:0;transform:translateX(-30px);transition:opacity .7s cubic-bezier(.22,1,.36,1),transform .7s cubic-bezier(.22,1,.36,1)}
-.rvl.on{opacity:1;transform:translateX(0)}
-.d1{transition-delay:.1s}.d2{transition-delay:.2s}.d3{transition-delay:.3s}.d4{transition-delay:.4s}
-
-/* ── HOW IT WORKS ───────────────────────────────────── */
-.how-steps{
-  display:grid;grid-template-columns:repeat(3,1fr);
-  position:relative;gap:0;
-}
-.how-steps::before{
-  content:'';position:absolute;top:44px;
-  left:calc(100%/6 + 5%);right:calc(100%/6 + 5%);
-  height:1px;background:linear-gradient(90deg,var(--coral),var(--teal));opacity:.3;
-}
-.hstep{padding:40px 32px;border-radius:var(--r20);transition:background .3s;position:relative;z-index:1}
-.hstep:hover{background:rgba(255,79,51,.04)}
-.hs-num{
-  width:50px;height:50px;
-  background:var(--void3);border:1px solid rgba(255,79,51,.3);
-  border-radius:var(--r14);
-  display:flex;align-items:center;justify-content:center;
-  font-family:'JetBrains Mono',monospace;font-size:.82rem;font-weight:700;color:var(--coral);
-  margin-bottom:20px;transition:all .3s;
-}
-.hstep:hover .hs-num{background:var(--coral);color:white;border-color:var(--coral);box-shadow:0 0 22px var(--cg);transform:rotate(-6deg)}
-.hs-emoji{font-size:1.7rem;display:block;margin-bottom:14px;transition:transform .35s}
-.hstep:hover .hs-emoji{transform:scale(1.2) rotate(-5deg)}
-.hstep h3{font-family:'Gloock',serif;font-size:1.3rem;letter-spacing:-.02em;color:var(--cream);margin-bottom:10px}
-.hstep p{font-size:.875rem;color:var(--mu);line-height:1.75}
-
-/* ── BEFORE / AFTER ─────────────────────────────────── */
-.ba{
-  display:grid;grid-template-columns:1fr 1fr;
-  border:1px solid var(--bd);border-radius:var(--r20);overflow:hidden;
-}
-.ba-col{padding:44px 40px}
-.ba-b{background:rgba(255,45,100,.05)}
-.ba-a{background:rgba(0,212,170,.04);border-left:1px solid var(--bd)}
-.ba-label{display:inline-flex;align-items:center;gap:8px;font-family:'JetBrains Mono',monospace;font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;margin-bottom:24px;padding:5px 12px;border-radius:var(--r999)}
-.lb{color:#FF6B8A;background:rgba(255,107,138,.1);border:1px solid rgba(255,107,138,.25)}
-.la{color:var(--teal);background:rgba(0,212,170,.1);border:1px solid rgba(0,212,170,.25)}
-.ba-items{display:flex;flex-direction:column;gap:13px}
-.ba-item{display:flex;align-items:flex-start;gap:11px;font-size:.9rem;color:var(--mu);line-height:1.65;font-weight:500}
-.ib{color:#FF6B8A;flex-shrink:0;margin-top:2px;font-size:.8rem}
-.ia{color:var(--teal);flex-shrink:0;margin-top:2px;font-size:.8rem}
-
-/* ── FEATURE TABS ───────────────────────────────────── */
-.feat-tabs-wrap{background:var(--void2);border:1px solid var(--bd);border-radius:var(--r28);overflow:hidden}
-
-.tab-nav{
-  display:flex;padding:6px;gap:0;
-  border-bottom:1px solid var(--bd);
-  background:rgba(255,255,255,.02);
-  position:relative;
-}
-.tab-btn{
-  flex:1;padding:12px 16px;
-  font-family:'Manrope',sans-serif;font-size:.8rem;font-weight:600;
-  color:var(--dim);cursor:none;border:none;background:transparent;
-  border-radius:var(--r12);transition:all .25s;
-  display:flex;align-items:center;justify-content:center;gap:8px;
-  letter-spacing:-.01em;position:relative;z-index:1;
-}
-.tab-btn:hover{color:var(--mu)}
-.tab-btn.active{color:var(--cream)}
-.tab-indicator{
-  position:absolute;top:6px;height:calc(100% - 12px);
-  background:var(--void3);border:1px solid var(--bd);
-  border-radius:var(--r12);
-  transition:left .35s cubic-bezier(.22,1,.36,1),width .35s cubic-bezier(.22,1,.36,1);
-  z-index:0;
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 5%;
+  height: 68px;
+  transition: all 0.35s ease;
 }
 
-.tab-panels{position:relative;min-height:340px}
-.tab-panel{
-  display:grid;grid-template-columns:1fr 1fr;gap:0;
-  position:absolute;inset:0;
-  opacity:0;transform:translateX(20px);
-  transition:opacity .4s ease,transform .4s cubic-bezier(.22,1,.36,1);
-  pointer-events:none;
-}
-.tab-panel.active{
-  opacity:1;transform:translateX(0);position:relative;
-  pointer-events:all;
-}
-.tab-text{padding:44px 40px;display:flex;flex-direction:column;justify-content:center}
-.tab-text h3{font-family:'Gloock',serif;font-size:1.6rem;letter-spacing:-.03em;color:var(--cream);margin-bottom:12px}
-.tab-text p{font-size:.9rem;color:var(--mu);line-height:1.75;margin-bottom:20px}
-.tab-vis{
-  background:var(--void3);border-left:1px solid var(--bd);
-  padding:32px;display:flex;align-items:center;justify-content:center;
+nav.scrolled {
+  background: rgba(5,8,17,0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--ghost-border);
+  box-shadow: 0 8px 40px rgba(0,0,0,0.4);
 }
 
-/* mini data vis inside tabs */
-.t-dash{background:var(--void4);border:1px solid var(--bd);border-radius:var(--r14);overflow:hidden;width:100%}
-.td-hd{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-bottom:1px solid var(--bd);background:rgba(255,255,255,.02)}
-.td-l{font-size:.63rem;font-weight:700;color:var(--dim);text-transform:uppercase;letter-spacing:.08em;font-family:'JetBrains Mono',monospace}
-.td-r{font-size:.63rem;color:var(--teal);font-weight:700;font-family:'JetBrains Mono',monospace}
-.td-rows{padding:8px;display:flex;flex-direction:column;gap:4px}
-.td-row{display:flex;align-items:center;gap:9px;padding:7px 9px;border-radius:7px;background:rgba(255,255,255,.02);transition:background .2s}
-.td-row:hover{background:rgba(255,79,51,.06)}
-.fdot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
-.dg{background:#4ade80;box-shadow:0 0 6px rgba(74,222,128,.4)}
-.dc{background:var(--coral);animation:lp 2s infinite}
-.dd{background:var(--vdim)}
-.td-n{font-size:.72rem;color:var(--cream);font-weight:600;flex:1}
-.td-a{font-size:.68rem;color:var(--coral);font-weight:700;font-family:'JetBrains Mono',monospace}
+.nav-logo { display: flex; align-items: center; gap: 10px; font-family: 'Fraunces', serif; font-size: 1.2rem; font-weight: 700; letter-spacing: -0.02em; color: var(--white); }
+.nav-logo-mark { width: 34px; height: 34px; background: var(--blue); border-radius: 10px; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 20px var(--blue-glow); animation: logoPulse 3s ease-in-out infinite; }
+@keyframes logoPulse { 0%, 100% { box-shadow: 0 0 20px var(--blue-glow); } 50% { box-shadow: 0 0 40px rgba(37,99,235,0.6), 0 0 80px rgba(37,99,235,0.2); } }
+.nav-logo-mark svg { width: 18px; height: 18px; fill: white; }
 
-/* wa mock */
-.t-wa{background:var(--void4);border:1px solid rgba(0,212,170,.18);border-radius:var(--r14);padding:18px;width:100%}
-.t-wa-hd{font-family:'JetBrains Mono',monospace;font-size:.63rem;color:var(--teal);margin-bottom:12px;display:flex;align-items:center;gap:6px;letter-spacing:.07em}
-.wa-msgs{display:flex;flex-direction:column;gap:8px}
-.wa-m{background:rgba(0,212,170,.07);border:1px solid rgba(0,212,170,.15);border-radius:9px;padding:9px 12px}
-.wa-mh{font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--teal);margin-bottom:3px;font-weight:700}
-.wa-mt{font-size:.72rem;color:var(--mu);line-height:1.5}
+.nav-links { display: flex; align-items: center; gap: 36px; list-style: none; }
+.nav-links a { font-size: 0.875rem; font-weight: 500; color: rgba(255,255,255,0.65); transition: color 0.2s; position: relative; }
+.nav-links a::after { content: ''; position: absolute; bottom: -4px; left: 0; right: 0; height: 1.5px; background: var(--electric); transform: scaleX(0); transition: transform 0.25s ease; }
+.nav-links a:hover { color: var(--white); }
+.nav-links a:hover::after { transform: scaleX(1); }
+.nav-cta { display: flex; align-items: center; gap: 10px; }
 
-/* loyalty card */
-.t-loy{background:linear-gradient(135deg,var(--void4) 0%,rgba(255,79,51,.09) 100%);border:1px solid rgba(255,79,51,.22);border-radius:var(--r14);padding:22px;width:100%}
-.tl-hd{font-family:'JetBrains Mono',monospace;font-size:.63rem;color:var(--coral2);letter-spacing:.09em;margin-bottom:12px;display:flex;align-items:center;gap:6px}
-.tl-name{font-family:'Gloock',serif;font-size:1rem;color:var(--cream);margin-bottom:4px}
-.tl-pts{font-family:'JetBrains Mono',monospace;font-size:2.2rem;font-weight:700;color:var(--coral);letter-spacing:-.04em;line-height:1;margin-bottom:2px}
-.tl-sub{font-size:.65rem;color:var(--dim);margin-bottom:14px}
-.tl-bg{height:5px;background:rgba(255,79,51,.15);border-radius:3px;overflow:hidden}
-.tl-fg{height:100%;background:linear-gradient(90deg,var(--coral),var(--gold));width:68%;animation:lfg 2s ease-in-out infinite alternate}
-@keyframes lfg{from{width:65%}to{width:72%}}
+.btn { display: inline-flex; align-items: center; gap: 7px; padding: 10px 22px; border-radius: var(--r12); font-family: 'Space Grotesk', sans-serif; font-size: 0.875rem; font-weight: 600; cursor: pointer; transition: all 0.22s; border: none; white-space: nowrap; position: relative; overflow: hidden; }
+.btn::before { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 50%); opacity: 0; transition: opacity 0.22s; }
+.btn:hover::before { opacity: 1; }
+.btn-primary { background: var(--blue); color: white; box-shadow: 0 0 0 0 var(--blue-glow); transition: all 0.22s, box-shadow 0.4s; }
+.btn-primary:hover { background: #1d4ed8; box-shadow: 0 0 30px var(--blue-glow), 0 4px 20px rgba(37,99,235,0.4); transform: translateY(-2px); }
+.btn-glass { background: var(--ghost); border: 1px solid var(--ghost-border); color: rgba(255,255,255,0.85); backdrop-filter: blur(10px); }
+.btn-glass:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2); color: white; transform: translateY(-2px); }
+.btn-lg { padding: 14px 30px; font-size: 1rem; border-radius: var(--r20); }
 
-/* multi-shop */
-.t-ms{display:flex;flex-direction:column;gap:8px;width:100%}
-.ms-r{display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.03);border:1px solid var(--bd);border-radius:9px;padding:10px 14px}
-.ms-n{font-size:.8rem;color:var(--cream);font-weight:600}
-.ms-badge{font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:700;padding:3px 9px;border-radius:var(--r999)}
-.mb-t{background:rgba(0,212,170,.1);color:var(--teal);border:1px solid rgba(0,212,170,.25)}
-.mb-c{background:rgba(255,79,51,.1);color:var(--coral2);border:1px solid rgba(255,79,51,.25)}
+.hamburger { display: none; cursor: pointer; flex-direction: column; gap: 5px; background: none; border: none; padding: 6px; }
+.hamburger span { width: 24px; height: 2px; background: rgba(255,255,255,0.8); border-radius: 2px; display: block; transition: all 0.3s cubic-bezier(0.4,0,0.2,1); }
+.hamburger.active span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.hamburger.active span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+.hamburger.active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 
-/* ── PRICING ────────────────────────────────────────── */
-.pcards{display:grid;grid-template-columns:1fr 1fr;gap:22px;max-width:880px;margin:0 auto}
-.pc{
-  background:var(--void2);border:1px solid var(--bd);
-  border-radius:var(--r20);padding:40px 36px;
-  transition:all .35s cubic-bezier(.22,1,.36,1);position:relative;overflow:hidden;
-}
-.pc:hover{transform:translateY(-4px);box-shadow:0 24px 60px rgba(0,0,0,.4)}
-.pc.hot{background:rgba(255,79,51,.07);border-color:rgba(255,79,51,.38)}
-.pc.hot:hover{border-color:rgba(255,79,51,.65)}
-.pc.hot::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--coral),var(--gold),var(--teal))}
-.pc-glow{position:absolute;top:-70px;right:-70px;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(255,79,51,.13) 0%,transparent 70%);pointer-events:none}
-.pop{position:absolute;top:18px;right:18px;background:var(--coral);color:white;font-size:.6rem;font-weight:700;letter-spacing:.07em;padding:4px 11px;border-radius:var(--r999);text-transform:uppercase;font-family:'JetBrains Mono',monospace;box-shadow:0 0 16px var(--cg)}
-.pc-type{font-size:.63rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,79,51,.65);margin-bottom:7px;font-family:'JetBrains Mono',monospace}
-.pc-name{font-family:'Gloock',serif;font-size:1.3rem;letter-spacing:-.02em;color:var(--cream);margin-bottom:20px}
-.pc-price{display:flex;align-items:baseline;gap:5px;margin-bottom:4px}
-.pc-amt{font-family:'Gloock',serif;font-size:3rem;letter-spacing:-.04em;line-height:1;color:var(--cream)}
-.pc.hot .pc-amt{color:var(--coral)}
-.pc-unit{font-size:.85rem;color:var(--dim)}
-.pc-note{font-size:.73rem;color:var(--dim);margin-bottom:26px;font-style:italic}
-.pc-hr{height:1px;background:var(--bd);margin-bottom:22px}
-.pc-feats{list-style:none;display:flex;flex-direction:column;gap:11px;margin-bottom:30px}
-.pc-feats li{display:flex;align-items:flex-start;gap:10px;font-size:.875rem;color:var(--mu)}
-.ck{width:16px;height:16px;min-width:16px;background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.25);border-radius:50%;display:flex;align-items:center;justify-content:center;margin-top:2px}
-.ck svg{width:8px;height:8px;stroke:#4ade80;stroke-width:2.5;fill:none}
+.hero { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 120px 5% 80px; position: relative; z-index: 10; }
+.hero-eyebrow { display: inline-flex; align-items: center; gap: 8px; background: rgba(37,99,235,0.15); border: 1px solid rgba(37,99,235,0.35); color: var(--electric); border-radius: var(--r999); padding: 6px 16px; font-size: 0.78rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 36px; animation: heroFadeIn 0.8s ease both 0.1s; }
+.pulse-dot { width: 7px; height: 7px; background: var(--electric); border-radius: 50%; animation: pulseDot 2s ease-in-out infinite; }
+@keyframes pulseDot { 0%,100% { opacity: 1; transform: scale(1); box-shadow: 0 0 0 0 rgba(96,165,250,0.7); } 50% { opacity: 0.6; transform: scale(0.8); box-shadow: 0 0 0 6px rgba(96,165,250,0); } }
 
-/* ── TESTIMONIALS — CAROUSEL ─────────────────────────── */
-.tcarousel{
-  position:relative;
-  background:var(--void2);border:1px solid var(--bd);border-radius:var(--r28);
-  overflow:hidden;
-}
-.tslides{
-  display:flex;transition:transform .6s cubic-bezier(.22,1,.36,1);
-}
-.tslide{
-  flex:0 0 100%;padding:52px 56px;
-  display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;
-}
-.ts-quote{
-  font-family:'Gloock',serif;font-size:clamp(1.3rem,2.5vw,1.8rem);
-  font-style:italic;letter-spacing:-.02em;line-height:1.45;
-  color:var(--cream);margin-bottom:28px;position:relative;
-}
-.ts-quote::before{
-  content:'\201C';position:absolute;top:-24px;left:-8px;
-  font-size:4rem;line-height:1;color:rgba(255,79,51,.15);
-  pointer-events:none;font-family:'Gloock',serif;
-}
-.ts-author{display:flex;align-items:center;gap:14px}
-.ts-av{
-  width:46px;height:46px;border-radius:50%;
-  display:flex;align-items:center;justify-content:center;
-  font-weight:700;font-size:1rem;color:white;flex-shrink:0;
-}
-.ts-name{font-size:.95rem;font-weight:700;color:var(--cream);margin-bottom:2px;letter-spacing:-.01em}
-.ts-role{font-size:.74rem;color:var(--dim)}
-.ts-stats{display:flex;flex-direction:column;gap:14px}
-.ts-stat{
-  background:var(--void3);border:1px solid var(--bd);
-  border-radius:var(--r14);padding:20px 22px;
-  transition:border-color .3s;
-}
-.tslide:hover .ts-stat{border-color:rgba(255,79,51,.18)}
-.ts-stat-n{font-family:'Gloock',serif;font-size:2rem;letter-spacing:-.04em;color:var(--coral);line-height:1;margin-bottom:4px}
-.ts-stat-l{font-size:.75rem;color:var(--dim);font-weight:500}
+.hero h1 { font-size: clamp(2.8rem, 7vw, 5.5rem); font-weight: 900; line-height: 1.05; letter-spacing: -0.04em; color: var(--white); max-width: 860px; margin-bottom: 28px; animation: heroFadeIn 0.9s ease both 0.25s; }
+.hero h1 em { font-style: italic; font-weight: 300; background: linear-gradient(135deg, var(--electric) 0%, var(--violet) 60%, var(--teal) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.hero-sub { font-size: clamp(1rem, 2vw, 1.15rem); color: rgba(255,255,255,0.55); max-width: 560px; line-height: 1.75; margin-bottom: 44px; font-weight: 400; animation: heroFadeIn 0.9s ease both 0.4s; }
+.hero-ctas { display: flex; flex-wrap: wrap; gap: 14px; justify-content: center; margin-bottom: 60px; animation: heroFadeIn 0.9s ease both 0.55s; }
+@keyframes heroFadeIn { from { opacity: 0; transform: translateY(28px); } to { opacity: 1; transform: translateY(0); } }
 
-/* carousel controls */
-.tc-controls{
-  display:flex;align-items:center;justify-content:space-between;
-  padding:20px 28px;border-top:1px solid var(--bd);
-  background:rgba(255,255,255,.02);
-}
-.tc-dots{display:flex;gap:8px}
-.tc-dot{
-  height:4px;border-radius:2px;background:var(--bd);
-  transition:all .4s cubic-bezier(.22,1,.36,1);cursor:none;
-}
-.tc-dot.on{background:var(--coral);width:28px!important}
-.tc-arrows{display:flex;gap:8px}
-.tc-arrow{
-  width:36px;height:36px;border-radius:50%;
-  border:1px solid var(--bd);background:transparent;
-  display:flex;align-items:center;justify-content:center;
-  cursor:none;color:var(--dim);font-size:.85rem;
-  transition:all .2s;
-}
-.tc-arrow:hover{border-color:var(--bdc);color:var(--coral);background:rgba(255,79,51,.08)}
+.stat-pills { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; animation: heroFadeIn 0.9s ease both 0.7s; }
+.stat-pill { display: flex; align-items: center; gap: 8px; background: var(--ghost); border: 1px solid var(--ghost-border); border-radius: var(--r999); padding: 8px 18px; font-size: 0.82rem; font-weight: 600; color: rgba(255,255,255,0.75); backdrop-filter: blur(10px); transition: all 0.3s; }
+.stat-pill:hover { background: rgba(255,255,255,0.1); border-color: rgba(96,165,250,0.4); color: white; transform: translateY(-3px); box-shadow: 0 8px 30px rgba(37,99,235,0.2); }
+.stat-pill-icon { color: var(--electric); }
 
-/* progress bar in carousel */
-.tc-progress{height:2px;background:var(--bd);position:relative}
-.tc-progress-fill{
-  height:100%;background:linear-gradient(90deg,var(--coral),var(--gold));
-  transition:width .1s linear;
-}
+section { padding: 100px 5%; position: relative; z-index: 10; }
+.section-inner { max-width: 1120px; margin: 0 auto; }
+.section-label { display: inline-flex; align-items: center; gap: 7px; background: rgba(37,99,235,0.15); border: 1px solid rgba(37,99,235,0.3); color: var(--electric); border-radius: var(--r999); padding: 5px 14px; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 18px; }
+.section-title { font-size: clamp(1.9rem, 4vw, 3rem); font-weight: 900; letter-spacing: -0.035em; line-height: 1.1; color: var(--white); margin-bottom: 16px; }
+.section-sub { font-size: 1rem; color: rgba(255,255,255,0.5); max-width: 520px; line-height: 1.75; }
 
-/* ── TECH ───────────────────────────────────────────── */
-.mq-wrap{overflow:hidden;mask-image:linear-gradient(90deg,transparent,black 6%,black 94%,transparent);-webkit-mask-image:linear-gradient(90deg,transparent,black 6%,black 94%,transparent);margin-bottom:52px}
-.mqt{display:flex;gap:8px;width:max-content;animation:mqa 30s linear infinite}
-.mqt:hover{animation-play-state:paused}
-@keyframes mqa{to{transform:translateX(-50%)}}
-.chip{
-  display:inline-flex;align-items:center;gap:7px;
-  background:var(--void2);border:1px solid var(--bd);border-radius:8px;
-  padding:9px 16px;font-size:.75rem;font-weight:600;color:var(--mu);
-  white-space:nowrap;transition:all .25s;cursor:default;
-  font-family:'JetBrains Mono',monospace;
-}
-.chip:hover{background:rgba(255,79,51,.09);border-color:rgba(255,79,51,.35);color:var(--coral2);transform:translateY(-3px)}
+.reveal { opacity: 0; transform: translateY(36px); transition: opacity 0.65s cubic-bezier(0.22, 1, 0.36, 1), transform 0.65s cubic-bezier(0.22, 1, 0.36, 1); }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+.d1 { transition-delay: 0.1s; } .d2 { transition-delay: 0.2s; } .d3 { transition-delay: 0.3s; }
 
-.trgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
-.trc{
-  background:var(--void2);border:1px solid var(--bd);border-radius:var(--r20);
-  padding:26px 18px;text-align:center;transition:all .35s cubic-bezier(.22,1,.36,1);
-}
-.trc:hover{transform:translateY(-4px);border-color:var(--bdc);box-shadow:0 16px 40px rgba(0,0,0,.3)}
-.tr-i{width:46px;height:46px;background:rgba(255,79,51,.1);border:1px solid rgba(255,79,51,.2);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;margin:0 auto 14px;transition:all .35s}
-.trc:hover .tr-i{background:rgba(255,79,51,.2);transform:scale(1.1) rotate(-5deg)}
-.trc h4{font-family:'Gloock',serif;font-size:1.05rem;color:var(--cream);margin-bottom:7px;letter-spacing:-.01em}
-.trc p{font-size:.77rem;color:var(--dim);line-height:1.65}
+.steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; background: var(--ghost-border); border: 1px solid var(--ghost-border); border-radius: var(--r20); overflow: hidden; }
+.step-card { background: rgba(15, 23, 41, 0.8); backdrop-filter: blur(20px); padding: 44px 36px; position: relative; overflow: hidden; transition: background 0.35s; }
+.step-card:hover { background: rgba(20,30,55,0.95); }
+.step-num { width: 42px; height: 42px; background: var(--blue); color: white; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-family: 'Space Grotesk', sans-serif; font-size: 0.85rem; font-weight: 700; margin-bottom: 24px; position: relative; z-index: 1; box-shadow: 0 0 20px var(--blue-glow); }
+.step-icon { font-size: 2.2rem; margin-bottom: 16px; display: block; position: relative; z-index: 1; transition: transform 0.35s cubic-bezier(0.22,1,0.36,1); }
+.step-card:hover .step-icon { transform: scale(1.2) rotate(-5deg); }
+.step-card h3 { font-size: 1.15rem; font-weight: 700; letter-spacing: -0.025em; color: var(--white); margin-bottom: 12px; position: relative; z-index: 1; }
+.step-card p { font-size: 0.875rem; color: rgba(255,255,255,0.5); line-height: 1.7; position: relative; z-index: 1; }
 
-/* ── FAQ ────────────────────────────────────────────── */
-.faq{border:1px solid var(--bd);border-radius:var(--r20);overflow:hidden;background:rgba(255,255,255,.02)}
-.faq-i{border-bottom:1px solid var(--bd)}
-.faq-i:last-child{border-bottom:none}
-.faq-q{width:100%;display:flex;align-items:center;justify-content:space-between;padding:20px 26px;background:transparent;border:none;cursor:none;color:var(--cream);font-family:'Manrope',sans-serif;font-size:.95rem;font-weight:600;text-align:left;transition:background .25s}
-.faq-q:hover{background:rgba(255,79,51,.04)}
-.faq-q.op{color:var(--coral)}
-.faq-ch{width:26px;height:26px;min-width:26px;background:var(--void2);border:1px solid var(--bd);border-radius:7px;display:flex;align-items:center;justify-content:center;transition:all .35s;color:var(--dim);font-size:.75rem}
-.faq-q.op .faq-ch{background:rgba(255,79,51,.14);border-color:rgba(255,79,51,.35);color:var(--coral);transform:rotate(45deg)}
-.faq-a{max-height:0;overflow:hidden;transition:max-height .4s cubic-bezier(.22,1,.36,1)}
-.faq-a.op{max-height:200px}
-.faq-a-in{padding:0 26px 20px;font-size:.9rem;color:var(--mu);line-height:1.75}
+.pricing-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; max-width: 860px; margin: 0 auto; }
+.pricing-card { background: rgba(15,23,41,0.8); border: 1px solid var(--ghost-border); border-radius: var(--r20); padding: 44px 40px; backdrop-filter: blur(20px); transition: all 0.35s cubic-bezier(0.22,1,0.36,1); position: relative; overflow: hidden; }
+.pricing-card:hover { transform: translateY(-6px); border-color: rgba(37,99,235,0.4); box-shadow: 0 30px 60px rgba(0,0,0,0.4), 0 0 0 1px rgba(37,99,235,0.15); }
+.pricing-card.featured { border-color: rgba(37,99,235,0.5); background: rgba(15,23,60,0.9); }
+.pricing-card.featured::before { content: 'Most Popular'; position: absolute; top: 20px; right: 20px; background: var(--blue); color: white; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.07em; padding: 4px 12px; border-radius: var(--r999); text-transform: uppercase; box-shadow: 0 0 20px var(--blue-glow); }
+.pricing-type { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--electric); margin-bottom: 8px; }
+.pricing-title { font-size: 1.3rem; font-weight: 700; color: var(--white); margin-bottom: 22px; font-family: 'Fraunces', serif; letter-spacing: -0.02em; }
+.pricing-price { display: flex; align-items: baseline; gap: 5px; margin-bottom: 6px; }
+.pricing-price .amount { font-family: 'Fraunces', serif; font-size: 3.5rem; font-weight: 900; color: var(--white); letter-spacing: -0.05em; line-height: 1; }
+.pricing-price .unit { font-size: 0.9rem; color: rgba(255,255,255,0.4); font-weight: 500; }
+.pricing-note { font-size: 0.8rem; color: rgba(255,255,255,0.35); margin-bottom: 28px; }
+.pricing-divider { height: 1px; background: var(--ghost-border); margin-bottom: 26px; }
+.pricing-features { list-style: none; display: flex; flex-direction: column; gap: 13px; margin-bottom: 34px; }
+.pricing-features li { display: flex; align-items: flex-start; gap: 11px; font-size: 0.875rem; color: rgba(255,255,255,0.65); }
+.check { width: 18px; height: 18px; min-width: 18px; background: rgba(74,222,128,0.15); border: 1px solid rgba(74,222,128,0.3); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-top: 2px; }
+.check svg { width: 10px; height: 10px; stroke: #4ade80; stroke-width: 2.5; fill: none; }
 
-/* ── ELITE CTA ──────────────────────────────────────── */
-.cta-elite{
-  position:relative;z-index:10;overflow:hidden;
-  background:var(--void2);border-top:1px solid var(--bd);
-}
-/* gradient mesh */
-.cta-mesh{
-  position:absolute;inset:0;pointer-events:none;
-  background:
-    radial-gradient(ellipse 60% 80% at 20% 50%,rgba(255,79,51,.1) 0%,transparent 55%),
-    radial-gradient(ellipse 50% 60% at 80% 50%,rgba(0,212,170,.07) 0%,transparent 55%);
-}
+.testimonials-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.testimonial-card { background: rgba(15,23,41,0.7); border: 1px solid var(--ghost-border); border-radius: var(--r20); padding: 36px 30px; backdrop-filter: blur(20px); transition: all 0.35s cubic-bezier(0.22,1,0.36,1); position: relative; overflow: hidden; }
+.testimonial-card:hover { transform: translateY(-6px); border-color: rgba(37,99,235,0.35); box-shadow: 0 24px 50px rgba(0,0,0,0.4); }
+.stars { display: flex; gap: 3px; margin-bottom: 20px; }
+.stars span { color: var(--gold); font-size: 0.875rem; }
+.testimonial-quote { font-size: 0.9rem; color: rgba(255,255,255,0.65); line-height: 1.75; margin-bottom: 26px; }
+.testimonial-author { display: flex; align-items: center; gap: 13px; }
+.author-avatar { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 0.9rem; color: white; }
+.author-name { font-size: 0.875rem; font-weight: 700; color: var(--white); }
+.author-role { font-size: 0.75rem; color: rgba(255,255,255,0.4); }
 
-.cta-grid{
-  max-width:1120px;margin:0 auto;padding:80px 5%;
-  display:grid;grid-template-columns:1fr 1fr;gap:0;
-  position:relative;z-index:1;
-}
-.cta-left{padding-right:60px;border-right:1px solid var(--bd)}
-.cta-right{padding-left:60px}
+.marquee-wrapper { overflow: hidden; margin-bottom: 60px; mask-image: linear-gradient(90deg, transparent, black 8%, black 92%, transparent); -webkit-mask-image: linear-gradient(90deg, transparent, black 8%, black 92%, transparent); }
+.marquee-track { display: flex; gap: 12px; width: max-content; animation: marquee 32s linear infinite; }
+@keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+.tech-badge { display: inline-flex; align-items: center; gap: 8px; background: var(--ghost); border: 1px solid var(--ghost-border); border-radius: 10px; padding: 10px 18px; font-size: 0.82rem; font-weight: 600; color: rgba(255,255,255,0.6); white-space: nowrap; backdrop-filter: blur(10px); transition: all 0.25s; cursor: default; }
+.tech-badge:hover { background: rgba(37,99,235,0.15); border-color: rgba(37,99,235,0.4); color: var(--white); transform: translateY(-3px) scale(1.03); }
 
-/* watermark number */
-.cta-wm{
-  position:absolute;font-family:'Gloock',serif;font-style:italic;
-  font-size:22rem;font-weight:400;line-height:.8;pointer-events:none;user-select:none;
-  color:transparent;
-}
-.cta-wm-l{left:-60px;bottom:-60px;-webkit-text-stroke:1px rgba(255,79,51,.06);color:transparent}
-.cta-wm-r{right:-60px;bottom:-60px;-webkit-text-stroke:1px rgba(0,212,170,.05);color:transparent}
+.trust-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; }
+.trust-card { background: var(--ghost); border: 1px solid var(--ghost-border); border-radius: var(--r20); padding: 30px 22px; text-align: center; backdrop-filter: blur(10px); transition: all 0.35s cubic-bezier(0.22,1,0.36,1); }
+.trust-card:hover { transform: translateY(-5px); background: rgba(37,99,235,0.1); border-color: rgba(37,99,235,0.35); }
+.trust-icon { width: 50px; height: 50px; background: rgba(37,99,235,0.15); border: 1px solid rgba(37,99,235,0.25); border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; margin: 0 auto 18px; }
+.trust-card h4 { font-size: 0.9rem; font-weight: 700; color: var(--white); margin-bottom: 8px; }
+.trust-card p { font-size: 0.8rem; color: rgba(255,255,255,0.4); line-height: 1.65; }
 
-.cta-for{
-  font-family:'JetBrains Mono',monospace;font-size:.67rem;letter-spacing:.12em;
-  text-transform:uppercase;margin-bottom:18px;
-  display:inline-flex;align-items:center;gap:8px;padding:5px 14px;
-  border-radius:var(--r999);
-}
-.cta-for-op{background:rgba(255,79,51,.1);border:1px solid rgba(255,79,51,.25);color:var(--coral2)}
-.cta-for-st{background:rgba(0,212,170,.1);border:1px solid rgba(0,212,170,.25);color:var(--teal)}
+.cta-section { position: relative; overflow: hidden; background: linear-gradient(135deg, #050811 0%, #0f1729 50%, #0d0f2e 100%); text-align: center; }
+.cta-section::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 80% 50% at 50% 0%, rgba(37,99,235,0.2) 0%, transparent 70%); }
+.cta-sub { font-size: 1.05rem; color: rgba(255,255,255,0.5); max-width: 500px; margin: 0 auto 52px; line-height: 1.75; }
+.cta-steps { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 10px; margin-bottom: 48px; }
+.cta-step-content { display: flex; align-items: center; gap: 12px; background: var(--ghost); border: 1px solid var(--ghost-border); border-radius: 14px; padding: 15px 22px; backdrop-filter: blur(10px); }
+.cta-step-num { width: 30px; height: 30px; background: var(--blue); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 700; color: white; flex-shrink: 0; }
+.cta-step-text { font-size: 0.875rem; font-weight: 600; color: rgba(255,255,255,0.8); }
+.cta-arrow { color: rgba(255,255,255,0.2); font-size: 1.2rem; }
+.cta-buttons { display: flex; flex-wrap: wrap; justify-content: center; gap: 14px; }
+.btn-white { background: white; color: var(--ink); font-weight: 700; }
+.btn-white:hover { background: #f0f4ff; transform: translateY(-3px); }
 
-.cta-title{
-  font-family:'Gloock',serif;font-weight:400;
-  font-size:clamp(2.2rem,3.8vw,3.2rem);letter-spacing:-.03em;line-height:.95;
-  margin-bottom:16px;
-}
-.cta-left .cta-title{color:var(--cream)}
-.cta-left .cta-title em{font-style:italic;color:var(--coral)}
-.cta-right .cta-title{color:var(--cream)}
-.cta-right .cta-title em{font-style:italic;color:var(--teal)}
-.cta-p{font-size:.95rem;color:var(--mu);line-height:1.72;margin-bottom:28px}
-.cta-mini-steps{display:flex;flex-direction:column;gap:10px;margin-bottom:28px}
-.cms{display:flex;align-items:center;gap:13px;font-size:.85rem;color:var(--mu);font-weight:500}
-.cms-n{width:26px;height:26px;border-radius:7px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700}
-.cta-left .cms-n{background:rgba(255,79,51,.15);color:var(--coral)}
-.cta-right .cms-n{background:rgba(0,212,170,.12);color:var(--teal)}
-.cta-btns{display:flex;gap:10px;flex-wrap:wrap}
+.glow-divider { width: 100%; height: 1px; background: linear-gradient(90deg, transparent, rgba(37,99,235,0.4), rgba(124,58,237,0.4), transparent); }
 
-/* ── FOOTER ─────────────────────────────────────────── */
-footer{background:var(--void2);border-top:1px solid var(--bd);padding:60px 5% 32px;position:relative;z-index:10}
-.fi{max-width:1120px;margin:0 auto}
-.ftop{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:44px;padding-bottom:40px;border-bottom:1px solid var(--bd);margin-bottom:28px}
-.fbrand{font-family:'Gloock',serif;font-size:1.1rem;letter-spacing:-.01em;color:var(--cream);display:flex;align-items:center;gap:9px;margin-bottom:12px}
-.flm{width:26px;height:26px;background:var(--coral);border-radius:7px;display:flex;align-items:center;justify-content:center;box-shadow:0 0 14px var(--cg)}
-.flm svg{width:13px;height:13px;fill:white}
-.fdesc{font-size:.79rem;line-height:1.75;color:var(--dim);max-width:210px}
-.fcol h5{font-size:.63rem;font-weight:700;color:var(--dim);letter-spacing:.12em;text-transform:uppercase;margin-bottom:16px;font-family:'JetBrains Mono',monospace}
-.fl{list-style:none;display:flex;flex-direction:column;gap:9px}
-.fl a{font-size:.82rem;color:var(--dim);transition:color .2s;font-weight:500}
-.fl a:hover{color:var(--coral2)}
-.fbot{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
-.fcopy{font-size:.74rem;color:var(--vdim)}
-.fstat{display:flex;align-items:center;gap:7px;font-size:.74rem;color:var(--vdim)}
-.fsd{width:6px;height:6px;background:#4ade80;border-radius:50%;box-shadow:0 0 8px rgba(74,222,128,.5);animation:lp 2.5s infinite}
+footer { background: rgba(5,8,17,0.98); border-top: 1px solid var(--ghost-border); padding: 64px 5% 36px; position: relative; z-index: 10; }
+.footer-inner { max-width: 1120px; margin: 0 auto; }
+.footer-top { display: grid; grid-template-columns: 1.6fr 1fr 1fr 1fr; gap: 48px; padding-bottom: 44px; border-bottom: 1px solid var(--ghost-border); margin-bottom: 32px; }
+.footer-brand-name { font-family: 'Fraunces', serif; font-size: 1.15rem; font-weight: 700; color: white; margin-bottom: 14px; display: flex; align-items: center; gap: 9px; }
+.footer-brand-mark { width: 28px; height: 28px; background: var(--blue); border-radius: 7px; display: flex; align-items: center; justify-content: center; }
+.footer-brand-mark svg { width: 14px; height: 14px; fill: white; }
+.footer-desc { font-size: 0.82rem; line-height: 1.75; max-width: 220px; color: rgba(255,255,255,0.35); }
+.footer-col h5 { font-family: 'Space Grotesk', sans-serif; font-size: 0.72rem; font-weight: 700; color: rgba(255,255,255,0.6); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 18px; }
+.footer-links { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+.footer-links a { font-size: 0.83rem; color: rgba(255,255,255,0.35); transition: color 0.2s; }
+.footer-links a:hover { color: rgba(255,255,255,0.85); }
+.footer-bottom { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+.footer-copy { font-size: 0.78rem; color: rgba(255,255,255,0.25); }
+.status-indicator { display: flex; align-items: center; gap: 8px; font-size: 0.78rem; color: rgba(255,255,255,0.35); }
+.status-dot { width: 7px; height: 7px; background: #4ade80; border-radius: 50%; box-shadow: 0 0 8px rgba(74,222,128,0.6); animation: pulseDot 2.5s ease-in-out infinite; }
 
-/* ── RESPONSIVE ─────────────────────────────────────── */
-@media(max-width:1024px){.trgrid{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:900px){
-  .nav-links{display:none}
-  .ham-wrap{display:flex}
-  .ham{display:flex}
-  .hero-in{grid-template-columns:1fr;min-height:auto;padding:0}
-  .hright{display:none}
-  .rings-inner{grid-template-columns:repeat(2,1fr)}
-  .how-steps{grid-template-columns:1fr}.how-steps::before{display:none}
-  .ba{grid-template-columns:1fr}.ba-a{border-left:none;border-top:1px solid var(--bd)}
-  .tab-panel{grid-template-columns:1fr}.tab-vis{border-left:none;border-top:1px solid var(--bd)}
-  .tslide{grid-template-columns:1fr;gap:24px}.ts-stats{flex-direction:row;flex-wrap:wrap}
-  .pcards{grid-template-columns:1fr;max-width:460px}
-  .trgrid{grid-template-columns:repeat(2,1fr)}
-  .cta-grid{grid-template-columns:1fr}.cta-left{padding-right:0;border-right:none;border-bottom:1px solid var(--bd);padding-bottom:60px}.cta-right{padding-left:0;padding-top:60px}
-  .ftop{grid-template-columns:1fr 1fr;gap:28px}
-  .s{padding:72px 5%}
-}
-@media(max-width:600px){
-  .nav-links{display:none}
-  .h-word.serif,.h-word.sans{font-size:clamp(2.4rem,9.5vw,3.2rem)}
-  .h-ctas{flex-direction:column}
-  .bxl{width:100%;justify-content:center}
-  .rings-inner{grid-template-columns:1fr}
-  .trgrid,.ftop{grid-template-columns:1fr}
-  .fbot{flex-direction:column;align-items:flex-start}
-  .tslide{padding:32px 24px}
-  .ts-stats{flex-direction:column}
-  .cta-btns{flex-direction:column;align-items:stretch}
-  .cta-btns .bxl{max-width:360px;margin:0 auto}
+@media (max-width: 900px) {
+  .nav-links { display: none; }
+  .hamburger { display: flex; }
+  .steps { grid-template-columns: 1fr; }
+  .pricing-grid { grid-template-columns: 1fr; max-width: 480px; }
+  .testimonials-grid { grid-template-columns: 1fr; }
+  .trust-grid { grid-template-columns: repeat(2, 1fr); }
+  .footer-top { grid-template-columns: 1fr 1fr; gap: 32px; }
 }
 </style>
 </head>
 <body>
+<div class="bg-grid"></div>
+<div class="blob blob-1"></div>
+<div class="blob blob-2"></div>
+<div class="blob blob-3"></div>
 
-<!-- ── SVG DEFS ───────────────────────────────────────────── -->
-<svg width="0" height="0" style="position:absolute">
-  <defs>
-    <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#FF4F33"/>
-      <stop offset="60%" stop-color="#FFB800"/>
-      <stop offset="100%" stop-color="#00D4AA"/>
-    </linearGradient>
-  </defs>
-</svg>
+<nav id="navbar">
+  <a href="#" class="nav-logo">
+    <div class="nav-logo-mark"><svg viewBox="0 0 20 20"><path d="M4 3h12a1 1 0 011 1v3a1 1 0 01-1 1H4a1 1 0 01-1-1V4a1 1 0 011-1zm0 6h12a1 1 0 011 1v3a1 1 0 01-1 1H4a1 1 0 01-1-1v-3a1 1 0 011-1zm0 6h6a1 1 0 011 1v.5a1 1 0 01-1 1H4a1 1 0 01-1-1V16a1 1 0 011-1z"/></svg></div>
+    CampusCopy
+  </a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#how-it-works">How it works</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+    <li><a href="#tech">Tech</a></li>
+    <li><a href="#testimonials">Reviews</a></li>
+  </ul>
+  <div class="nav-cta">
+    <a href="https://campuscopy.pages.dev/signup" class="btn btn-primary">Register College →</a>
+  </div>
+  <button class="hamburger" id="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
 
-<!-- ── CANVAS + UI CHROME ────────────────────────────────── -->
-<canvas id="aurora"></canvas>
-<div id="prog"></div>
-<div id="cur"></div>
-<div id="cur-r"></div>
-
-<!-- ── FLOATING PILL NAV ─────────────────────────────────── -->
-<div class="nav-wrap">
-  <div class="nav-pill">
-    <a href="#" class="nav-logo">
-      <div class="nav-mark"><svg viewBox="0 0 20 20"><path d="M4 3h12a1 1 0 011 1v3a1 1 0 01-1 1H4a1 1 0 01-1-1V4a1 1 0 011-1zm0 6h12a1 1 0 011 1v3a1 1 0 01-1 1H4a1 1 0 01-1-1v-3a1 1 0 011-1zm0 6h6a1 1 0 011 1v.5a1 1 0 01-1 1H4a1 1 0 01-1-1V16a1 1 0 011-1z"/></svg></div>
-      CampusCopy
-    </a>
-    <nav class="nav-links">
-      <a href="#how">How it works</a>
-      <a href="#features">Features</a>
-      <a href="#pricing">Pricing</a>
-      <a href="#reviews">Reviews</a>
-      <a href="#faq">FAQ</a>
-    </nav>
-    <div class="nav-cta">
-      <a href="https://campuscopy.pages.dev/app" class="btn bglass">Try Demo</a>
-      <a href="https://campuscopy.pages.dev/signup" class="btn bcoral">Register →</a>
-      <div class="ham-wrap">
-        <button class="ham" id="ham"><span></span><span></span><span></span></button>
-      </div>
+<section style="padding:0;">
+  <div class="hero">
+    <div class="hero-eyebrow"><span class="pulse-dot"></span>Now live across Indian campuses</div>
+    <h1>Print automation for<br><em>every campus</em> in India.</h1>
+    <p class="hero-sub">Students upload, pay via Razorpay, and collect — zero queues. Shop owners get a real-time dashboard, WhatsApp alerts, and loyalty tools. Live in 2 minutes.</p>
+    <div class="hero-ctas">
+      <a href="https://campuscopy.pages.dev/signup" class="btn btn-primary btn-lg">🏫 Register Your College</a>
+      <a href="https://campuscopy.pages.dev/app" class="btn btn-glass btn-lg">🎓 Try as Student</a>
+    </div>
+    <div class="stat-pills">
+      <div class="stat-pill"><span class="stat-pill-icon">₹</span> ₹0 setup cost</div>
+      <div class="stat-pill"><span class="stat-pill-icon">⚡</span> 2 min to go live</div>
+      <div class="stat-pill"><span class="stat-pill-icon">📊</span> 3% fee only</div>
+      <div class="stat-pill"><span class="stat-pill-icon">🔔</span> Real-time updates</div>
     </div>
   </div>
-</div>
+</section>
 
-<!-- ── HERO ──────────────────────────────────────────────── -->
-<div id="hero" class="hero">
-  <div class="hero-in">
-    <div class="hleft">
-      <div class="h-eyebrow"><span class="ldot"></span>Live · Indian Campuses · Razorpay</div>
+<div class="glow-divider"></div>
 
-      <div class="hero-headline">
-        <div class="h-word-row">
-          <span class="h-word serif" style="animation-delay:.2s">Campus</span>
-          <span class="h-word serif" style="animation-delay:.3s">&nbsp;printing,</span>
-        </div>
-        <div class="h-word-row" style="margin-top:4px">
-          <span class="h-word sans accent" style="animation-delay:.45s">reimagined</span>
-          <span class="h-word sans" style="animation-delay:.55s;color:var(--cream)">.</span>
-        </div>
+<section id="how-it-works">
+  <div class="section-inner">
+    <div style="text-align:center;margin-bottom:72px">
+      <div class="section-label reveal">How it works</div>
+      <h2 class="section-title reveal d1">Print in 3 steps.</h2>
+      <p class="section-sub reveal d2" style="margin:0 auto">No apps to install. No queues to join. Just upload, pay, and pick up.</p>
+    </div>
+    <div class="steps reveal">
+      <div class="step-card">
+        <div class="step-num">01</div>
+        <span class="step-icon">📄</span>
+        <h3>Upload your PDF</h3>
+        <p>Students visit their campus print portal, upload any PDF or document, and choose print settings — pages, copies, colour or B&W.</p>
       </div>
-
-      <p class="h-sub">Students upload, pay via Razorpay, and collect — no queues, no cash, no chaos. Shop owners get live orders, WhatsApp alerts &amp; loyalty tools. Live in under 2 minutes.</p>
-
-      <div class="h-ctas">
-        <a href="https://campuscopy.pages.dev/signup" class="btn bcoral bxl">🏫 Register Your College</a>
-        <a href="https://campuscopy.pages.dev/app" class="btn bglass bxl">🎓 Try as Student</a>
-      </div>
-
-      <div class="h-live">
-        <span class="h-live-dot"></span>
-        <span class="h-live-text"><span id="live-orders">14</span> orders placed today</span>
-        <div class="h-live-divider"></div>
-        <span class="h-live-amt" id="live-total">₹ 336</span>
-        <div class="h-live-divider"></div>
-        <span class="h-live-text">across <span>5</span> campuses</span>
-      </div>
-    </div>
-
-    <div class="hright">
-      <div class="card-stage">
-        <!-- floating stat -->
-        <div class="hero-stat-float">
-          <div class="hsf-n">+40%</div>
-          <div class="hsf-l">Revenue lift<br>for operators</div>
-        </div>
-
-        <!-- Back notification cards -->
-        <div class="back-cards">
-          <div class="ncard">
-            <div class="nc-dot nc-g">✅</div>
-            <div class="nc-info">
-              <div class="nc-title">Order #CC-1247 collected</div>
-              <div class="nc-sub">Ananya S. · VIT Pune · 12pg B&W</div>
-            </div>
-            <div class="nc-amt">₹24</div>
-          </div>
-          <div class="ncard">
-            <div class="nc-dot nc-c">⚡</div>
-            <div class="nc-info">
-              <div class="nc-title">New order received</div>
-              <div class="nc-sub">Rahul M. · COEP · 8pg Colour</div>
-            </div>
-            <div class="nc-amt">₹40</div>
-          </div>
-          <div class="ncard">
-            <div class="nc-dot nc-t">🎁</div>
-            <div class="nc-info">
-              <div class="nc-title">Loyalty points redeemed</div>
-              <div class="nc-sub">Priya K. · 100pts = ₹10 off</div>
-            </div>
-            <div class="nc-amt" style="color:var(--coral)">−₹10</div>
-          </div>
-        </div>
-
-        <!-- Main card -->
-        <div class="main-card">
-          <div class="mc-accent"></div>
-          <div class="mc-top">
-            <div class="mc-logo">Campus<span>Copy</span></div>
-            <div class="mc-status"><span style="width:5px;height:5px;background:var(--teal);border-radius:50%;animation:lp 2s infinite;display:inline-block"></span>LIVE</div>
-          </div>
-          <div class="mc-body">
-            <div class="mc-upzone">
-              <span class="mc-upzone-i">📄</span>
-              <div class="mc-upzone-l">Drop your PDF here</div>
-              <div class="mc-upzone-s">or tap to browse · PDF, DOC, PPT</div>
-            </div>
-            <div class="mc-opts">
-              <div class="mc-opt"><div class="mc-opt-l">Type</div><div class="mc-opt-v">B&amp;W</div></div>
-              <div class="mc-opt"><div class="mc-opt-l">Copies</div><div class="mc-opt-v">02</div></div>
-              <div class="mc-opt"><div class="mc-opt-l">Pages</div><div class="mc-opt-v">12</div></div>
-              <div class="mc-opt"><div class="mc-opt-l">Layout</div><div class="mc-opt-v">A4</div></div>
-            </div>
-            <div class="mc-price">
-              <span class="mc-price-l">Total (24 pages)</span>
-              <span class="mc-price-v">₹ 24</span>
-            </div>
-            <button class="mc-btn">⚡ Pay via UPI / Card</button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ── CAMPUS TICKER ──────────────────────────────────────── -->
-<div class="ticker">
-  <div class="tt">
-    <span class="ti">🏫 VIT Pune</span>
-    <span class="ti">🏫 COEP Pune</span>
-    <span class="ti">🏫 Symbiosis</span>
-    <span class="ti">🏫 MIT Aurangabad</span>
-    <span class="ti">🏫 PICT Pune</span>
-    <span class="ti">⚡ <span class="hc">2 min</span> setup</span>
-    <span class="ti">💳 Razorpay secured</span>
-    <span class="ti">🔔 <span class="ht">WhatsApp</span> alerts</span>
-    <span class="ti">📊 <span class="hc">3%</span> fee only</span>
-    <span class="ti">✅ <span class="hg">Zero queues</span></span>
-    <span class="ti">🏫 VIT Pune</span>
-    <span class="ti">🏫 COEP Pune</span>
-    <span class="ti">🏫 Symbiosis</span>
-    <span class="ti">🏫 MIT Aurangabad</span>
-    <span class="ti">🏫 PICT Pune</span>
-    <span class="ti">⚡ <span class="hc">2 min</span> setup</span>
-    <span class="ti">💳 Razorpay secured</span>
-    <span class="ti">🔔 <span class="ht">WhatsApp</span> alerts</span>
-    <span class="ti">📊 <span class="hc">3%</span> fee only</span>
-    <span class="ti">✅ <span class="hg">Zero queues</span></span>
-  </div>
-</div>
-
-<!-- ── METRIC RINGS ────────────────────────────────────────── -->
-<div class="rings-section">
-  <div class="rings-inner">
-    <div class="ring-card rv">
-      <svg class="ring-svg" viewBox="0 0 100 100">
-        <circle class="ring-track" cx="50" cy="50" r="35"/>
-        <circle class="ring-fill ring-c" cx="50" cy="50" r="35" data-pct="100"/>
-      </svg>
-      <div class="ring-val" style="position:relative;top:auto;left:auto;transform:none;text-align:center;margin-top:-8px;margin-bottom:10px">₹0</div>
-      <div class="ring-label">Setup Cost</div>
-      <div class="ring-desc">No hardware, no contracts. Zero upfront investment.</div>
-    </div>
-    <div class="ring-card rv d1">
-      <svg class="ring-svg" viewBox="0 0 100 100">
-        <circle class="ring-track" cx="50" cy="50" r="35"/>
-        <circle class="ring-fill ring-c" cx="50" cy="50" r="35" data-pct="95"/>
-      </svg>
-      <div class="ring-val" style="position:relative;top:auto;left:auto;transform:none;text-align:center;margin-top:-8px;margin-bottom:10px">2 min</div>
-      <div class="ring-label">Time to Live</div>
-      <div class="ring-desc">From signup to a fully live campus portal.</div>
-    </div>
-    <div class="ring-card rv d2">
-      <svg class="ring-svg" viewBox="0 0 100 100">
-        <circle class="ring-track" cx="50" cy="50" r="35"/>
-        <circle class="ring-fill ring-c" cx="50" cy="50" r="35" data-pct="97"/>
-      </svg>
-      <div class="ring-val" style="position:relative;top:auto;left:auto;transform:none;text-align:center;margin-top:-8px;margin-bottom:10px">3%</div>
-      <div class="ring-label">Only Fee</div>
-      <div class="ring-desc">Per transaction. No monthly charges, ever.</div>
-    </div>
-    <div class="ring-card rv d3">
-      <svg class="ring-svg" viewBox="0 0 100 100">
-        <circle class="ring-track" cx="50" cy="50" r="35"/>
-        <circle class="ring-fill ring-c" cx="50" cy="50" r="35" data-pct="40"/>
-      </svg>
-      <div class="ring-val" style="position:relative;top:auto;left:auto;transform:none;text-align:center;margin-top:-8px;margin-bottom:10px">+40%</div>
-      <div class="ring-label">Revenue Lift</div>
-      <div class="ring-desc">Average increase for operators in first month.</div>
-    </div>
-  </div>
-</div>
-
-<div class="div-line div-coral"></div>
-
-<!-- ── HOW IT WORKS ────────────────────────────────────────── -->
-<section id="how" class="s">
-  <div class="inn">
-    <div style="text-align:center;margin-bottom:64px">
-      <div class="sec-eyebrow rv">How it works</div>
-      <h2 class="sec-title rv d1">Three steps to <em>zero queues</em></h2>
-      <p class="sec-sub rv d2" style="margin:0 auto">No app downloads. No cash. Upload, pay, collect.</p>
-    </div>
-    <div class="how-steps rv">
-      <div class="hstep">
-        <div class="hs-num">01</div>
-        <span class="hs-emoji">📄</span>
-        <h3>Upload your document</h3>
-        <p>Visit your campus portal on any device. Upload a PDF, choose settings — pages, copies, B&amp;W or colour, single or double sided. Takes under 30 seconds.</p>
-      </div>
-      <div class="hstep">
-        <div class="hs-num">02</div>
-        <span class="hs-emoji">💳</span>
+      <div class="step-card">
+        <div class="step-num">02</div>
+        <span class="step-icon">💳</span>
         <h3>Pay via Razorpay</h3>
-        <p>One tap via UPI, card, or wallet. PCI-DSS compliant checkout. Confirms in under 10 seconds. No cash, no coins, no waiting at a counter just to pay.</p>
+        <p>Instant payment via UPI, cards, or wallets through Razorpay's secure checkout. Transaction confirms in seconds — no cash needed.</p>
       </div>
-      <div class="hstep">
-        <div class="hs-num">03</div>
-        <span class="hs-emoji">✅</span>
-        <h3>Walk in and collect</h3>
-        <p>Shop gets an instant WhatsApp + dashboard alert. Walk in, show your order ID, done. Average wait time: under 2 minutes.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<div class="div-line"></div>
-
-<!-- ── BEFORE / AFTER ─────────────────────────────────────── -->
-<section class="s" style="padding-top:60px">
-  <div class="inn">
-    <div style="margin-bottom:48px">
-      <div class="sec-eyebrow rv">The Transformation</div>
-      <h2 class="sec-title rv d1">Before vs. <em>after</em> CampusCopy</h2>
-    </div>
-    <div class="ba rv">
-      <div class="ba-col ba-b">
-        <div class="ba-label lb">✕ Before CampusCopy</div>
-        <div class="ba-items">
-          <div class="ba-item"><span class="ib">✕</span>Students queue 20–30 min during peak hours</div>
-          <div class="ba-item"><span class="ib">✕</span>Cash-only causes errors and disputes</div>
-          <div class="ba-item"><span class="ib">✕</span>No order history — lost receipts, zero accountability</div>
-          <div class="ba-item"><span class="ib">✕</span>Operator misses orders away from counter</div>
-          <div class="ba-item"><span class="ib">✕</span>Students repeat instructions verbally every time</div>
-          <div class="ba-item"><span class="ib">✕</span>Revenue lost to errors, theft, missed orders</div>
-        </div>
-      </div>
-      <div class="ba-col ba-a">
-        <div class="ba-label la">✓ After CampusCopy</div>
-        <div class="ba-items">
-          <div class="ba-item"><span class="ia">✓</span>Students pre-order, walk in when ready — zero queue</div>
-          <div class="ba-item"><span class="ia">✓</span>Razorpay handles all payments instantly and securely</div>
-          <div class="ba-item"><span class="ia">✓</span>Full digital order history — timestamps, files, receipts</div>
-          <div class="ba-item"><span class="ia">✓</span>Instant WhatsApp + dashboard alert per order</div>
-          <div class="ba-item"><span class="ia">✓</span>Print specs stored digitally — no verbal instructions</div>
-          <div class="ba-item"><span class="ia">✓</span>Revenue up 40% — more volume, zero theft</div>
-        </div>
+      <div class="step-card">
+        <div class="step-num">03</div>
+        <span class="step-icon">✅</span>
+        <h3>Collect your prints</h3>
+        <p>The shop receives a real-time alert. Walk in, show your order ID, and collect. Average wait time: under 2 minutes.</p>
       </div>
     </div>
   </div>
 </section>
 
-<div class="div-line"></div>
+<div class="glow-divider"></div>
 
-<!-- ── FEATURE TABS ────────────────────────────────────────── -->
-<section id="features" class="s" style="padding-top:60px">
-  <div class="inn">
-    <div style="margin-bottom:48px">
-      <div class="sec-eyebrow rv">Features</div>
-      <h2 class="sec-title rv d1">Everything for <em>smarter</em> print shops</h2>
+<section id="pricing">
+  <div class="section-inner">
+    <div style="text-align:center;margin-bottom:60px">
+      <div class="section-label reveal">Pricing</div>
+      <h2 class="section-title reveal d1">Transparent. Simple. Fair.</h2>
+      <p class="section-sub reveal d2" style="margin:0 auto">No hidden fees. No monthly subscriptions. We only earn when you do.</p>
     </div>
-    <div class="feat-tabs-wrap rv">
-      <div class="tab-nav" id="tabNav">
-        <div class="tab-indicator" id="tabIndicator"></div>
-        <button class="tab-btn active" data-tab="0" onclick="switchTab(0)">📊 Dashboard</button>
-        <button class="tab-btn" data-tab="1" onclick="switchTab(1)">🔔 WhatsApp</button>
-        <button class="tab-btn" data-tab="2" onclick="switchTab(2)">🎁 Loyalty</button>
-        <button class="tab-btn" data-tab="3" onclick="switchTab(3)">🏢 Multi-College</button>
-      </div>
-      <div class="tab-panels">
-        <!-- Panel 0 -->
-        <div class="tab-panel active">
-          <div class="tab-text">
-            <h3>Live Operator Dashboard</h3>
-            <p>Every order appears the moment it's placed — pre-paid, file attached, specs confirmed. No missed orders during the morning rush or peak exam season. One screen, total control.</p>
-            <div style="display:flex;gap:10px;flex-wrap:wrap">
-              <span style="font-size:.75rem;color:var(--teal);background:rgba(0,212,170,.1);border:1px solid rgba(0,212,170,.25);padding:4px 12px;border-radius:var(--r999)">Real-time updates</span>
-              <span style="font-size:.75rem;color:var(--coral2);background:rgba(255,79,51,.1);border:1px solid rgba(255,79,51,.25);padding:4px 12px;border-radius:var(--r999)">Pre-paid orders only</span>
-            </div>
-          </div>
-          <div class="tab-vis">
-            <div class="t-dash">
-              <div class="td-hd"><span class="td-l">Live Orders Today</span><span class="td-r">14 · ₹336</span></div>
-              <div class="td-rows">
-                <div class="td-row"><div class="fdot dg"></div><span class="td-n">Ananya S. · 12 pg B&W</span><span class="td-a">₹24</span></div>
-                <div class="td-row"><div class="fdot dc"></div><span class="td-n">Rahul M. · 8 pg Colour</span><span class="td-a">₹40</span></div>
-                <div class="td-row"><div class="fdot dg"></div><span class="td-n">Priya K. · 24 pg B&W</span><span class="td-a">₹24</span></div>
-                <div class="td-row"><div class="fdot dd"></div><span class="td-n">Arjun P. · 6 pg B&W</span><span class="td-a">₹6</span></div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <!-- Panel 1 -->
-        <div class="tab-panel">
-          <div class="tab-text">
-            <h3>WhatsApp &amp; Push Alerts</h3>
-            <p>Instant WhatsApp message plus dashboard notification the moment a student pays. Never miss an order — even when you're away from the screen or helping another customer.</p>
-            <div style="display:flex;gap:10px;flex-wrap:wrap">
-              <span style="font-size:.75rem;color:var(--teal);background:rgba(0,212,170,.1);border:1px solid rgba(0,212,170,.25);padding:4px 12px;border-radius:var(--r999)">Instant delivery</span>
-              <span style="font-size:.75rem;color:var(--gold);background:rgba(255,184,0,.1);border:1px solid rgba(255,184,0,.25);padding:4px 12px;border-radius:var(--r999)">Every single order</span>
-            </div>
-          </div>
-          <div class="tab-vis">
-            <div class="t-wa">
-              <div class="t-wa-hd"><span style="color:var(--teal)">●</span> WhatsApp Alerts · Live</div>
-              <div class="wa-msgs">
-                <div class="wa-m"><div class="wa-mh">NEW ORDER #CC‑1247</div><div class="wa-mt">Ananya S. · 12 pg B&W · ₹24 · Paid ✓</div></div>
-                <div class="wa-m"><div class="wa-mh">NEW ORDER #CC‑1248</div><div class="wa-mt">Rahul M. · 8 pg Colour · ₹40 · Paid ✓</div></div>
-                <div class="wa-m"><div class="wa-mh">NEW ORDER #CC‑1249</div><div class="wa-mt">Priya K. · 24 pg B&W · ₹24 · Paid ✓</div></div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <!-- Panel 2 -->
-        <div class="tab-panel">
-          <div class="tab-text">
-            <h3>Loyalty Engine Built-in</h3>
-            <p>Students earn points on every order and redeem them for discounts. Operators retain regulars automatically — zero extra setup, zero maintenance, zero additional cost.</p>
-            <div style="display:flex;gap:10px;flex-wrap:wrap">
-              <span style="font-size:.75rem;color:var(--coral2);background:rgba(255,79,51,.1);border:1px solid rgba(255,79,51,.25);padding:4px 12px;border-radius:var(--r999)">Auto-accrual</span>
-              <span style="font-size:.75rem;color:var(--gold);background:rgba(255,184,0,.1);border:1px solid rgba(255,184,0,.25);padding:4px 12px;border-radius:var(--r999)">+60% repeat orders</span>
-            </div>
-          </div>
-          <div class="tab-vis">
-            <div class="t-loy">
-              <div class="tl-hd"><span>◆</span> Loyalty Card</div>
-              <div class="tl-name">Ananya Sharma</div>
-              <div class="tl-pts">340</div>
-              <div class="tl-sub">points · worth ₹34 in discounts</div>
-              <div class="tl-bg"><div class="tl-fg"></div></div>
-            </div>
-          </div>
-        </div>
-        <!-- Panel 3 -->
-        <div class="tab-panel">
-          <div class="tab-text">
-            <h3>Multi-College, Multi-Shop</h3>
-            <p>Each campus gets isolated data, custom branding, and its own operator panel. One platform powers unlimited colleges — fully scoped, fully secure, no data leakage.</p>
-            <div style="display:flex;gap:10px;flex-wrap:wrap">
-              <span style="font-size:.75rem;color:var(--teal);background:rgba(0,212,170,.1);border:1px solid rgba(0,212,170,.25);padding:4px 12px;border-radius:var(--r999)">Isolated data</span>
-              <span style="font-size:.75rem;color:var(--coral2);background:rgba(255,79,51,.1);border:1px solid rgba(255,79,51,.25);padding:4px 12px;border-radius:var(--r999)">Unlimited colleges</span>
-            </div>
-          </div>
-          <div class="tab-vis">
-            <div class="t-ms">
-              <div class="ms-r"><span class="ms-n">VIT Pune</span><span class="ms-badge mb-t">Live · 8 orders</span></div>
-              <div class="ms-r"><span class="ms-n">COEP Campus</span><span class="ms-badge mb-t">Live · 4 orders</span></div>
-              <div class="ms-r"><span class="ms-n">Symbiosis</span><span class="ms-badge mb-c">Setting up…</span></div>
-              <div class="ms-r"><span class="ms-n">MIT Aurangabad</span><span class="ms-badge mb-t">Live · 2 orders</span></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<div class="div-line div-coral"></div>
-
-<!-- ── PRICING ─────────────────────────────────────────────── -->
-<section id="pricing" class="s">
-  <div class="inn">
-    <div style="text-align:center;margin-bottom:52px">
-      <div class="sec-eyebrow rv">Pricing</div>
-      <h2 class="sec-title rv d1">Transparent. <em>Fair.</em> <strong>Always.</strong></h2>
-      <p class="sec-sub rv d2" style="margin:0 auto">No monthly subscriptions. No setup fees. We only earn when you earn.</p>
-    </div>
-    <div class="pcards">
-      <div class="pc rv">
-        <div class="pc-type">For Students</div>
-        <div class="pc-name">Student Plan</div>
-        <div class="pc-price"><span class="pc-amt">₹1</span><span class="pc-unit">/ page (B&W)</span></div>
-        <p class="pc-note">Colour at standard campus shop rates</p>
-        <div class="pc-hr"></div>
-        <ul class="pc-feats">
-          <li><span class="ck"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></span>Upload PDF from any device</li>
-          <li><span class="ck"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></span>Pay via UPI, cards, or wallets</li>
-          <li><span class="ck"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></span>Real-time order tracking</li>
-          <li><span class="ck"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></span>Zero queues — collect when ready</li>
-          <li><span class="ck"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></span>Loyalty points on every order</li>
-          <li><span class="ck"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></span>Full order history &amp; receipts</li>
+    <div class="pricing-grid">
+      <div class="pricing-card reveal">
+        <div class="pricing-type">For Students</div>
+        <div class="pricing-title">Student Plan</div>
+        <div class="pricing-price"><span class="amount">₹1</span><span class="unit">/ page (B&W)</span></div>
+        <p class="pricing-note">Colour prints at standard shop rates</p>
+        <div class="pricing-divider"></div>
+        <ul class="pricing-features">
+          <li><span class="check"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></span>Upload PDF from phone or laptop</li>
+          <li><span class="check"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></span>Pay via UPI, cards, or wallets</li>
+          <li><span class="check"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></span>Real-time order status tracking</li>
+          <li><span class="check"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></span>Zero queue — collect when ready</li>
+          <li><span class="check"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></span>Loyalty points on every order</li>
+          <li><span class="check"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></span>Order history &amp; receipts</li>
         </ul>
-        <a href="https://campuscopy.pages.dev/app" class="btn bglass" style="width:100%;justify-content:center">Try Student App →</a>
+        <a href="https://campuscopy.pages.dev/app" class="btn btn-glass" style="width:100%;justify-content:center;">Try as Student →</a>
       </div>
-      <div class="pc hot rv d2">
-        <div class="pc-glow"></div>
-        <div class="pop">Most Popular</div>
-        <div class="pc-type">For Shop Owners</div>
-        <div class="pc-name">Operator Plan</div>
-        <div class="pc-price"><span class="pc-amt">3%</span><span class="pc-unit">/ transaction</span></div>
-        <p class="pc-note">No monthly fee. No setup cost. Ever.</p>
-        <div class="pc-hr"></div>
-        <ul class="pc-feats">
-          <li><span class="ck"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></span>Real-time admin dashboard</li>
-          <li><span class="ck"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></span>WhatsApp + push notification per order</li>
-          <li><span class="ck"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></span>Coupon &amp; discount system</li>
-          <li><span class="ck"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></span>Student loyalty points engine</li>
-          <li><span class="ck"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></span>Multi-tenant shop management</li>
-          <li><span class="ck"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></span>Razorpay direct payouts</li>
-          <li><span class="ck"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></span>2-minute onboarding</li>
+      <div class="pricing-card featured reveal d2">
+        <div class="pricing-type">For Shop Owners</div>
+        <div class="pricing-title">College / Operator Plan</div>
+        <div class="pricing-price"><span class="amount">3%</span><span class="unit">/ transaction</span></div>
+        <p class="pricing-note">No monthly fee. No setup cost.</p>
+        <div class="pricing-divider"></div>
+        <ul class="pricing-features">
+          <li><span class="check"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></span>Real-time admin dashboard</li>
+          <li><span class="check"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></span>WhatsApp + push notifications per order</li>
+          <li><span class="check"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></span>Coupon &amp; discount system</li>
+          <li><span class="check"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></span>Student loyalty points engine</li>
+          <li><span class="check"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></span>Multi-tenant shop management</li>
+          <li><span class="check"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></span>Razorpay direct payouts</li>
+          <li><span class="check"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></span>2-minute onboarding setup</li>
         </ul>
-        <a href="https://campuscopy.pages.dev/signup" class="btn bcoral" style="width:100%;justify-content:center">Register Your College →</a>
+        <a href="https://campuscopy.pages.dev/signup" class="btn btn-primary" style="width:100%;justify-content:center;">Register Your College →</a>
       </div>
     </div>
   </div>
 </section>
 
-<div class="div-line"></div>
+<div class="glow-divider"></div>
 
-<!-- ── TESTIMONIALS — CAROUSEL ────────────────────────────── -->
-<section id="reviews" class="s" style="padding-top:60px">
-  <div class="inn">
-    <div style="text-align:center;margin-bottom:48px">
-      <div class="sec-eyebrow rv">Reviews</div>
-      <h2 class="sec-title rv d1">Loved by students <em>&amp; operators</em></h2>
+<section id="testimonials">
+  <div class="section-inner">
+    <div style="text-align:center;margin-bottom:60px">
+      <div class="section-label reveal">Testimonials</div>
+      <h2 class="section-title reveal d1">Loved by students &amp; operators.</h2>
     </div>
-    <div class="tcarousel rv" id="carousel">
-      <div class="tc-progress"><div class="tc-progress-fill" id="tcProg" style="width:0%"></div></div>
-      <div class="tslides" id="tslides">
-
-        <div class="tslide">
-          <div>
-            <p class="ts-quote">"No more standing in line between lectures. I upload from the hostel, pay in 10 seconds, and walk in. CampusCopy genuinely changed my college life."</p>
-            <div class="ts-author">
-              <div class="ts-av" style="background:linear-gradient(135deg,#3b82f6,#8b5cf6)">A</div>
-              <div><div class="ts-name">Ananya Sharma</div><div class="ts-role">B.Tech CSE, VIT Pune</div></div>
-            </div>
-          </div>
-          <div class="ts-stats">
-            <div class="ts-stat"><div class="ts-stat-n">10 sec</div><div class="ts-stat-l">Average payment time</div></div>
-            <div class="ts-stat"><div class="ts-stat-n">&lt; 2 min</div><div class="ts-stat-l">Average collection wait</div></div>
-          </div>
+    <div class="testimonials-grid">
+      <div class="testimonial-card reveal">
+        <div class="stars"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+        <p class="testimonial-quote">"No more standing in line between lectures. I just upload from the hostel, pay in 10 seconds, and walk in to collect. Genuinely changed my college life."</p>
+        <div class="testimonial-author">
+          <div class="author-avatar" style="background:linear-gradient(135deg,#3b82f6,#8b5cf6);">A</div>
+          <div><div class="author-name">Ananya Sharma</div><div class="author-role">B.Tech CSE, VIT Pune</div></div>
         </div>
-
-        <div class="tslide">
-          <div>
-            <p class="ts-quote">"Our peak hour chaos is completely gone. Orders come in pre-paid with clear specs. Revenue is up 40% — we handle twice the volume with the same staff."</p>
-            <div class="ts-author">
-              <div class="ts-av" style="background:linear-gradient(135deg,#f59e0b,#ef4444)">R</div>
-              <div><div class="ts-name">Rajiv Mehta</div><div class="ts-role">Shop Owner, COEP Campus</div></div>
-            </div>
-          </div>
-          <div class="ts-stats">
-            <div class="ts-stat"><div class="ts-stat-n">+40%</div><div class="ts-stat-l">Revenue increase</div></div>
-            <div class="ts-stat"><div class="ts-stat-n">2×</div><div class="ts-stat-l">Volume with same staff</div></div>
-          </div>
-        </div>
-
-        <div class="tslide">
-          <div>
-            <p class="ts-quote">"Setup literally took 2 minutes. The WhatsApp notification for each order is a game changer — I don't even need to watch the screen constantly anymore."</p>
-            <div class="ts-author">
-              <div class="ts-av" style="background:linear-gradient(135deg,#10b981,#3b82f6)">P</div>
-              <div><div class="ts-name">Priya Kulkarni</div><div class="ts-role">Print Shop Operator, Symbiosis</div></div>
-            </div>
-          </div>
-          <div class="ts-stats">
-            <div class="ts-stat"><div class="ts-stat-n">2 min</div><div class="ts-stat-l">Time to go live</div></div>
-            <div class="ts-stat"><div class="ts-stat-n">Zero</div><div class="ts-stat-l">Missed orders since launch</div></div>
-          </div>
-        </div>
-
-        <div class="tslide">
-          <div>
-            <p class="ts-quote">"The loyalty points are brilliant. Students actively prefer our shop now because they're earning rewards. Repeat orders went up 60% in the first month."</p>
-            <div class="ts-author">
-              <div class="ts-av" style="background:linear-gradient(135deg,#ec4899,#f59e0b)">S</div>
-              <div><div class="ts-name">Suresh Nair</div><div class="ts-role">Shop Owner, MIT Aurangabad</div></div>
-            </div>
-          </div>
-          <div class="ts-stats">
-            <div class="ts-stat"><div class="ts-stat-n">+60%</div><div class="ts-stat-l">Repeat orders (Month 1)</div></div>
-            <div class="ts-stat"><div class="ts-stat-n">₹0</div><div class="ts-stat-l">Extra cost for loyalty system</div></div>
-          </div>
-        </div>
-
       </div>
-      <div class="tc-controls">
-        <div class="tc-dots" id="tcDots"></div>
-        <div class="tc-arrows">
-          <button class="tc-arrow" onclick="carouselPrev()">‹</button>
-          <button class="tc-arrow" onclick="carouselNext()">›</button>
+      <div class="testimonial-card reveal d2">
+        <div class="stars"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+        <p class="testimonial-quote">"Our peak hour chaos is completely gone. Orders come in pre-paid with clear instructions. Revenue is up 40% because we handle twice the volume with the same staff."</p>
+        <div class="testimonial-author">
+          <div class="author-avatar" style="background:linear-gradient(135deg,#f59e0b,#ef4444);">R</div>
+          <div><div class="author-name">Rajiv Mehta</div><div class="author-role">Shop Owner, COEP Campus</div></div>
+        </div>
+      </div>
+      <div class="testimonial-card reveal d3">
+        <div class="stars"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+        <p class="testimonial-quote">"Setup literally took less than 2 minutes. The WhatsApp notification for each order is a game changer — I don't even need to watch the screen constantly."</p>
+        <div class="testimonial-author">
+          <div class="author-avatar" style="background:linear-gradient(135deg,#10b981,#3b82f6);">P</div>
+          <div><div class="author-name">Priya Kulkarni</div><div class="author-role">Print Shop Operator, Symbiosis</div></div>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<div class="div-line div-coral"></div>
+<div class="glow-divider"></div>
 
-<!-- ── TECH ────────────────────────────────────────────────── -->
-<section id="tech" class="s">
-  <div class="inn">
+<section id="tech">
+  <div class="section-inner">
     <div style="text-align:center;margin-bottom:52px">
-      <div class="sec-eyebrow rv">Tech Stack</div>
-      <h2 class="sec-title rv d1">Built for <em>reliability</em> at scale</h2>
+      <div class="section-label reveal">Tech Stack</div>
+      <h2 class="section-title reveal d1">Built for reliability at scale.</h2>
+      <p class="section-sub reveal d2" style="margin:0 auto;">Production-grade infrastructure powering real campuses. No vendor lock-in, no downtime.</p>
     </div>
-    <div class="mq-wrap rv">
-      <div class="mqt">
-        <span class="chip">⚡ Next.js</span><span class="chip">🔥 Firebase</span><span class="chip">💳 Razorpay</span><span class="chip">💬 WhatsApp API</span><span class="chip">☁️ Cloudflare Pages</span><span class="chip">▲ Vercel</span><span class="chip">🔔 Firebase FCM</span><span class="chip">📦 Node.js</span><span class="chip">🎨 Tailwind CSS</span><span class="chip">🔐 JWT Auth</span><span class="chip">📱 PWA Offline</span><span class="chip">🛡️ RLS Policies</span>
-        <span class="chip">⚡ Next.js</span><span class="chip">🔥 Firebase</span><span class="chip">💳 Razorpay</span><span class="chip">💬 WhatsApp API</span><span class="chip">☁️ Cloudflare Pages</span><span class="chip">▲ Vercel</span><span class="chip">🔔 Firebase FCM</span><span class="chip">📦 Node.js</span><span class="chip">🎨 Tailwind CSS</span><span class="chip">🔐 JWT Auth</span><span class="chip">📱 PWA Offline</span><span class="chip">🛡️ RLS Policies</span>
+    <div class="marquee-wrapper reveal">
+      <div class="marquee-track">
+        <div class="tech-badge">⚡ Next.js</div><div class="tech-badge">🔥 Firebase</div><div class="tech-badge">💳 Razorpay</div><div class="tech-badge">💬 WhatsApp API</div><div class="tech-badge">☁️ Cloudflare Pages</div><div class="tech-badge">▲ Vercel</div><div class="tech-badge">🔔 Firebase FCM</div><div class="tech-badge">📦 Node.js</div><div class="tech-badge">🎨 Tailwind CSS</div><div class="tech-badge">🔐 JWT Auth</div><div class="tech-badge">📱 PWA Offline</div><div class="tech-badge">🛡️ RLS Policies</div>
+        <div class="tech-badge">⚡ Next.js</div><div class="tech-badge">🔥 Firebase</div><div class="tech-badge">💳 Razorpay</div><div class="tech-badge">💬 WhatsApp API</div><div class="tech-badge">☁️ Cloudflare Pages</div><div class="tech-badge">▲ Vercel</div><div class="tech-badge">🔔 Firebase FCM</div><div class="tech-badge">📦 Node.js</div><div class="tech-badge">🎨 Tailwind CSS</div><div class="tech-badge">🔐 JWT Auth</div><div class="tech-badge">📱 PWA Offline</div><div class="tech-badge">🛡️ RLS Policies</div>
       </div>
     </div>
-    <div class="trgrid rv">
-      <div class="trc"><div class="tr-i">🔒</div><h4>Secure Payments</h4><p>Razorpay PCI-DSS compliant. Funds route directly to your account.</p></div>
-      <div class="trc"><div class="tr-i">⚡</div><h4>Real-time Updates</h4><p>Firebase Realtime DB pushes order status instantly. No page reload.</p></div>
-      <div class="trc"><div class="tr-i">📴</div><h4>Offline PWA</h4><p>Queue orders on spotty WiFi. Auto-syncs on reconnection.</p></div>
-      <div class="trc"><div class="tr-i">🏢</div><h4>Multi-tenant</h4><p>Each college: isolated data, custom branding, own dashboard.</p></div>
+    <div class="trust-grid">
+      <div class="trust-card reveal"><div class="trust-icon">🔒</div><h4>Secure Payments</h4><p>All transactions via Razorpay's PCI-DSS compliant gateway. Funds route directly to your account.</p></div>
+      <div class="trust-card reveal d1"><div class="trust-icon">⚡</div><h4>Real-time Updates</h4><p>Firebase Realtime DB pushes order status instantly. Dashboard refreshes without page reload.</p></div>
+      <div class="trust-card reveal d2"><div class="trust-icon">📴</div><h4>Offline PWA</h4><p>Students can browse and queue orders even with spotty campus WiFi. Syncs on reconnection.</p></div>
+      <div class="trust-card reveal d3"><div class="trust-icon">🏢</div><h4>Multi-tenant</h4><p>Each college gets isolated data, custom branding, and its own operator dashboard. Fully scoped.</p></div>
     </div>
   </div>
 </section>
 
-<div class="div-line"></div>
-
-<!-- ── FAQ ─────────────────────────────────────────────────── -->
-<section id="faq" class="s">
-  <div class="inn-sm">
-    <div style="text-align:center;margin-bottom:52px">
-      <div class="sec-eyebrow rv">FAQ</div>
-      <h2 class="sec-title rv d1">Common <em>questions</em></h2>
+<section class="cta-section" style="padding:100px 5%">
+  <div class="section-inner" style="position:relative;z-index:10;">
+    <div class="section-label reveal" style="display:inline-flex;margin-bottom:22px;">🚀 Get started today</div>
+    <h2 class="section-title reveal d1" style="max-width:620px;margin:0 auto 18px;">Your college. Live today.</h2>
+    <p class="cta-sub reveal d2">No IT team needed. No hardware to buy. No contracts to sign. Just 3 steps to a fully live print automation system.</p>
+    <div class="cta-steps reveal d2">
+      <div class="cta-step-content"><div class="cta-step-num">1</div><span class="cta-step-text">Register your college</span></div>
+      <span class="cta-arrow">→</span>
+      <div class="cta-step-content"><div class="cta-step-num">2</div><span class="cta-step-text">Connect Razorpay account</span></div>
+      <span class="cta-arrow">→</span>
+      <div class="cta-step-content"><div class="cta-step-num">3</div><span class="cta-step-text">Share portal with students</span></div>
     </div>
-    <div class="faq rv">
-      <div class="faq-i"><button class="faq-q" onclick="tf(this)">Do I need software installs or hardware?<span class="faq-ch">+</span></button><div class="faq-a"><div class="faq-a-in">No. CampusCopy is fully web-based. Students use any browser on any device. Operators use a web dashboard. No printer integration required — the system delivers the file and specs; the printer works as normal.</div></div></div>
-      <div class="faq-i"><button class="faq-q" onclick="tf(this)">How does the 3% fee work?<span class="faq-ch">+</span></button><div class="faq-a"><div class="faq-a-in">CampusCopy takes 3% of each transaction. If a student pays ₹20, we take ₹0.60 and you receive ₹19.40 directly in your Razorpay account. No monthly fees, no setup costs, no hidden charges.</div></div></div>
-      <div class="faq-i"><button class="faq-q" onclick="tf(this)">How fast is the 2-minute setup really?<span class="faq-ch">+</span></button><div class="faq-a"><div class="faq-a-in">Register your college, connect your Razorpay account (or create one in ~5 min), and share the student portal URL. No IT team, no configuration, no contracts. Most operators are live in under 2 minutes.</div></div></div>
-      <div class="faq-i"><button class="faq-q" onclick="tf(this)">What happens if a payment fails?<span class="faq-ch">+</span></button><div class="faq-a"><div class="faq-a-in">Orders only appear on the operator dashboard once payment is fully confirmed by Razorpay. Students are notified immediately on failure and can retry. Operators never print for unpaid orders.</div></div></div>
-      <div class="faq-i"><button class="faq-q" onclick="tf(this)">Is student data and files secure?<span class="faq-ch">+</span></button><div class="faq-a"><div class="faq-a-in">Files are stored in Firebase Storage with row-level security scoped per college. Each college's data is fully isolated. JWT-based auth protects all API routes.</div></div></div>
-      <div class="faq-i"><button class="faq-q" onclick="tf(this)">Can I control pricing, coupons, and loyalty rules?<span class="faq-ch">+</span></button><div class="faq-a"><div class="faq-a-in">Yes — full control over per-page rates for B&W and colour, double-sided rates, coupon codes, loyalty point ratios, and discount thresholds from the operator dashboard.</div></div></div>
+    <div class="cta-buttons reveal d3">
+      <a href="https://campuscopy.pages.dev/signup" class="btn btn-white btn-lg">🏫 Register Your College</a>
+      <a href="https://campuscopy.pages.dev/app" class="btn btn-glass btn-lg">🎓 Open Student App</a>
+      <a href="https://campuscopy.vercel.app" class="btn btn-glass btn-lg">📊 Admin Dashboard</a>
     </div>
   </div>
 </section>
 
-<!-- ── ELITE SPLIT CTA ─────────────────────────────────────── -->
-<div class="cta-elite">
-  <div class="cta-mesh"></div>
-  <div class="cta-grid">
-    <div class="cta-wm cta-wm-l">Shop</div>
-    <div class="cta-wm cta-wm-r" style="left:auto">Study</div>
-
-    <div class="cta-left">
-      <div class="cta-for cta-for-op rv">🏫 For Shop Owners</div>
-      <div class="cta-title rv d1">Register your<br>college <em>today</em></div>
-      <p class="cta-p rv d2">Zero setup cost. Go live in 2 minutes. Handle twice the volume with the same staff — no hardware investment required.</p>
-      <div class="cta-mini-steps rv d2">
-        <div class="cms"><div class="cms-n">1</div><span>Register your college</span></div>
-        <div class="cms"><div class="cms-n">2</div><span>Connect your Razorpay account</span></div>
-        <div class="cms"><div class="cms-n">3</div><span>Share the student portal URL</span></div>
-      </div>
-      <div class="cta-btns rv d3">
-        <a href="https://campuscopy.pages.dev/signup" class="btn bcoral bxl">Register Your College →</a>
-      </div>
-    </div>
-
-    <div class="cta-right">
-      <div class="cta-for cta-for-st rv">🎓 For Students</div>
-      <div class="cta-title rv d1">Print without<br>the <em>queue</em></div>
-      <p class="cta-p rv d2">Upload from your hostel, pay instantly via UPI or card, and walk in when it's ready. No cash, no waiting, no stress.</p>
-      <div class="cta-mini-steps rv d2">
-        <div class="cms"><div class="cms-n">1</div><span>Upload your PDF from any device</span></div>
-        <div class="cms"><div class="cms-n">2</div><span>Pay via UPI, card, or wallet</span></div>
-        <div class="cms"><div class="cms-n">3</div><span>Walk in and collect in minutes</span></div>
-      </div>
-      <div class="cta-btns rv d3">
-        <a href="https://campuscopy.pages.dev/app" class="btn bteal bxl">Open Student App →</a>
-        <a href="https://campuscopy.vercel.app" class="btn bglass blg">Admin Dashboard</a>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ── FOOTER ─────────────────────────────────────────────── -->
 <footer>
-  <div class="fi">
-    <div class="ftop">
+  <div class="footer-inner">
+    <div class="footer-top">
       <div>
-        <div class="fbrand"><div class="flm"><svg viewBox="0 0 20 20"><path d="M4 3h12a1 1 0 011 1v3a1 1 0 01-1 1H4a1 1 0 01-1-1V4a1 1 0 011-1zm0 6h12a1 1 0 011 1v3a1 1 0 01-1 1H4a1 1 0 01-1-1v-3a1 1 0 011-1zm0 6h6a1 1 0 011 1v.5a1 1 0 01-1 1H4a1 1 0 01-1-1V16a1 1 0 011-1z"/></svg></div>CampusCopy</div>
-        <p class="fdesc">Print automation for Indian colleges. Zero queues, instant payments, real-time operations.</p>
+        <div class="footer-brand-name"><div class="footer-brand-mark"><svg viewBox="0 0 20 20"><path d="M4 3h12a1 1 0 011 1v3a1 1 0 01-1 1H4a1 1 0 01-1-1V4a1 1 0 011-1zm0 6h12a1 1 0 011 1v3a1 1 0 01-1 1H4a1 1 0 01-1-1v-3a1 1 0 011-1zm0 6h6a1 1 0 011 1v.5a1 1 0 01-1 1H4a1 1 0 01-1-1V16a1 1 0 011-1z"/></svg></div>CampusCopy</div>
+        <p class="footer-desc">Print automation for Indian colleges. Zero queues, instant payments, real-time ops.</p>
       </div>
-      <div class="fcol"><h5>Product</h5><ul class="fl"><li><a href="https://campuscopy.pages.dev/app">Student App</a></li><li><a href="https://campuscopy.vercel.app">Admin Dashboard</a></li><li><a href="https://campuscopy.pages.dev/signup">Register College</a></li><li><a href="#pricing">Pricing</a></li></ul></div>
-      <div class="fcol"><h5>Platform</h5><ul class="fl"><li><a href="#how">How it Works</a></li><li><a href="#tech">Tech Stack</a></li><li><a href="#reviews">Testimonials</a></li><li><a href="#faq">FAQ</a></li></ul></div>
-      <div class="fcol"><h5>System</h5><ul class="fl"><li><a href="#">API Status</a></li><li><a href="#">Privacy Policy</a></li><li><a href="#">Terms of Service</a></li><li><a href="#">Contact Support</a></li></ul></div>
+      <div class="footer-col"><h5>Product</h5><ul class="footer-links"><li><a href="https://campuscopy.pages.dev/app">Student App</a></li><li><a href="https://campuscopy.vercel.app">Admin Dashboard</a></li><li><a href="https://campuscopy.pages.dev/signup">Register College</a></li><li><a href="#pricing">Pricing</a></li></ul></div>
+      <div class="footer-col"><h5>Platform</h5><ul class="footer-links"><li><a href="#how-it-works">How it Works</a></li><li><a href="#tech">Tech Stack</a></li><li><a href="#testimonials">Testimonials</a></li><li><a href="https://campuscopy.pages.dev/signup">Get Started</a></li></ul></div>
+      <div class="footer-col"><h5>System</h5><ul class="footer-links"><li><a href="#">API Status</a></li><li><a href="#">Privacy Policy</a></li><li><a href="#">Terms of Service</a></li><li><a href="#">Contact Support</a></li></ul></div>
     </div>
-    <div class="fbot">
-      <span class="fcopy">© 2026 CampusCopy. Made with ♥ for Indian campuses.</span>
-      <div class="fstat"><span class="fsd"></span>All systems operational</div>
+    <div class="footer-bottom">
+      <span class="footer-copy">© 2026 CampusCopy. Made with ♥ for Indian campuses.</span>
+      <div class="status-indicator"><span class="status-dot"></span>All systems operational</div>
     </div>
   </div>
 </footer>
 
 <script>
-/* ── AURORA CANVAS ──────────────────────────────────── */
-(function(){
-  const c=document.getElementById('aurora');
-  const ctx=c.getContext('2d');
-  let W,H,t=0;
-  function resize(){W=c.width=window.innerWidth;H=c.height=window.innerHeight}
-  resize();window.addEventListener('resize',resize,{passive:true});
-  const orbs=[
-    {x:.15,y:.2,r:.45,c:[255,79,51],s:1},
-    {x:.85,y:.15,r:.5,c:[0,212,170],s:.8},
-    {x:.5,y:.8,r:.4,c:[255,184,0],s:.6},
-    {x:.1,y:.7,r:.35,c:[255,79,51],s:.5},
-    {x:.9,y:.7,r:.3,c:[0,212,170],s:.4},
-  ];
-  function draw(){
-    ctx.clearRect(0,0,W,H);
-    t+=.003;
-    orbs.forEach((o,i)=>{
-      const ox=W*(o.x+Math.sin(t*o.s+i)*0.15);
-      const oy=H*(o.y+Math.cos(t*o.s*1.3+i)*0.12);
-      const r=Math.min(W,H)*o.r;
-      const grd=ctx.createRadialGradient(ox,oy,0,ox,oy,r);
-      grd.addColorStop(0,`rgba(${o.c.join(',')},0.14)`);
-      grd.addColorStop(1,`rgba(${o.c.join(',')},0)`);
-      ctx.beginPath();ctx.arc(ox,oy,r,0,Math.PI*2);
-      ctx.fillStyle=grd;ctx.fill();
-    });
-    requestAnimationFrame(draw);
-  }
-  draw();
-})();
-
-/* ── CURSOR ─────────────────────────────────────────── */
-const cur=document.getElementById('cur'),cr=document.getElementById('cur-r');
-let mx=0,my=0,rx=0,ry=0;
-document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px'},{passive:true});
-(function ar(){rx+=(mx-rx)*.1;ry+=(my-ry)*.1;cr.style.left=rx+'px';cr.style.top=ry+'px';requestAnimationFrame(ar)})();
-
-/* ── PROGRESS ───────────────────────────────────────── */
-window.addEventListener('scroll',()=>document.getElementById('prog').style.width=Math.min((window.scrollY/(document.body.scrollHeight-window.innerHeight))*100,100)+'%',{passive:true});
-
-/* ── HAMBURGER ──────────────────────────────────────── */
-const ham=document.getElementById('ham');
-if(ham){
-  ham.addEventListener('click',()=>ham.classList.toggle('open'));
-}
-
-/* ── REVEAL ─────────────────────────────────────────── */
-const obs=new IntersectionObserver(es=>{
-  es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('on');obs.unobserve(e.target)}});
-},{threshold:.07,rootMargin:'0px 0px -36px 0px'});
-document.querySelectorAll('.rv,.rvl').forEach(el=>obs.observe(el));
-
-/* ── ANIMATED RINGS ─────────────────────────────────── */
-const ringObs=new IntersectionObserver(es=>{
-  es.forEach(e=>{
-    if(e.isIntersecting){
-      e.target.querySelectorAll('.ring-fill').forEach(ring=>{
-        const pct=parseFloat(ring.dataset.pct)||100;
-        const circ=2*Math.PI*35;
-        const offset=circ*(1-pct/100);
-        setTimeout(()=>ring.style.strokeDashoffset=offset,200);
-      });
-      ringObs.unobserve(e.target);
-    }
-  });
-},{threshold:.3});
-document.querySelectorAll('.ring-card').forEach(el=>ringObs.observe(el));
-
-/* ── LIVE ORDER COUNTER ──────────────────────────────── */
-let orderCount=14,total=336;
-const names=['Aditya K.','Meera P.','Rohan S.','Tanvi B.','Kiran M.','Sanjay R.'];
-const types=['12 pg B&W','8 pg Colour','24 pg B&W','6 pg B&W','18 pg B&W'];
-const amts={'12 pg B&W':12,'8 pg Colour':40,'24 pg B&W':24,'6 pg B&W':6,'18 pg B&W':18};
-setInterval(()=>{
-  if(Math.random()>.5){
-    const t=types[Math.floor(Math.random()*types.length)];
-    orderCount++;total+=amts[t];
-    const el=document.getElementById('live-orders');
-    const tel=document.getElementById('live-total');
-    if(el)el.textContent=orderCount;
-    if(tel)tel.textContent='₹ '+total;
-  }
-},4800);
-
-/* ── FEATURE TABS ───────────────────────────────────── */
-function switchTab(idx){
-  const tabs=document.querySelectorAll('.tab-btn');
-  const panels=document.querySelectorAll('.tab-panel');
-  const ind=document.getElementById('tabIndicator');
-  tabs.forEach((t,i)=>t.classList.toggle('active',i===idx));
-  panels.forEach((p,i)=>p.classList.toggle('active',i===idx));
-  // position indicator
-  const activeTab=tabs[idx];
-  const nav=document.getElementById('tabNav');
-  const navRect=nav.getBoundingClientRect();
-  const tabRect=activeTab.getBoundingClientRect();
-  ind.style.left=(tabRect.left-navRect.left)+'px';
-  ind.style.width=tabRect.width+'px';
-}
-// init indicator
-window.addEventListener('load',()=>{
-  const tabs=document.querySelectorAll('.tab-btn');
-  const ind=document.getElementById('tabIndicator');
-  const nav=document.getElementById('tabNav');
-  if(tabs[0]&&nav){
-    const nr=nav.getBoundingClientRect();
-    const tr=tabs[0].getBoundingClientRect();
-    ind.style.left=(tr.left-nr.left)+'px';
-    ind.style.width=tr.width+'px';
-  }
+const navbar = document.getElementById('navbar');
+window.addEventListener('scroll', () => { navbar.classList.toggle('scrolled', window.scrollY > 20); }, { passive: true });
+const hamburger = document.getElementById('hamburger');
+const navLinks = document.getElementById('navLinks');
+hamburger.addEventListener('click', () => { hamburger.classList.toggle('active'); navLinks.classList.toggle('open'); });
+const obs = new IntersectionObserver((entries) => { entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('visible'); obs.unobserve(entry.target); } }); }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+document.querySelectorAll('.step-card, .trust-card, .testimonial-card').forEach(card => {
+  card.addEventListener('mousemove', e => { const rect = card.getBoundingClientRect(); const x = (e.clientX - rect.left) / rect.width - 0.5; const y = (e.clientY - rect.top) / rect.height - 0.5; card.style.transform = `perspective(800px) rotateY(${x * 6}deg) rotateX(${-y * 6}deg) translateY(-5px)`; });
+  card.addEventListener('mouseleave', () => { card.style.transform = ''; });
 });
-// Also init on DOMContentLoaded as fallback
-document.addEventListener('DOMContentLoaded',()=>{setTimeout(()=>switchTab(0),100)});
-
-/* ── CAROUSEL ───────────────────────────────────────── */
-let slide=0,autoTimer,progTimer,progVal=0;
-const SLIDES=4,AUTO_INTERVAL=5500,PROG_TICK=50;
-
-function buildDots(){
-  const dc=document.getElementById('tcDots');
-  if(!dc)return;
-  dc.innerHTML='';
-  for(let i=0;i<SLIDES;i++){
-    const d=document.createElement('div');
-    d.className='tc-dot'+(i===0?' on':'');
-    d.style.width=i===0?'28px':'14px';
-    d.onclick=()=>goSlide(i);
-    dc.appendChild(d);
-  }
-}
-
-function goSlide(n){
-  slide=((n%SLIDES)+SLIDES)%SLIDES;
-  const sl=document.getElementById('tslides');
-  if(sl)sl.style.transform=`translateX(-${slide*100}%)`;
-  document.querySelectorAll('.tc-dot').forEach((d,i)=>{
-    d.classList.toggle('on',i===slide);
-    d.style.width=i===slide?'28px':'14px';
-  });
-  resetProg();
-}
-
-function carouselNext(){goSlide(slide+1)}
-function carouselPrev(){goSlide(slide-1)}
-
-function resetProg(){
-  clearInterval(progTimer);progVal=0;
-  const pf=document.getElementById('tcProg');
-  if(pf)pf.style.width='0%';
-  clearInterval(autoTimer);
-  progTimer=setInterval(()=>{
-    progVal+=PROG_TICK/(AUTO_INTERVAL)*100;
-    if(pf)pf.style.width=Math.min(progVal,100)+'%';
-    if(progVal>=100)carouselNext();
-  },PROG_TICK);
-}
-
-buildDots();
-resetProg();
-
-/* ── TILT CARDS ─────────────────────────────────────── */
-document.querySelectorAll('.pc,.trc,.ring-card,.hstep,.ts-stat,.ba-col').forEach(card=>{
-  card.addEventListener('mousemove',e=>{
-    const r=card.getBoundingClientRect();
-    const x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;
-    card.style.transform=`perspective(900px) rotateY(${x*4}deg) rotateX(${-y*4}deg) translateY(-4px)`;
-  });
-  card.addEventListener('mouseleave',()=>{
-    card.style.transform='';
-    card.style.transition='transform .5s cubic-bezier(.22,1,.36,1)';
-    setTimeout(()=>card.style.transition='',500);
-  });
-});
-
-/* ── MAGNETIC BUTTONS ───────────────────────────────── */
-document.querySelectorAll('.bcoral,.bteal,.bgold,.bwhite').forEach(b=>{
-  b.addEventListener('mousemove',e=>{
-    const r=b.getBoundingClientRect();
-    b.style.transform=`translate(${(e.clientX-r.left-r.width/2)*.1}px,${(e.clientY-r.top-r.height/2)*.1}px) translateY(-1px)`;
-  });
-  b.addEventListener('mouseleave',()=>b.style.transform='');
-});
-
-/* ── FAQ ────────────────────────────────────────────── */
-function tf(btn){
-  const open=btn.classList.contains('op');
-  document.querySelectorAll('.faq-q').forEach(b=>{b.classList.remove('op');b.nextElementSibling.classList.remove('op')});
-  if(!open){btn.classList.add('op');btn.nextElementSibling.classList.add('op')}
-}
 </script>
 </body>
 </html>
