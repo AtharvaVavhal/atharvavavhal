@@ -5,493 +5,429 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CampusCopy — Print Automation for Indian Colleges</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600;1,700&family=Outfit:wght@300;400;500;600;700;800&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Gloock&family=Manrope:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
 
 :root{
-  --bg:    #030D07;
-  --bg2:   #071510;
-  --bg3:   #0C1E14;
-  --bg4:   #112619;
-  --mint:  #0AFF6C;
-  --mint2: #4DFFA0;
-  --mg:    rgba(10,255,108,.2);
-  --mg2:   rgba(10,255,108,.08);
-  --gold:  #F0A500;
-  --gg:    rgba(240,165,0,.2);
-  --rose:  #FF2D6B;
-  --cr:    #EAF5EE;
-  --mu:    rgba(234,245,238,.5);
-  --dim:   rgba(234,245,238,.22);
-  --vdim:  rgba(234,245,238,.1);
-  --bd:    rgba(234,245,238,.08);
-  --bdm:   rgba(10,255,108,.25);
+  --void:  #080B12;
+  --void2: #0D1220;
+  --void3: #111828;
+  --void4: #162030;
+  --coral: #FF4F33;
+  --coral2:#FF7055;
+  --cg:    rgba(255,79,51,.22);
+  --teal:  #00D4AA;
+  --tg:    rgba(0,212,170,.18);
+  --gold:  #FFB800;
+  --gg:    rgba(255,184,0,.18);
+  --cream: #F2F5FF;
+  --mu:    rgba(242,245,255,.5);
+  --dim:   rgba(242,245,255,.24);
+  --vdim:  rgba(242,245,255,.1);
+  --bd:    rgba(242,245,255,.08);
+  --bdc:   rgba(255,79,51,.3);
   --glass: rgba(255,255,255,.04);
-  --r6:6px;--r12:12px;--r20:20px;--r28:28px;--r999:999px;
+  --r8:8px;--r14:14px;--r20:20px;--r28:28px;--r999:999px;
 }
 
 body{
-  font-family:'Outfit',system-ui,sans-serif;
-  background:var(--bg);color:var(--cr);
-  overflow-x:hidden;-webkit-font-smoothing:antialiased;
-  cursor:none;
+  font-family:'Manrope',system-ui,sans-serif;
+  background:var(--void);color:var(--cream);
+  overflow-x:hidden;-webkit-font-smoothing:antialiased;cursor:none;
 }
 a{color:inherit;text-decoration:none}
 
 /* ── GRAIN ──────────────────────────────────────────── */
 body::after{
-  content:'';position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.022;
-  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  content:'';position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.02;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   background-size:180px;
 }
 
-/* ── CIRCUIT BOARD BG ───────────────────────────────── */
-.circuit{
-  position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.06;
-  background-image:
-    linear-gradient(rgba(10,255,108,.4) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(10,255,108,.4) 1px,transparent 1px);
-  background-size:40px 40px;
-  mask-image:radial-gradient(ellipse 80% 80% at 50% 0%,black 20%,transparent 80%);
-}
+/* ── AURORA CANVAS ──────────────────────────────────── */
+#aurora{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.6}
 
-/* ── MORPHING BLOB ──────────────────────────────────── */
-.blob-hero{
-  position:fixed;top:-20vh;right:-10vw;width:70vw;height:70vh;
-  background:radial-gradient(ellipse,rgba(10,255,108,.09) 0%,transparent 65%);
-  border-radius:60% 40% 70% 30%/50% 60% 40% 70%;
-  animation:blobMorph 16s ease-in-out infinite alternate;
-  pointer-events:none;z-index:0;filter:blur(40px);
-}
-@keyframes blobMorph{
-  0%  {border-radius:60% 40% 70% 30%/50% 60% 40% 70%;transform:rotate(0deg) scale(1)}
-  25% {border-radius:30% 70% 40% 60%/70% 30% 60% 40%;transform:rotate(3deg) scale(1.05)}
-  50% {border-radius:50% 50% 30% 70%/40% 60% 70% 30%;transform:rotate(-2deg) scale(.95)}
-  75% {border-radius:70% 30% 60% 40%/30% 70% 40% 60%;transform:rotate(4deg) scale(1.08)}
-  100%{border-radius:40% 60% 50% 50%/60% 40% 50% 50%;transform:rotate(-1deg) scale(1)}
-}
-.blob-2{
-  position:fixed;bottom:-10vh;left:-5vw;width:50vw;height:50vh;
-  background:radial-gradient(ellipse,rgba(240,165,0,.06) 0%,transparent 65%);
-  border-radius:40% 60% 30% 70%/60% 40% 70% 30%;
-  animation:blobMorph 20s ease-in-out infinite alternate-reverse;
-  pointer-events:none;z-index:0;filter:blur(50px);
-}
-
-/* ── CURSOR BLOB ────────────────────────────────────── */
-#cur-blob{
-  position:fixed;width:400px;height:400px;
-  background:radial-gradient(circle,rgba(10,255,108,.07) 0%,transparent 70%);
-  border-radius:50%;pointer-events:none;z-index:0;
-  transform:translate(-50%,-50%);
-  transition:opacity .3s;
-}
+/* ── CURSOR ─────────────────────────────────────────── */
 #cur{
-  position:fixed;width:8px;height:8px;background:var(--mint);
+  position:fixed;width:9px;height:9px;background:var(--coral);
   border-radius:50%;pointer-events:none;z-index:9999;
   transform:translate(-50%,-50%);
-  transition:width .2s,height .2s,background .2s;mix-blend-mode:screen;
+  transition:width .18s,height .18s,background .18s;
 }
 #cur-r{
-  position:fixed;width:32px;height:32px;
-  border:1px solid rgba(10,255,108,.4);
+  position:fixed;width:34px;height:34px;
+  border:1.5px solid rgba(255,79,51,.4);
   border-radius:50%;pointer-events:none;z-index:9998;
   transform:translate(-50%,-50%);
-  transition:width .3s,height .3s,border-color .3s,background .3s;
+  transition:width .28s,height .28s,border-color .28s;
 }
-body:has(a:hover) #cur,body:has(button:hover) #cur{width:16px;height:16px;background:var(--mint2)}
-body:has(a:hover) #cur-r,body:has(button:hover) #cur-r{width:48px;height:48px;border-color:var(--mint);background:rgba(10,255,108,.05)}
+body:has(a:hover) #cur,body:has(button:hover) #cur{width:16px;height:16px}
+body:has(a:hover) #cur-r,body:has(button:hover) #cur-r{width:50px;height:50px;border-color:rgba(255,79,51,.75)}
 
 /* ── PROGRESS ───────────────────────────────────────── */
-#prog{position:fixed;top:0;left:0;height:2px;z-index:9000;background:linear-gradient(90deg,var(--mint),var(--gold));width:0;transition:width .08s}
+#prog{position:fixed;top:0;left:0;height:2px;z-index:9200;background:linear-gradient(90deg,var(--coral),var(--teal));width:0}
 
-/* ── NAV ────────────────────────────────────────────── */
-nav{
-  position:fixed;top:0;left:0;right:0;z-index:500;
-  display:flex;align-items:center;justify-content:space-between;
-  padding:0 5%;height:68px;transition:all .35s;
+/* ── FLOATING PILL NAV ──────────────────────────────── */
+.nav-wrap{
+  position:fixed;top:20px;left:50%;transform:translateX(-50%);
+  z-index:500;display:flex;justify-content:center;
+  width:auto;min-width:min(880px,90vw);
+  transition:all .35s;
 }
-nav.sc{
-  background:rgba(3,13,7,.9);backdrop-filter:blur(24px);
-  border-bottom:1px solid var(--bd);
+.nav-pill{
+  display:flex;align-items:center;gap:0;
+  background:rgba(13,18,32,.85);
+  backdrop-filter:blur(24px);
+  border:1px solid var(--bd);
+  border-radius:var(--r999);
+  padding:6px 6px 6px 18px;
+  box-shadow:0 8px 40px rgba(0,0,0,.5),0 0 0 1px rgba(255,255,255,.05);
+  width:100%;justify-content:space-between;
+  transition:all .3s;
 }
-.nlogo{
-  display:flex;align-items:center;gap:11px;
-  font-family:'Cormorant Garamond',serif;font-size:1.35rem;font-weight:600;
-  letter-spacing:.02em;color:var(--cr);
+.nav-pill:hover{border-color:rgba(255,79,51,.2)}
+
+.nav-logo{
+  display:flex;align-items:center;gap:9px;
+  font-family:'Gloock',serif;font-size:1.05rem;color:var(--cream);
+  white-space:nowrap;
 }
-.nm{
-  width:34px;height:34px;background:var(--mint);border-radius:10px;
+.nav-mark{
+  width:28px;height:28px;background:var(--coral);border-radius:7px;
   display:flex;align-items:center;justify-content:center;
-  box-shadow:0 0 22px var(--mg),0 0 60px rgba(10,255,108,.1);
+  box-shadow:0 0 16px var(--cg);
 }
-.nm svg{width:17px;height:17px;fill:var(--bg)}
-.nl{display:flex;align-items:center;gap:32px;list-style:none}
-.nl a{font-size:.875rem;font-weight:500;color:var(--mu);transition:color .2s;letter-spacing:-.01em}
-.nl a:hover{color:var(--cr)}
-.nr{display:flex;align-items:center;gap:10px}
+.nav-mark svg{width:15px;height:15px;fill:white}
+
+.nav-links{display:flex;align-items:center;gap:4px}
+.nav-links a{
+  font-size:.82rem;font-weight:600;color:var(--mu);
+  padding:7px 14px;border-radius:var(--r999);
+  transition:all .2s;letter-spacing:-.01em;
+}
+.nav-links a:hover{color:var(--cream);background:rgba(255,255,255,.06)}
+
+.nav-cta{display:flex;align-items:center;gap:8px}
 
 .btn{
-  display:inline-flex;align-items:center;gap:8px;
-  padding:10px 22px;border-radius:var(--r6);
-  font-family:'Outfit',sans-serif;font-size:.875rem;font-weight:600;
-  cursor:none;transition:all .22s;border:none;white-space:nowrap;
+  display:inline-flex;align-items:center;gap:7px;
+  padding:9px 20px;border-radius:var(--r999);
+  font-family:'Manrope',sans-serif;font-size:.82rem;font-weight:700;
+  cursor:none;transition:all .2s;border:none;white-space:nowrap;
   letter-spacing:-.01em;position:relative;overflow:hidden;
 }
-.btn::before{
+.btn::after{
   content:'';position:absolute;inset:0;
-  background:linear-gradient(135deg,rgba(255,255,255,.1) 0%,transparent 50%);
-  opacity:0;transition:opacity .22s;
+  background:linear-gradient(135deg,rgba(255,255,255,.12) 0%,transparent 55%);
+  opacity:0;transition:opacity .2s;
 }
-.btn:hover::before{opacity:1}
-.bmint{background:var(--mint);color:var(--bg);font-weight:700;box-shadow:0 0 0 0 var(--mg)}
-.bmint:hover{background:var(--mint2);box-shadow:0 0 30px var(--mg);transform:translateY(-2px)}
-.bglass{background:var(--glass);border:1px solid var(--bd);color:var(--mu);backdrop-filter:blur(12px)}
-.bglass:hover{background:rgba(10,255,108,.07);border-color:var(--bdm);color:var(--cr);transform:translateY(-2px)}
-.bgold{background:var(--gold);color:var(--bg);font-weight:700}
-.bgold:hover{background:#FFB800;transform:translateY(-2px);box-shadow:0 6px 24px var(--gg)}
-.bink{background:var(--cr);color:var(--bg);font-weight:700}
-.bink:hover{background:#fff;transform:translateY(-2px);box-shadow:0 8px 32px rgba(0,0,0,.4)}
-.blg{padding:13px 30px;font-size:1rem;border-radius:var(--r12)}
-.bxl{padding:16px 36px;font-size:1.05rem;border-radius:var(--r12)}
+.btn:hover::after{opacity:1}
 
-.ham{display:none;cursor:none;flex-direction:column;gap:5px;background:none;border:none;padding:6px}
-.ham span{width:22px;height:2px;background:var(--mu);border-radius:2px;display:block;transition:all .3s}
-.ham.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.bcoral{background:var(--coral);color:white;box-shadow:0 0 0 0 var(--cg)}
+.bcoral:hover{background:var(--coral2);box-shadow:0 0 24px var(--cg);transform:translateY(-1px)}
+.bglass{background:rgba(255,255,255,.07);border:1px solid var(--bd);color:var(--mu);backdrop-filter:blur(8px)}
+.bglass:hover{background:rgba(255,255,255,.12);border-color:var(--bdc);color:var(--cream);transform:translateY(-1px)}
+.bteal{background:var(--teal);color:var(--void);font-weight:800}
+.bteal:hover{background:#00EABB;transform:translateY(-1px);box-shadow:0 4px 20px var(--tg)}
+.bgold{background:var(--gold);color:var(--void);font-weight:800}
+.bgold:hover{background:#FFC522;transform:translateY(-1px);box-shadow:0 4px 20px var(--gg)}
+.bwhite{background:var(--cream);color:var(--void);font-weight:800}
+.bwhite:hover{background:#fff;transform:translateY(-1px);box-shadow:0 8px 28px rgba(0,0,0,.3)}
+.blg{padding:13px 28px;font-size:.95rem}
+.bxl{padding:16px 36px;font-size:1rem}
+
+.ham-wrap{display:none}
+.ham{display:none;cursor:none;flex-direction:column;gap:5px;background:rgba(255,255,255,.07);border:1px solid var(--bd);border-radius:10px;padding:10px;width:42px;height:42px;align-items:center;justify-content:center}
+.ham span{width:20px;height:1.5px;background:var(--mu);border-radius:2px;display:block;transition:all .3s}
+.ham.open span:nth-child(1){transform:translateY(6px) rotate(45deg)}
 .ham.open span:nth-child(2){opacity:0}
-.ham.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+.ham.open span:nth-child(3){transform:translateY(-6px) rotate(-45deg)}
 
 /* ── HERO ───────────────────────────────────────────── */
 .hero{
   min-height:100vh;display:flex;align-items:center;
   padding:110px 5% 80px;position:relative;z-index:10;overflow:hidden;
 }
-.hero-in{max-width:1200px;margin:0 auto;width:100%;display:grid;grid-template-columns:1fr 1fr;gap:72px;align-items:center}
+.hero-in{
+  max-width:1200px;margin:0 auto;width:100%;
+  display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center;
+}
 
+/* hero content */
 .hleft{display:flex;flex-direction:column;align-items:flex-start}
 
-.h-badge{
+.h-eyebrow{
   display:inline-flex;align-items:center;gap:9px;
-  background:rgba(10,255,108,.1);border:1px solid rgba(10,255,108,.25);
-  color:var(--mint2);border-radius:var(--r999);
-  padding:6px 16px;font-family:'Space Mono',monospace;
-  font-size:.68rem;letter-spacing:.09em;text-transform:uppercase;
-  margin-bottom:32px;animation:clipIn .8s cubic-bezier(.22,1,.36,1) both .1s;
+  background:rgba(255,79,51,.1);border:1px solid rgba(255,79,51,.28);
+  color:var(--coral2);border-radius:var(--r999);
+  padding:6px 16px;font-family:'JetBrains Mono',monospace;
+  font-size:.67rem;letter-spacing:.09em;text-transform:uppercase;margin-bottom:30px;
+  animation:fadeUp .6s ease both .1s;
 }
-.ldot{width:7px;height:7px;background:var(--mint);border-radius:50%;animation:lp 2s ease-in-out infinite}
-@keyframes lp{0%,100%{box-shadow:0 0 0 0 rgba(10,255,108,.7)}50%{box-shadow:0 0 0 8px rgba(10,255,108,0)}}
+.ldot{width:7px;height:7px;background:var(--coral);border-radius:50%;animation:lp 2s ease-in-out infinite}
+@keyframes lp{0%,100%{box-shadow:0 0 0 0 rgba(255,79,51,.7)}50%{box-shadow:0 0 0 8px rgba(255,79,51,0)}}
 
-/* CLIP-PATH REVEAL headline */
-.h-clip-wrap{overflow:hidden;margin-bottom:6px}
-.h-clip-wrap:nth-child(3){margin-bottom:28px}
-
-.h1-serif{
-  font-family:'Cormorant Garamond',serif;font-weight:700;font-style:italic;
-  font-size:clamp(3.2rem,6vw,5.8rem);
-  line-height:.95;letter-spacing:-.02em;color:var(--cr);
-  display:block;
-  animation:clipIn .9s cubic-bezier(.22,1,.36,1) both;
+/* word-split headline */
+.hero-headline{margin-bottom:28px}
+.h-word-row{overflow:hidden;display:block;line-height:1}
+.h-word{
+  display:inline-block;
+  font-family:'Gloock',serif;
+  animation:wordReveal .9s cubic-bezier(.22,1,.36,1) both;
 }
-.h1-sans{
-  font-family:'Outfit',sans-serif;font-weight:800;
-  font-size:clamp(3rem,5.8vw,5.6rem);
-  line-height:.95;letter-spacing:-.04em;
-  background:linear-gradient(135deg,var(--mint) 0%,var(--mint2) 40%,var(--gold) 100%);
+.h-word.serif{
+  font-size:clamp(3rem,5.8vw,5.4rem);
+  letter-spacing:-.03em;color:var(--cream);
+  font-style:italic;font-weight:400;
+}
+.h-word.sans{
+  font-family:'Manrope',sans-serif;
+  font-size:clamp(3rem,5.8vw,5.4rem);
+  letter-spacing:-.05em;font-weight:800;color:var(--cream);
+}
+.h-word.accent{
+  background:linear-gradient(135deg,var(--coral) 0%,var(--coral2) 40%,var(--gold) 100%);
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-  display:block;
-  animation:clipIn .9s cubic-bezier(.22,1,.36,1) both .15s;
 }
-
-@keyframes clipIn{
-  from{clip-path:inset(0 0 100% 0);opacity:0;transform:translateY(20px)}
-  to{clip-path:inset(0 0 0% 0);opacity:1;transform:translateY(0)}
+@keyframes wordReveal{
+  from{opacity:0;transform:translateY(100%) skewY(4deg)}
+  to{opacity:1;transform:translateY(0) skewY(0)}
 }
 
 .h-sub{
   font-size:1.05rem;color:var(--mu);line-height:1.78;max-width:500px;
-  margin-bottom:38px;font-weight:400;
-  animation:fadeUp .8s ease both .4s;
+  margin-bottom:38px;font-weight:400;animation:fadeUp .8s ease both .7s;
 }
+.h-ctas{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:48px;animation:fadeUp .8s ease both .82s}
 
-.h-ctas{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:44px;animation:fadeUp .8s ease both .52s}
-
-/* inline stat pills */
-.h-metrics{
-  display:flex;gap:0;border:1px solid var(--bd);border-radius:var(--r12);
-  overflow:hidden;animation:fadeUp .8s ease both .64s;
+/* hero live counter */
+.h-live{
+  display:flex;align-items:center;gap:16px;
+  padding:16px 20px;
+  background:var(--glass);border:1px solid var(--bd);border-radius:var(--r14);
+  backdrop-filter:blur(12px);
+  animation:fadeUp .8s ease both .94s;
 }
-.hm{
-  padding:18px 22px;border-right:1px solid var(--bd);
-  position:relative;overflow:hidden;transition:background .3s;flex:1;
+.h-live-dot{
+  width:8px;height:8px;background:var(--teal);border-radius:50%;
+  flex-shrink:0;animation:lp 2s infinite;
+  box-shadow:0 0 0 0 rgba(0,212,170,.7);
 }
-.hm:last-child{border-right:none}
-.hm::after{
-  content:'';position:absolute;bottom:0;left:0;right:0;height:2px;
-  background:linear-gradient(90deg,var(--mint),var(--gold));
-  transform:scaleX(0);transition:transform .4s cubic-bezier(.22,1,.36,1);
-  transform-origin:left;
-}
-.hm:hover{background:rgba(10,255,108,.06)}
-.hm:hover::after{transform:scaleX(1)}
-.hm-n{
-  font-family:'Cormorant Garamond',serif;font-weight:700;
-  font-size:1.8rem;letter-spacing:-.04em;line-height:1;
-  color:var(--mint);margin-bottom:4px;
-}
-.hm-l{font-size:.7rem;color:var(--dim);font-weight:500;text-transform:uppercase;letter-spacing:.07em}
+@keyframes lpT{0%,100%{box-shadow:0 0 0 0 rgba(0,212,170,.7)}50%{box-shadow:0 0 0 8px rgba(0,212,170,0)}}
+.h-live-dot{animation:lpT 2s infinite}
+.h-live-text{font-size:.8rem;color:var(--mu);font-weight:500}
+.h-live-text span{color:var(--cream);font-weight:700}
+.h-live-divider{width:1px;height:24px;background:var(--bd)}
+.h-live-amt{font-family:'JetBrains Mono',monospace;font-size:.9rem;font-weight:700;color:var(--teal)}
 
 @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
 
-/* ── HERO RIGHT — STACKED DEPTH CARDS ───────────────── */
-.hright{position:relative;animation:fadeUp 1s ease both .3s}
+/* ── HERO RIGHT — CINEMATIC CARD STACK ──────────────── */
+.hright{position:relative;animation:fadeUp 1s ease both .4s}
 
-.depth-stack{position:relative;max-width:400px;margin:0 auto;height:520px}
-
-/* Back card */
-.card-back{
-  position:absolute;top:30px;left:20px;right:-20px;
-  background:var(--bg3);border:1px solid rgba(10,255,108,.08);
-  border-radius:20px;height:460px;
-  box-shadow:0 20px 60px rgba(0,0,0,.4);
-  transform:rotate(3deg);
-  display:flex;flex-direction:column;justify-content:center;align-items:center;
-  gap:12px;padding:24px;overflow:hidden;
-}
-.card-back::before{
-  content:'';position:absolute;inset:0;
-  background:linear-gradient(135deg,rgba(10,255,108,.04),transparent 60%);
+.card-stage{
+  position:relative;max-width:400px;margin:0 auto;
+  height:560px;perspective:1200px;
 }
 
-/* notification cards in back */
-.notif{
-  background:var(--bg4);border:1px solid var(--bd);border-radius:12px;
-  padding:12px 16px;width:100%;
-  display:flex;align-items:center;gap:11px;
-  box-shadow:0 4px 20px rgba(0,0,0,.3);
-  transition:transform .3s;z-index:1;position:relative;
+/* Back notification cards */
+.back-cards{
+  position:absolute;top:20px;left:10px;right:-30px;
+  display:flex;flex-direction:column;gap:10px;
+  transform:rotate(4deg) translateZ(-20px);
+  z-index:0;
 }
-.notif:hover{transform:translateX(4px)}
-.notif-icon{
-  width:36px;height:36px;border-radius:9px;flex-shrink:0;
-  display:flex;align-items:center;justify-content:center;font-size:1rem;
+.ncard{
+  background:var(--void3);border:1px solid var(--bd);
+  border-radius:var(--r14);padding:13px 16px;
+  display:flex;align-items:center;gap:12px;
+  box-shadow:0 4px 24px rgba(0,0,0,.4);
+  opacity:0;animation:ncardIn .5s ease both;
 }
-.ni-green{background:rgba(74,222,128,.15)}
-.ni-gold{background:rgba(240,165,0,.15)}
-.ni-mint{background:rgba(10,255,108,.1)}
-.notif-info{flex:1}
-.notif-title{font-size:.78rem;font-weight:600;color:var(--cr);margin-bottom:2px}
-.notif-sub{font-size:.67rem;color:var(--dim);font-family:'Space Mono',monospace}
-.notif-amt{font-size:.82rem;font-weight:700;color:var(--mint);font-family:'Space Mono',monospace}
+.ncard:nth-child(1){animation-delay:1.2s}
+.ncard:nth-child(2){animation-delay:1.5s}
+.ncard:nth-child(3){animation-delay:1.8s}
+@keyframes ncardIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
+.nc-dot{width:36px;height:36px;border-radius:10px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.95rem}
+.nc-g{background:rgba(74,222,128,.12)}
+.nc-c{background:rgba(255,79,51,.12)}
+.nc-t{background:rgba(0,212,170,.12)}
+.nc-info{flex:1}
+.nc-title{font-size:.76rem;font-weight:600;color:var(--cream);margin-bottom:2px}
+.nc-sub{font-size:.65rem;color:var(--dim);font-family:'JetBrains Mono',monospace}
+.nc-amt{font-size:.8rem;font-weight:700;font-family:'JetBrains Mono',monospace;color:var(--teal)}
 
-/* Front main card */
-.card-front{
+/* Main front card */
+.main-card{
   position:absolute;top:0;left:0;right:0;
-  background:rgba(7,21,16,.9);
-  border:1px solid rgba(10,255,108,.18);
-  border-radius:22px;
-  box-shadow:0 40px 80px rgba(0,0,0,.6),0 0 0 1px rgba(255,255,255,.04),inset 0 1px 0 rgba(10,255,108,.08);
-  overflow:hidden;height:480px;
-  backdrop-filter:blur(20px);
+  background:linear-gradient(160deg,var(--void3) 0%,var(--void2) 100%);
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:24px;
+  box-shadow:
+    0 50px 100px rgba(0,0,0,.65),
+    0 0 0 1px rgba(255,255,255,.04),
+    inset 0 1px 0 rgba(255,255,255,.08);
+  overflow:hidden;z-index:1;
+  height:500px;
 }
-.cf-top-line{
-  position:absolute;top:0;left:0;right:0;height:2px;
-  background:linear-gradient(90deg,transparent 10%,var(--mint) 40%,var(--gold) 70%,transparent 90%);
-}
-.cf-bar{
-  display:flex;align-items:center;justify-content:space-between;
-  padding:16px 20px 14px;border-bottom:1px solid var(--bd);
-}
-.cf-logo{
-  font-family:'Cormorant Garamond',serif;font-weight:600;font-size:1.1rem;
-  letter-spacing:.02em;color:var(--cr);
-}
-.cf-logo span{color:var(--mint)}
-.cf-pill{
-  display:flex;align-items:center;gap:6px;
-  background:rgba(10,255,108,.1);border:1px solid rgba(10,255,108,.25);
-  color:var(--mint);border-radius:var(--r999);
-  padding:3px 10px;font-size:.6rem;font-weight:700;
-  font-family:'Space Mono',monospace;letter-spacing:.07em;
-}
+.mc-accent{position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent 5%,var(--coral) 35%,var(--gold) 65%,transparent 95%)}
+.mc-top{display:flex;align-items:center;justify-content:space-between;padding:16px 20px 14px;border-bottom:1px solid var(--bd)}
+.mc-logo{font-family:'Gloock',serif;font-size:1.1rem;color:var(--cream)}
+.mc-logo span{color:var(--coral)}
+.mc-status{display:flex;align-items:center;gap:6px;background:rgba(0,212,170,.1);border:1px solid rgba(0,212,170,.25);border-radius:var(--r999);padding:3px 10px;font-family:'JetBrains Mono',monospace;font-size:.58rem;font-weight:700;letter-spacing:.08em;color:var(--teal)}
+.mc-body{padding:18px}
 
-.cf-body{padding:20px}
-
-.upzone{
-  border:1.5px dashed rgba(10,255,108,.28);border-radius:14px;
-  padding:22px 18px;text-align:center;background:rgba(10,255,108,.04);
-  margin-bottom:14px;animation:ub 3s ease-in-out infinite;
+.mc-upzone{
+  border:1.5px dashed rgba(255,79,51,.3);border-radius:14px;
+  padding:20px 16px;text-align:center;background:rgba(255,79,51,.04);
+  margin-bottom:14px;animation:ub2 3.5s ease-in-out infinite;
 }
-@keyframes ub{
-  0%,100%{border-color:rgba(10,255,108,.22);box-shadow:none}
-  50%{border-color:rgba(10,255,108,.55);box-shadow:0 0 20px rgba(10,255,108,.1)}
-}
-.uz-i{font-size:1.9rem;display:block;margin-bottom:8px}
-.uz-l{font-size:.82rem;font-weight:600;color:var(--cr);margin-bottom:2px}
-.uz-s{font-size:.7rem;color:var(--dim)}
+@keyframes ub2{0%,100%{border-color:rgba(255,79,51,.25);box-shadow:none}50%{border-color:rgba(255,79,51,.6);box-shadow:0 0 20px rgba(255,79,51,.09)}}
+.mc-upzone-i{font-size:1.9rem;display:block;margin-bottom:7px}
+.mc-upzone-l{font-size:.8rem;font-weight:600;color:var(--cream);margin-bottom:2px}
+.mc-upzone-s{font-size:.68rem;color:var(--dim)}
 
-.cf-opts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:13px}
-.cf-opt{background:rgba(255,255,255,.04);border:1px solid var(--bd);border-radius:8px;padding:9px 11px}
-.cf-opt-l{font-size:.6rem;font-weight:700;color:var(--dim);text-transform:uppercase;letter-spacing:.07em;margin-bottom:2px}
-.cf-opt-v{font-size:.85rem;font-weight:700;color:var(--cr);font-family:'Space Mono',monospace}
+.mc-opts{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:13px}
+.mc-opt{background:rgba(255,255,255,.04);border:1px solid var(--bd);border-radius:8px;padding:9px 10px}
+.mc-opt-l{font-size:.58rem;font-weight:700;color:var(--dim);text-transform:uppercase;letter-spacing:.07em;margin-bottom:2px}
+.mc-opt-v{font-size:.83rem;font-weight:700;color:var(--cream);font-family:'JetBrains Mono',monospace}
 
-.cf-total{
+.mc-price{
   display:flex;justify-content:space-between;align-items:center;
-  background:rgba(10,255,108,.08);border:1px solid rgba(10,255,108,.2);
-  border-radius:10px;padding:11px 15px;margin-bottom:12px;
+  background:rgba(255,79,51,.09);border:1px solid rgba(255,79,51,.22);
+  border-radius:10px;padding:11px 14px;margin-bottom:12px;
 }
-.cf-total-l{font-size:.78rem;font-weight:500;color:var(--mu)}
-.cf-total-v{font-size:1.1rem;font-weight:700;color:var(--mint);font-family:'Space Mono',monospace;letter-spacing:-.02em}
+.mc-price-l{font-size:.76rem;font-weight:500;color:var(--mu)}
+.mc-price-v{font-size:1.1rem;font-weight:700;color:var(--coral);font-family:'JetBrains Mono',monospace;letter-spacing:-.02em}
 
-.cf-btn{
-  width:100%;padding:13px;background:var(--mint);color:var(--bg);
+.mc-btn{
+  width:100%;padding:13px;background:var(--coral);color:white;
   border:none;border-radius:11px;cursor:none;
-  font-family:'Outfit',sans-serif;font-size:.9rem;font-weight:700;
-  box-shadow:0 4px 20px var(--mg);
-  animation:cbg 2.5s ease-in-out infinite;
+  font-family:'Manrope',sans-serif;font-size:.88rem;font-weight:700;
+  box-shadow:0 4px 20px var(--cg);
+  animation:cblink 2.5s ease-in-out infinite;
 }
-@keyframes cbg{0%,100%{box-shadow:0 4px 14px rgba(10,255,108,.3)}50%{box-shadow:0 4px 30px rgba(10,255,108,.55)}}
+@keyframes cblink{0%,100%{box-shadow:0 4px 14px rgba(255,79,51,.3)}50%{box-shadow:0 4px 30px rgba(255,79,51,.55)}}
 
-/* floating badge */
-.float-badge{
-  position:absolute;top:-18px;right:-24px;
-  background:var(--bg3);border:1px solid rgba(10,255,108,.25);
-  border-radius:14px;padding:13px 18px;
-  box-shadow:0 16px 44px rgba(0,0,0,.5);
-  animation:fbf 5s ease-in-out infinite;
-  backdrop-filter:blur(16px);text-align:center;
+/* floating stat */
+.hero-stat-float{
+  position:absolute;top:-16px;right:-28px;
+  background:var(--void3);border:1px solid rgba(255,79,51,.22);
+  border-radius:var(--r14);padding:14px 18px;
+  box-shadow:0 16px 44px rgba(0,0,0,.55);
+  animation:floatY 5s ease-in-out infinite;
+  z-index:2;text-align:center;
 }
-@keyframes fbf{0%,100%{transform:translateY(0) rotate(.5deg)}50%{transform:translateY(-10px) rotate(-.5deg)}}
-.fb-n{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:700;letter-spacing:-.04em;color:var(--mint);line-height:1;margin-bottom:3px}
-.fb-l{font-size:.65rem;color:var(--dim);font-weight:500;line-height:1.4}
+@keyframes floatY{0%,100%{transform:translateY(0) rotate(-.5deg)}50%{transform:translateY(-10px) rotate(.5deg)}}
+.hsf-n{font-family:'Gloock',serif;font-size:2.2rem;letter-spacing:-.04em;color:var(--coral);line-height:1;margin-bottom:3px}
+.hsf-l{font-size:.65rem;color:var(--dim);font-weight:500;line-height:1.4}
 
-/* ── TICKER ─────────────────────────────────────────── */
+/* ── CAMPUS TICKER ──────────────────────────────────── */
 .ticker{
-  position:relative;z-index:10;overflow:hidden;padding:14px 0;
-  background:linear-gradient(90deg,var(--bg2),var(--bg3),var(--bg2));
-  border-top:1px solid var(--bd);border-bottom:1px solid var(--bd);
+  position:relative;z-index:10;overflow:hidden;padding:13px 0;
+  background:var(--void2);border-top:1px solid var(--bd);border-bottom:1px solid var(--bd);
   mask-image:linear-gradient(90deg,transparent,black 6%,black 94%,transparent);
   -webkit-mask-image:linear-gradient(90deg,transparent,black 6%,black 94%,transparent);
 }
-.tt{display:flex;gap:0;width:max-content;animation:ta 30s linear infinite}
+.tt{display:flex;gap:0;width:max-content;animation:ta 28s linear infinite}
 .tt:hover{animation-play-state:paused}
 @keyframes ta{to{transform:translateX(-50%)}}
-.ti{
-  display:inline-flex;align-items:center;gap:8px;padding:0 26px;
-  font-size:.77rem;font-weight:500;color:var(--dim);white-space:nowrap;
-  border-right:1px solid var(--bd);letter-spacing:-.01em;
-}
-.ti .hi{color:var(--mint)}
+.ti{display:inline-flex;align-items:center;gap:7px;padding:0 24px;font-size:.76rem;font-weight:500;color:var(--dim);white-space:nowrap;border-right:1px solid var(--bd);letter-spacing:-.01em}
+.ti .hc{color:var(--coral)}
+.ti .ht{color:var(--teal)}
 .ti .hg{color:var(--gold)}
+
+/* ── METRIC RINGS ───────────────────────────────────── */
+.rings-section{
+  padding:70px 5%;position:relative;z-index:10;
+}
+.rings-inner{
+  max-width:1120px;margin:0 auto;
+  display:grid;grid-template-columns:repeat(4,1fr);gap:20px;
+}
+.ring-card{
+  background:var(--void2);border:1px solid var(--bd);
+  border-radius:var(--r20);padding:32px 20px;
+  text-align:center;transition:all .35s cubic-bezier(.22,1,.36,1);
+  position:relative;overflow:hidden;
+}
+.ring-card:hover{transform:translateY(-5px);border-color:var(--bdc);box-shadow:0 20px 50px rgba(0,0,0,.4)}
+.ring-svg{width:90px;height:90px;margin:0 auto 18px;display:block}
+.ring-track{fill:none;stroke:rgba(255,79,51,.12);stroke-width:6}
+.ring-fill{
+  fill:none;stroke-width:6;stroke-linecap:round;
+  transform:rotate(-90deg);transform-origin:50% 50%;
+  stroke-dasharray:220;stroke-dashoffset:220;
+  transition:stroke-dashoffset 1.5s cubic-bezier(.22,1,.36,1);
+}
+.ring-c{stroke:url(#ringGrad)}
+.ring-val{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  font-family:'Gloock',serif;font-size:1.2rem;letter-spacing:-.04em;
+  color:var(--coral);line-height:1;top:calc(50% - 9px);
+}
+.ring-label{font-size:.75rem;font-weight:600;color:var(--mu);text-transform:uppercase;letter-spacing:.07em}
+.ring-desc{font-size:.8rem;color:var(--dim);margin-top:6px;line-height:1.5}
 
 /* ── SECTIONS ───────────────────────────────────────── */
 .s{padding:100px 5%;position:relative;z-index:10}
 .inn{max-width:1120px;margin:0 auto}
 .inn-sm{max-width:820px;margin:0 auto}
 
-/* section header with animated underline */
-.sec-hd{margin-bottom:56px}
-.sec-label{
+.sec-eyebrow{
   display:inline-flex;align-items:center;gap:8px;
-  background:rgba(10,255,108,.09);border:1px solid rgba(10,255,108,.2);
-  color:var(--mint2);border-radius:var(--r999);
-  padding:5px 14px;font-family:'Space Mono',monospace;font-size:.67rem;
-  letter-spacing:.09em;text-transform:uppercase;margin-bottom:18px;
+  background:rgba(255,79,51,.09);border:1px solid rgba(255,79,51,.22);
+  color:var(--coral2);border-radius:var(--r999);
+  padding:5px 14px;font-family:'JetBrains Mono',monospace;
+  font-size:.67rem;letter-spacing:.09em;text-transform:uppercase;margin-bottom:16px;
 }
 .sec-title{
-  font-family:'Cormorant Garamond',serif;font-weight:700;
-  font-size:clamp(2.2rem,4.5vw,3.8rem);letter-spacing:-.03em;line-height:1.0;
-  color:var(--cr);position:relative;display:inline-block;
+  font-family:'Gloock',serif;font-weight:400;
+  font-size:clamp(2.2rem,4.5vw,3.8rem);letter-spacing:-.03em;line-height:1.05;
+  color:var(--cream);margin-bottom:14px;
 }
-.sec-title em{font-style:italic;color:var(--mint)}
-.sec-title::after{
-  content:'';position:absolute;bottom:-6px;left:0;right:100%;height:2px;
-  background:linear-gradient(90deg,var(--mint),var(--gold));
-  transition:right 1s cubic-bezier(.22,1,.36,1);
-}
-.sec-hd.on .sec-title::after{right:0}
-.sec-sub{font-size:1rem;color:var(--mu);max-width:500px;line-height:1.75;margin-top:14px}
-.sc{text-align:center}
-.sc .sec-sub{margin:14px auto 0}
-.sc .sec-title::after{left:50%;right:50%;transform:translateX(-50%)}
-.sc.sec-hd.on .sec-title::after{left:0;right:0;transform:none}
+.sec-title em{font-style:italic;color:var(--coral)}
+.sec-title strong{font-style:normal;color:var(--teal)}
+.sec-sub{font-size:1rem;color:var(--mu);max-width:520px;line-height:1.75;font-weight:400}
+.sec-ctr{text-align:center}.sec-ctr .sec-sub{margin:0 auto}
 
-/* divider */
-.div{width:100%;height:1px;background:linear-gradient(90deg,transparent,var(--bd),transparent);position:relative;z-index:10}
-.div-m{background:linear-gradient(90deg,transparent,rgba(10,255,108,.2),transparent)}
+.div-line{width:100%;height:1px;background:linear-gradient(90deg,transparent,var(--bd),transparent);position:relative;z-index:10}
+.div-coral{background:linear-gradient(90deg,transparent,rgba(255,79,51,.22),rgba(0,212,170,.15),transparent)}
 
-/* ── REVEAL ─────────────────────────────────────────── */
-.rv{opacity:0;transform:translateY(28px);transition:opacity .7s cubic-bezier(.22,1,.36,1),transform .7s cubic-bezier(.22,1,.36,1)}
+/* reveal */
+.rv{opacity:0;transform:translateY(26px);transition:opacity .7s cubic-bezier(.22,1,.36,1),transform .7s cubic-bezier(.22,1,.36,1)}
 .rv.on{opacity:1;transform:translateY(0)}
-.rvl{opacity:0;transform:translateX(-32px);transition:opacity .7s cubic-bezier(.22,1,.36,1),transform .7s cubic-bezier(.22,1,.36,1)}
+.rvl{opacity:0;transform:translateX(-30px);transition:opacity .7s cubic-bezier(.22,1,.36,1),transform .7s cubic-bezier(.22,1,.36,1)}
 .rvl.on{opacity:1;transform:translateX(0)}
-.rvr{opacity:0;transform:translateX(32px);transition:opacity .7s cubic-bezier(.22,1,.36,1),transform .7s cubic-bezier(.22,1,.36,1)}
-.rvr.on{opacity:1;transform:translateX(0)}
 .d1{transition-delay:.1s}.d2{transition-delay:.2s}.d3{transition-delay:.3s}.d4{transition-delay:.4s}
 
-/* ── STATS ──────────────────────────────────────────── */
-.stats-row{
-  max-width:1120px;margin:0 auto;padding:0 5%;
-  display:grid;grid-template-columns:repeat(4,1fr);
-  background:var(--bg2);border:1px solid var(--bd);border-radius:var(--r20);
-  overflow:hidden;position:relative;z-index:10;
+/* ── HOW IT WORKS ───────────────────────────────────── */
+.how-steps{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  position:relative;gap:0;
 }
-.stat{
-  padding:32px 28px;border-right:1px solid var(--bd);
-  position:relative;overflow:hidden;transition:background .3s;
+.how-steps::before{
+  content:'';position:absolute;top:44px;
+  left:calc(100%/6 + 5%);right:calc(100%/6 + 5%);
+  height:1px;background:linear-gradient(90deg,var(--coral),var(--teal));opacity:.3;
 }
-.stat:last-child{border-right:none}
-.stat:hover{background:rgba(10,255,108,.05)}
-.stat-bar{
-  position:absolute;bottom:0;left:0;right:0;height:2px;
-  background:linear-gradient(90deg,var(--mint),var(--gold));
-  transform:scaleX(0);transition:transform .5s cubic-bezier(.22,1,.36,1);
-  transform-origin:left;
-}
-.stat:hover .stat-bar{transform:scaleX(1)}
-.stat-n{
-  font-family:'Cormorant Garamond',serif;font-weight:700;
-  font-size:2.6rem;letter-spacing:-.05em;line-height:1;
-  color:var(--mint);margin-bottom:6px;
-}
-.stat-l{font-size:.78rem;color:var(--mu);font-weight:500;line-height:1.5}
-
-/* ── HOW — TIMELINE ─────────────────────────────────── */
-.timeline{
-  max-width:720px;margin:0 auto;
-  position:relative;display:flex;flex-direction:column;gap:0;
-}
-.tl-line{
-  position:absolute;left:30px;top:46px;bottom:46px;width:2px;
-  background:linear-gradient(180deg,var(--mint),var(--gold),rgba(10,255,108,.1));
-  opacity:.4;
-}
-.tl-item{display:flex;gap:32px;padding-bottom:52px;position:relative}
-.tl-item:last-child{padding-bottom:0}
-
-.tl-node{
-  width:60px;height:60px;min-width:60px;
-  background:var(--bg2);border:1px solid rgba(10,255,108,.3);
-  border-radius:var(--r12);
+.hstep{padding:40px 32px;border-radius:var(--r20);transition:background .3s;position:relative;z-index:1}
+.hstep:hover{background:rgba(255,79,51,.04)}
+.hs-num{
+  width:50px;height:50px;
+  background:var(--void3);border:1px solid rgba(255,79,51,.3);
+  border-radius:var(--r14);
   display:flex;align-items:center;justify-content:center;
-  font-family:'Space Mono',monospace;font-size:.85rem;font-weight:700;
-  color:var(--mint);z-index:1;position:relative;
-  transition:all .35s;
+  font-family:'JetBrains Mono',monospace;font-size:.82rem;font-weight:700;color:var(--coral);
+  margin-bottom:20px;transition:all .3s;
 }
-.tl-item:hover .tl-node{
-  background:var(--mint);color:var(--bg);
-  box-shadow:0 0 28px var(--mg);border-color:var(--mint);
-  transform:rotate(-4deg) scale(1.08);
-}
-.tl-body{padding-top:12px}
-.tl-emo{font-size:1.6rem;display:block;margin-bottom:12px;transition:transform .35s}
-.tl-item:hover .tl-emo{transform:scale(1.25) rotate(-6deg)}
-.tl-body h3{
-  font-family:'Cormorant Garamond',serif;font-weight:700;font-size:1.4rem;
-  letter-spacing:-.02em;color:var(--cr);margin-bottom:10px;
-}
-.tl-body p{font-size:.9rem;color:var(--mu);line-height:1.75;max-width:500px}
+.hstep:hover .hs-num{background:var(--coral);color:white;border-color:var(--coral);box-shadow:0 0 22px var(--cg);transform:rotate(-6deg)}
+.hs-emoji{font-size:1.7rem;display:block;margin-bottom:14px;transition:transform .35s}
+.hstep:hover .hs-emoji{transform:scale(1.2) rotate(-5deg)}
+.hstep h3{font-family:'Gloock',serif;font-size:1.3rem;letter-spacing:-.02em;color:var(--cream);margin-bottom:10px}
+.hstep p{font-size:.875rem;color:var(--mu);line-height:1.75}
 
 /* ── BEFORE / AFTER ─────────────────────────────────── */
 .ba{
@@ -499,271 +435,306 @@ nav.sc{
   border:1px solid var(--bd);border-radius:var(--r20);overflow:hidden;
 }
 .ba-col{padding:44px 40px}
-.ba-b{background:rgba(255,45,107,.05)}
-.ba-a{background:rgba(10,255,108,.04);border-left:1px solid var(--bd)}
-.ba-lbl{display:inline-flex;align-items:center;gap:8px;font-family:'Space Mono',monospace;font-size:.67rem;letter-spacing:.1em;text-transform:uppercase;margin-bottom:24px;padding:5px 12px;border-radius:var(--r999)}
-.bbl{color:#FF6B8A;background:rgba(255,107,138,.1);border:1px solid rgba(255,107,138,.25)}
-.bal{color:var(--mint);background:var(--mg2);border:1px solid rgba(10,255,108,.25)}
+.ba-b{background:rgba(255,45,100,.05)}
+.ba-a{background:rgba(0,212,170,.04);border-left:1px solid var(--bd)}
+.ba-label{display:inline-flex;align-items:center;gap:8px;font-family:'JetBrains Mono',monospace;font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;margin-bottom:24px;padding:5px 12px;border-radius:var(--r999)}
+.lb{color:#FF6B8A;background:rgba(255,107,138,.1);border:1px solid rgba(255,107,138,.25)}
+.la{color:var(--teal);background:rgba(0,212,170,.1);border:1px solid rgba(0,212,170,.25)}
 .ba-items{display:flex;flex-direction:column;gap:13px}
-.ba-item{display:flex;align-items:flex-start;gap:11px;font-size:.9rem;color:var(--mu);line-height:1.65}
+.ba-item{display:flex;align-items:flex-start;gap:11px;font-size:.9rem;color:var(--mu);line-height:1.65;font-weight:500}
 .ib{color:#FF6B8A;flex-shrink:0;margin-top:2px;font-size:.8rem}
-.ia{color:var(--mint);flex-shrink:0;margin-top:2px;font-size:.8rem}
+.ia{color:var(--teal);flex-shrink:0;margin-top:2px;font-size:.8rem}
 
-/* ── HORIZONTAL SCROLL FEATURES ─────────────────────── */
-.feat-scroll-wrap{
-  overflow:hidden;position:relative;
-}
-.feat-scroll-track{
-  display:flex;gap:20px;
-  padding:4px 5% 20px;
-  overflow-x:auto;scroll-behavior:smooth;
-  scrollbar-width:none;
-  cursor:grab;
-  width:100%;
-  -webkit-overflow-scrolling:touch;
-}
-.feat-scroll-track::-webkit-scrollbar{display:none}
-.feat-scroll-track.dragging{cursor:grabbing}
+/* ── FEATURE TABS ───────────────────────────────────── */
+.feat-tabs-wrap{background:var(--void2);border:1px solid var(--bd);border-radius:var(--r28);overflow:hidden}
 
-.feat-card{
-  background:var(--bg2);border:1px solid var(--bd);
-  border-radius:var(--r20);padding:36px 30px;
-  flex:0 0 320px;
-  transition:all .35s cubic-bezier(.22,1,.36,1);
-  position:relative;overflow:hidden;
+.tab-nav{
+  display:flex;padding:6px;gap:0;
+  border-bottom:1px solid var(--bd);
+  background:rgba(255,255,255,.02);
+  position:relative;
 }
-.feat-card::after{
-  content:'';position:absolute;inset:0;
-  background:linear-gradient(135deg,rgba(10,255,108,.06),transparent 55%);
-  opacity:0;transition:opacity .35s;
-}
-.feat-card:hover{transform:translateY(-6px);border-color:var(--bdm);box-shadow:0 20px 50px rgba(0,0,0,.4)}
-.feat-card:hover::after{opacity:1}
-
-.fc-icon{
-  width:52px;height:52px;background:rgba(10,255,108,.1);
-  border:1px solid rgba(10,255,108,.2);border-radius:14px;
-  display:flex;align-items:center;justify-content:center;
-  font-size:1.35rem;margin-bottom:20px;transition:all .35s;
-  position:relative;z-index:1;
-}
-.feat-card:hover .fc-icon{background:rgba(10,255,108,.2);transform:scale(1.1) rotate(-6deg);box-shadow:0 0 24px var(--mg)}
-.feat-card h3{
-  font-family:'Cormorant Garamond',serif;font-weight:700;font-size:1.3rem;
-  letter-spacing:-.02em;color:var(--cr);margin-bottom:10px;
-  position:relative;z-index:1;
-}
-.feat-card p{font-size:.875rem;color:var(--mu);line-height:1.72;position:relative;z-index:1}
-
-/* mini dash inside feature card */
-.feat-mini{
-  margin-top:18px;background:var(--bg);border:1px solid var(--bd);
-  border-radius:10px;overflow:hidden;position:relative;z-index:1;
-}
-.fm-hd{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;border-bottom:1px solid var(--bd)}
-.fm-l{font-size:.62rem;font-weight:700;color:var(--dim);text-transform:uppercase;letter-spacing:.08em;font-family:'Space Mono',monospace}
-.fm-r{font-size:.62rem;color:var(--mint);font-weight:700;font-family:'Space Mono',monospace}
-.fm-rows{padding:7px;display:flex;flex-direction:column;gap:4px}
-.fm-row{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:6px;background:rgba(255,255,255,.02)}
-.fdot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
-.fdg{background:#4ade80;box-shadow:0 0 6px rgba(74,222,128,.4)}
-.fdo{background:var(--mint);animation:lp 2s infinite}
-.fdd{background:var(--vdim)}
-.fm-n{font-size:.72rem;color:var(--cr);font-weight:600;flex:1}
-.fm-a{font-size:.68rem;color:var(--mint);font-weight:700;font-family:'Space Mono',monospace}
-
-.scroll-hint{
-  text-align:center;padding:8px 5% 0;
-  font-size:.72rem;color:var(--dim);
+.tab-btn{
+  flex:1;padding:12px 16px;
+  font-family:'Manrope',sans-serif;font-size:.8rem;font-weight:600;
+  color:var(--dim);cursor:none;border:none;background:transparent;
+  border-radius:var(--r12);transition:all .25s;
   display:flex;align-items:center;justify-content:center;gap:8px;
-  font-family:'Space Mono',monospace;
+  letter-spacing:-.01em;position:relative;z-index:1;
 }
+.tab-btn:hover{color:var(--mu)}
+.tab-btn.active{color:var(--cream)}
+.tab-indicator{
+  position:absolute;top:6px;height:calc(100% - 12px);
+  background:var(--void3);border:1px solid var(--bd);
+  border-radius:var(--r12);
+  transition:left .35s cubic-bezier(.22,1,.36,1),width .35s cubic-bezier(.22,1,.36,1);
+  z-index:0;
+}
+
+.tab-panels{position:relative;min-height:340px}
+.tab-panel{
+  display:grid;grid-template-columns:1fr 1fr;gap:0;
+  position:absolute;inset:0;
+  opacity:0;transform:translateX(20px);
+  transition:opacity .4s ease,transform .4s cubic-bezier(.22,1,.36,1);
+  pointer-events:none;
+}
+.tab-panel.active{
+  opacity:1;transform:translateX(0);position:relative;
+  pointer-events:all;
+}
+.tab-text{padding:44px 40px;display:flex;flex-direction:column;justify-content:center}
+.tab-text h3{font-family:'Gloock',serif;font-size:1.6rem;letter-spacing:-.03em;color:var(--cream);margin-bottom:12px}
+.tab-text p{font-size:.9rem;color:var(--mu);line-height:1.75;margin-bottom:20px}
+.tab-vis{
+  background:var(--void3);border-left:1px solid var(--bd);
+  padding:32px;display:flex;align-items:center;justify-content:center;
+}
+
+/* mini data vis inside tabs */
+.t-dash{background:var(--void4);border:1px solid var(--bd);border-radius:var(--r14);overflow:hidden;width:100%}
+.td-hd{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-bottom:1px solid var(--bd);background:rgba(255,255,255,.02)}
+.td-l{font-size:.63rem;font-weight:700;color:var(--dim);text-transform:uppercase;letter-spacing:.08em;font-family:'JetBrains Mono',monospace}
+.td-r{font-size:.63rem;color:var(--teal);font-weight:700;font-family:'JetBrains Mono',monospace}
+.td-rows{padding:8px;display:flex;flex-direction:column;gap:4px}
+.td-row{display:flex;align-items:center;gap:9px;padding:7px 9px;border-radius:7px;background:rgba(255,255,255,.02);transition:background .2s}
+.td-row:hover{background:rgba(255,79,51,.06)}
+.fdot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.dg{background:#4ade80;box-shadow:0 0 6px rgba(74,222,128,.4)}
+.dc{background:var(--coral);animation:lp 2s infinite}
+.dd{background:var(--vdim)}
+.td-n{font-size:.72rem;color:var(--cream);font-weight:600;flex:1}
+.td-a{font-size:.68rem;color:var(--coral);font-weight:700;font-family:'JetBrains Mono',monospace}
+
+/* wa mock */
+.t-wa{background:var(--void4);border:1px solid rgba(0,212,170,.18);border-radius:var(--r14);padding:18px;width:100%}
+.t-wa-hd{font-family:'JetBrains Mono',monospace;font-size:.63rem;color:var(--teal);margin-bottom:12px;display:flex;align-items:center;gap:6px;letter-spacing:.07em}
+.wa-msgs{display:flex;flex-direction:column;gap:8px}
+.wa-m{background:rgba(0,212,170,.07);border:1px solid rgba(0,212,170,.15);border-radius:9px;padding:9px 12px}
+.wa-mh{font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--teal);margin-bottom:3px;font-weight:700}
+.wa-mt{font-size:.72rem;color:var(--mu);line-height:1.5}
+
+/* loyalty card */
+.t-loy{background:linear-gradient(135deg,var(--void4) 0%,rgba(255,79,51,.09) 100%);border:1px solid rgba(255,79,51,.22);border-radius:var(--r14);padding:22px;width:100%}
+.tl-hd{font-family:'JetBrains Mono',monospace;font-size:.63rem;color:var(--coral2);letter-spacing:.09em;margin-bottom:12px;display:flex;align-items:center;gap:6px}
+.tl-name{font-family:'Gloock',serif;font-size:1rem;color:var(--cream);margin-bottom:4px}
+.tl-pts{font-family:'JetBrains Mono',monospace;font-size:2.2rem;font-weight:700;color:var(--coral);letter-spacing:-.04em;line-height:1;margin-bottom:2px}
+.tl-sub{font-size:.65rem;color:var(--dim);margin-bottom:14px}
+.tl-bg{height:5px;background:rgba(255,79,51,.15);border-radius:3px;overflow:hidden}
+.tl-fg{height:100%;background:linear-gradient(90deg,var(--coral),var(--gold));width:68%;animation:lfg 2s ease-in-out infinite alternate}
+@keyframes lfg{from{width:65%}to{width:72%}}
+
+/* multi-shop */
+.t-ms{display:flex;flex-direction:column;gap:8px;width:100%}
+.ms-r{display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.03);border:1px solid var(--bd);border-radius:9px;padding:10px 14px}
+.ms-n{font-size:.8rem;color:var(--cream);font-weight:600}
+.ms-badge{font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:700;padding:3px 9px;border-radius:var(--r999)}
+.mb-t{background:rgba(0,212,170,.1);color:var(--teal);border:1px solid rgba(0,212,170,.25)}
+.mb-c{background:rgba(255,79,51,.1);color:var(--coral2);border:1px solid rgba(255,79,51,.25)}
 
 /* ── PRICING ────────────────────────────────────────── */
 .pcards{display:grid;grid-template-columns:1fr 1fr;gap:22px;max-width:880px;margin:0 auto}
 .pc{
-  background:var(--bg2);border:1px solid var(--bd);
+  background:var(--void2);border:1px solid var(--bd);
   border-radius:var(--r20);padding:40px 36px;
   transition:all .35s cubic-bezier(.22,1,.36,1);position:relative;overflow:hidden;
 }
-.pc:hover{transform:translateY(-5px);box-shadow:0 24px 60px rgba(0,0,0,.4)}
-.pc.hot{background:rgba(10,255,108,.06);border-color:rgba(10,255,108,.35)}
-.pc.hot:hover{border-color:rgba(10,255,108,.6)}
-.pc.hot::before{
-  content:'';position:absolute;top:0;left:0;right:0;height:2px;
-  background:linear-gradient(90deg,var(--mint),var(--gold));
-}
-.pc-glow{position:absolute;top:-70px;right:-70px;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(10,255,108,.12) 0%,transparent 70%);pointer-events:none}
-.pop{position:absolute;top:18px;right:18px;background:var(--mint);color:var(--bg);font-size:.6rem;font-weight:800;letter-spacing:.08em;padding:4px 12px;border-radius:var(--r999);text-transform:uppercase;font-family:'Space Mono',monospace;box-shadow:0 0 16px var(--mg)}
-.pc-type{font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(10,255,108,.7);margin-bottom:6px;font-family:'Space Mono',monospace}
-.pc-name{font-family:'Cormorant Garamond',serif;font-weight:700;font-size:1.4rem;letter-spacing:-.02em;color:var(--cr);margin-bottom:20px}
+.pc:hover{transform:translateY(-4px);box-shadow:0 24px 60px rgba(0,0,0,.4)}
+.pc.hot{background:rgba(255,79,51,.07);border-color:rgba(255,79,51,.38)}
+.pc.hot:hover{border-color:rgba(255,79,51,.65)}
+.pc.hot::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--coral),var(--gold),var(--teal))}
+.pc-glow{position:absolute;top:-70px;right:-70px;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(255,79,51,.13) 0%,transparent 70%);pointer-events:none}
+.pop{position:absolute;top:18px;right:18px;background:var(--coral);color:white;font-size:.6rem;font-weight:700;letter-spacing:.07em;padding:4px 11px;border-radius:var(--r999);text-transform:uppercase;font-family:'JetBrains Mono',monospace;box-shadow:0 0 16px var(--cg)}
+.pc-type{font-size:.63rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,79,51,.65);margin-bottom:7px;font-family:'JetBrains Mono',monospace}
+.pc-name{font-family:'Gloock',serif;font-size:1.3rem;letter-spacing:-.02em;color:var(--cream);margin-bottom:20px}
 .pc-price{display:flex;align-items:baseline;gap:5px;margin-bottom:4px}
-.pc-amt{font-family:'Cormorant Garamond',serif;font-weight:700;font-size:3.2rem;letter-spacing:-.04em;line-height:1;color:var(--cr)}
-.pc.hot .pc-amt{color:var(--mint)}
-.pc-unit{font-size:.875rem;color:var(--dim)}
-.pc-note{font-size:.75rem;color:var(--dim);margin-bottom:26px;font-style:italic}
+.pc-amt{font-family:'Gloock',serif;font-size:3rem;letter-spacing:-.04em;line-height:1;color:var(--cream)}
+.pc.hot .pc-amt{color:var(--coral)}
+.pc-unit{font-size:.85rem;color:var(--dim)}
+.pc-note{font-size:.73rem;color:var(--dim);margin-bottom:26px;font-style:italic}
 .pc-hr{height:1px;background:var(--bd);margin-bottom:22px}
 .pc-feats{list-style:none;display:flex;flex-direction:column;gap:11px;margin-bottom:30px}
 .pc-feats li{display:flex;align-items:flex-start;gap:10px;font-size:.875rem;color:var(--mu)}
 .ck{width:16px;height:16px;min-width:16px;background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.25);border-radius:50%;display:flex;align-items:center;justify-content:center;margin-top:2px}
 .ck svg{width:8px;height:8px;stroke:#4ade80;stroke-width:2.5;fill:none}
 
-/* ── TESTIMONIALS — DUAL MARQUEE ────────────────────── */
-.tmarquee-wrap{display:flex;flex-direction:column;gap:16px;overflow:hidden}
-.tmarquee{
-  display:flex;gap:16px;width:max-content;
-  mask-image:linear-gradient(90deg,transparent,black 8%,black 92%,transparent);
-  -webkit-mask-image:linear-gradient(90deg,transparent,black 8%,black 92%,transparent);
+/* ── TESTIMONIALS — CAROUSEL ─────────────────────────── */
+.tcarousel{
+  position:relative;
+  background:var(--void2);border:1px solid var(--bd);border-radius:var(--r28);
+  overflow:hidden;
 }
-.tmarquee.fwd{animation:tmfwd 40s linear infinite}
-.tmarquee.rev{animation:tmrev 40s linear infinite}
-.tmarquee:hover{animation-play-state:paused}
-@keyframes tmfwd{to{transform:translateX(-50%)}}
-@keyframes tmrev{from{transform:translateX(-50%)}to{transform:translateX(0%)}}
+.tslides{
+  display:flex;transition:transform .6s cubic-bezier(.22,1,.36,1);
+}
+.tslide{
+  flex:0 0 100%;padding:52px 56px;
+  display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;
+}
+.ts-quote{
+  font-family:'Gloock',serif;font-size:clamp(1.3rem,2.5vw,1.8rem);
+  font-style:italic;letter-spacing:-.02em;line-height:1.45;
+  color:var(--cream);margin-bottom:28px;position:relative;
+}
+.ts-quote::before{
+  content:'\201C';position:absolute;top:-24px;left:-8px;
+  font-size:4rem;line-height:1;color:rgba(255,79,51,.15);
+  pointer-events:none;font-family:'Gloock',serif;
+}
+.ts-author{display:flex;align-items:center;gap:14px}
+.ts-av{
+  width:46px;height:46px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-weight:700;font-size:1rem;color:white;flex-shrink:0;
+}
+.ts-name{font-size:.95rem;font-weight:700;color:var(--cream);margin-bottom:2px;letter-spacing:-.01em}
+.ts-role{font-size:.74rem;color:var(--dim)}
+.ts-stats{display:flex;flex-direction:column;gap:14px}
+.ts-stat{
+  background:var(--void3);border:1px solid var(--bd);
+  border-radius:var(--r14);padding:20px 22px;
+  transition:border-color .3s;
+}
+.tslide:hover .ts-stat{border-color:rgba(255,79,51,.18)}
+.ts-stat-n{font-family:'Gloock',serif;font-size:2rem;letter-spacing:-.04em;color:var(--coral);line-height:1;margin-bottom:4px}
+.ts-stat-l{font-size:.75rem;color:var(--dim);font-weight:500}
 
-.tcard{
-  background:var(--bg2);border:1px solid var(--bd);
-  border-radius:var(--r20);padding:26px 28px;
-  flex:0 0 340px;
-  transition:all .35s cubic-bezier(.22,1,.36,1);
-  position:relative;overflow:hidden;
+/* carousel controls */
+.tc-controls{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:20px 28px;border-top:1px solid var(--bd);
+  background:rgba(255,255,255,.02);
 }
-.tcard::before{
-  content:'\201C';position:absolute;top:6px;right:14px;
-  font-family:'Cormorant Garamond',serif;font-size:5rem;line-height:.8;
-  color:rgba(10,255,108,.07);pointer-events:none;user-select:none;
+.tc-dots{display:flex;gap:8px}
+.tc-dot{
+  height:4px;border-radius:2px;background:var(--bd);
+  transition:all .4s cubic-bezier(.22,1,.36,1);cursor:none;
 }
-.tcard:hover{border-color:var(--bdm);transform:translateY(-4px);box-shadow:0 16px 44px rgba(0,0,0,.4)}
-.tstars{display:flex;gap:3px;margin-bottom:12px}
-.tstars span{color:var(--mint);font-size:.8rem}
-.ttext{font-size:.88rem;color:var(--mu);line-height:1.75;margin-bottom:18px;position:relative;z-index:1}
-.tauth{display:flex;align-items:center;gap:11px}
-.tav{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.88rem;color:white;flex-shrink:0}
-.tname{font-size:.875rem;font-weight:700;color:var(--cr)}
-.trole{font-size:.7rem;color:var(--dim)}
+.tc-dot.on{background:var(--coral);width:28px!important}
+.tc-arrows{display:flex;gap:8px}
+.tc-arrow{
+  width:36px;height:36px;border-radius:50%;
+  border:1px solid var(--bd);background:transparent;
+  display:flex;align-items:center;justify-content:center;
+  cursor:none;color:var(--dim);font-size:.85rem;
+  transition:all .2s;
+}
+.tc-arrow:hover{border-color:var(--bdc);color:var(--coral);background:rgba(255,79,51,.08)}
+
+/* progress bar in carousel */
+.tc-progress{height:2px;background:var(--bd);position:relative}
+.tc-progress-fill{
+  height:100%;background:linear-gradient(90deg,var(--coral),var(--gold));
+  transition:width .1s linear;
+}
 
 /* ── TECH ───────────────────────────────────────────── */
-.mq{overflow:hidden;mask-image:linear-gradient(90deg,transparent,black 6%,black 94%,transparent);-webkit-mask-image:linear-gradient(90deg,transparent,black 6%,black 94%,transparent);margin-bottom:50px}
+.mq-wrap{overflow:hidden;mask-image:linear-gradient(90deg,transparent,black 6%,black 94%,transparent);-webkit-mask-image:linear-gradient(90deg,transparent,black 6%,black 94%,transparent);margin-bottom:52px}
 .mqt{display:flex;gap:8px;width:max-content;animation:mqa 30s linear infinite}
 .mqt:hover{animation-play-state:paused}
 @keyframes mqa{to{transform:translateX(-50%)}}
 .chip{
   display:inline-flex;align-items:center;gap:7px;
-  background:var(--bg2);border:1px solid var(--bd);
-  border-radius:8px;padding:9px 16px;
-  font-size:.75rem;font-weight:600;color:var(--mu);
+  background:var(--void2);border:1px solid var(--bd);border-radius:8px;
+  padding:9px 16px;font-size:.75rem;font-weight:600;color:var(--mu);
   white-space:nowrap;transition:all .25s;cursor:default;
-  font-family:'Space Mono',monospace;
+  font-family:'JetBrains Mono',monospace;
 }
-.chip:hover{background:rgba(10,255,108,.1);border-color:rgba(10,255,108,.35);color:var(--mint);transform:translateY(-3px)}
+.chip:hover{background:rgba(255,79,51,.09);border-color:rgba(255,79,51,.35);color:var(--coral2);transform:translateY(-3px)}
 
 .trgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
 .trc{
-  background:var(--bg2);border:1px solid var(--bd);
-  border-radius:var(--r20);padding:28px 20px;text-align:center;
-  transition:all .35s cubic-bezier(.22,1,.36,1);
+  background:var(--void2);border:1px solid var(--bd);border-radius:var(--r20);
+  padding:26px 18px;text-align:center;transition:all .35s cubic-bezier(.22,1,.36,1);
 }
-.trc:hover{transform:translateY(-4px);border-color:var(--bdm);box-shadow:0 16px 40px rgba(0,0,0,.3)}
-.tr-i{width:46px;height:46px;background:rgba(10,255,108,.1);border:1px solid rgba(10,255,108,.2);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;margin:0 auto 14px;transition:all .35s}
-.trc:hover .tr-i{background:rgba(10,255,108,.2);transform:scale(1.1) rotate(-5deg)}
-.trc h4{font-family:'Cormorant Garamond',serif;font-weight:700;font-size:1.05rem;color:var(--cr);margin-bottom:7px;letter-spacing:-.01em}
+.trc:hover{transform:translateY(-4px);border-color:var(--bdc);box-shadow:0 16px 40px rgba(0,0,0,.3)}
+.tr-i{width:46px;height:46px;background:rgba(255,79,51,.1);border:1px solid rgba(255,79,51,.2);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;margin:0 auto 14px;transition:all .35s}
+.trc:hover .tr-i{background:rgba(255,79,51,.2);transform:scale(1.1) rotate(-5deg)}
+.trc h4{font-family:'Gloock',serif;font-size:1.05rem;color:var(--cream);margin-bottom:7px;letter-spacing:-.01em}
 .trc p{font-size:.77rem;color:var(--dim);line-height:1.65}
 
 /* ── FAQ ────────────────────────────────────────────── */
-.faq{border:1px solid var(--bd);border-radius:var(--r20);overflow:hidden;background:var(--glass);backdrop-filter:blur(10px)}
+.faq{border:1px solid var(--bd);border-radius:var(--r20);overflow:hidden;background:rgba(255,255,255,.02)}
 .faq-i{border-bottom:1px solid var(--bd)}
 .faq-i:last-child{border-bottom:none}
-.faq-q{width:100%;display:flex;align-items:center;justify-content:space-between;padding:20px 26px;background:transparent;border:none;cursor:none;color:var(--cr);font-family:'Outfit',sans-serif;font-size:.95rem;font-weight:600;text-align:left;transition:background .25s}
-.faq-q:hover{background:rgba(10,255,108,.04)}
-.faq-q.op{color:var(--mint)}
-.faq-ch{width:26px;height:26px;min-width:26px;background:var(--bg2);border:1px solid var(--bd);border-radius:7px;display:flex;align-items:center;justify-content:center;transition:all .35s;color:var(--dim);font-size:.75rem}
-.faq-q.op .faq-ch{background:rgba(10,255,108,.15);border-color:rgba(10,255,108,.35);color:var(--mint);transform:rotate(45deg)}
+.faq-q{width:100%;display:flex;align-items:center;justify-content:space-between;padding:20px 26px;background:transparent;border:none;cursor:none;color:var(--cream);font-family:'Manrope',sans-serif;font-size:.95rem;font-weight:600;text-align:left;transition:background .25s}
+.faq-q:hover{background:rgba(255,79,51,.04)}
+.faq-q.op{color:var(--coral)}
+.faq-ch{width:26px;height:26px;min-width:26px;background:var(--void2);border:1px solid var(--bd);border-radius:7px;display:flex;align-items:center;justify-content:center;transition:all .35s;color:var(--dim);font-size:.75rem}
+.faq-q.op .faq-ch{background:rgba(255,79,51,.14);border-color:rgba(255,79,51,.35);color:var(--coral);transform:rotate(45deg)}
 .faq-a{max-height:0;overflow:hidden;transition:max-height .4s cubic-bezier(.22,1,.36,1)}
 .faq-a.op{max-height:200px}
 .faq-a-in{padding:0 26px 20px;font-size:.9rem;color:var(--mu);line-height:1.75}
 
-/* ── SPLIT CTA — LUXURY TREATMENT ──────────────────── */
-.cta-split{
-  display:grid;grid-template-columns:1fr 1fr;
-  min-height:520px;position:relative;z-index:10;overflow:hidden;
+/* ── ELITE CTA ──────────────────────────────────────── */
+.cta-elite{
+  position:relative;z-index:10;overflow:hidden;
+  background:var(--void2);border-top:1px solid var(--bd);
 }
-.cta-half{
-  padding:80px 5%;display:flex;flex-direction:column;
-  justify-content:center;position:relative;overflow:hidden;
-}
-.cta-op{
-  background:linear-gradient(135deg,rgba(10,255,108,.08) 0%,var(--bg2) 60%);
-  border-top:1px solid var(--bd);border-right:1px solid var(--bd);
-}
-.cta-st{
-  background:linear-gradient(135deg,rgba(240,165,0,.08) 0%,var(--bg3) 60%);
-  border-top:1px solid var(--bd);
+/* gradient mesh */
+.cta-mesh{
+  position:absolute;inset:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse 60% 80% at 20% 50%,rgba(255,79,51,.1) 0%,transparent 55%),
+    radial-gradient(ellipse 50% 60% at 80% 50%,rgba(0,212,170,.07) 0%,transparent 55%);
 }
 
-/* huge italic watermark */
+.cta-grid{
+  max-width:1120px;margin:0 auto;padding:80px 5%;
+  display:grid;grid-template-columns:1fr 1fr;gap:0;
+  position:relative;z-index:1;
+}
+.cta-left{padding-right:60px;border-right:1px solid var(--bd)}
+.cta-right{padding-left:60px}
+
+/* watermark number */
 .cta-wm{
-  position:absolute;bottom:-50px;right:-30px;
-  font-family:'Cormorant Garamond',serif;font-style:italic;font-size:14rem;font-weight:700;
-  line-height:.8;pointer-events:none;user-select:none;letter-spacing:-.04em;
-  color:transparent;-webkit-text-stroke:1px;
+  position:absolute;font-family:'Gloock',serif;font-style:italic;
+  font-size:22rem;font-weight:400;line-height:.8;pointer-events:none;user-select:none;
+  color:transparent;
 }
-.cta-op .cta-wm{-webkit-text-stroke-color:rgba(10,255,108,.06)}
-.cta-st .cta-wm{-webkit-text-stroke-color:rgba(240,165,0,.06)}
+.cta-wm-l{left:-60px;bottom:-60px;-webkit-text-stroke:1px rgba(255,79,51,.06);color:transparent}
+.cta-wm-r{right:-60px;bottom:-60px;-webkit-text-stroke:1px rgba(0,212,170,.05);color:transparent}
 
-.cta-pill{
-  display:inline-flex;align-items:center;gap:8px;
-  padding:5px 14px;border-radius:var(--r999);
-  font-family:'Space Mono',monospace;font-size:.67rem;letter-spacing:.09em;text-transform:uppercase;
-  margin-bottom:20px;
+.cta-for{
+  font-family:'JetBrains Mono',monospace;font-size:.67rem;letter-spacing:.12em;
+  text-transform:uppercase;margin-bottom:18px;
+  display:inline-flex;align-items:center;gap:8px;padding:5px 14px;
+  border-radius:var(--r999);
 }
-.cta-op .cta-pill{background:rgba(10,255,108,.1);border:1px solid rgba(10,255,108,.25);color:var(--mint2)}
-.cta-st .cta-pill{background:rgba(240,165,0,.1);border:1px solid rgba(240,165,0,.25);color:var(--gold)}
+.cta-for-op{background:rgba(255,79,51,.1);border:1px solid rgba(255,79,51,.25);color:var(--coral2)}
+.cta-for-st{background:rgba(0,212,170,.1);border:1px solid rgba(0,212,170,.25);color:var(--teal)}
 
-.cta-big{
-  font-family:'Cormorant Garamond',serif;font-weight:700;
-  font-size:clamp(2.4rem,4vw,3.6rem);letter-spacing:-.03em;line-height:.95;
-  margin-bottom:16px;position:relative;z-index:1;
+.cta-title{
+  font-family:'Gloock',serif;font-weight:400;
+  font-size:clamp(2.2rem,3.8vw,3.2rem);letter-spacing:-.03em;line-height:.95;
+  margin-bottom:16px;
 }
-.cta-op .cta-big{color:var(--cr)}
-.cta-st .cta-big{color:var(--cr)}
-.cta-big em{font-style:italic}
-.cta-op .cta-big em{color:var(--mint)}
-.cta-st .cta-big em{color:var(--gold)}
-
-.cta-p{font-size:.95rem;line-height:1.72;color:var(--mu);margin-bottom:28px;position:relative;z-index:1}
-.cta-steps{display:flex;flex-direction:column;gap:10px;margin-bottom:28px;position:relative;z-index:1}
-.cs{display:flex;align-items:center;gap:13px;font-size:.85rem;font-weight:500;color:var(--mu)}
-.csn{
-  width:28px;height:28px;flex-shrink:0;border-radius:7px;
-  display:flex;align-items:center;justify-content:center;
-  font-size:.75rem;font-weight:700;
-}
-.cta-op .csn{background:rgba(10,255,108,.15);color:var(--mint)}
-.cta-st .csn{background:rgba(240,165,0,.15);color:var(--gold)}
-.cta-btns{display:flex;gap:10px;flex-wrap:wrap;position:relative;z-index:1}
+.cta-left .cta-title{color:var(--cream)}
+.cta-left .cta-title em{font-style:italic;color:var(--coral)}
+.cta-right .cta-title{color:var(--cream)}
+.cta-right .cta-title em{font-style:italic;color:var(--teal)}
+.cta-p{font-size:.95rem;color:var(--mu);line-height:1.72;margin-bottom:28px}
+.cta-mini-steps{display:flex;flex-direction:column;gap:10px;margin-bottom:28px}
+.cms{display:flex;align-items:center;gap:13px;font-size:.85rem;color:var(--mu);font-weight:500}
+.cms-n{width:26px;height:26px;border-radius:7px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700}
+.cta-left .cms-n{background:rgba(255,79,51,.15);color:var(--coral)}
+.cta-right .cms-n{background:rgba(0,212,170,.12);color:var(--teal)}
+.cta-btns{display:flex;gap:10px;flex-wrap:wrap}
 
 /* ── FOOTER ─────────────────────────────────────────── */
-footer{
-  background:var(--bg2);border-top:1px solid var(--bd);
-  padding:60px 5% 32px;position:relative;z-index:10;
-}
+footer{background:var(--void2);border-top:1px solid var(--bd);padding:60px 5% 32px;position:relative;z-index:10}
 .fi{max-width:1120px;margin:0 auto}
-.ftop{
-  display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:44px;
-  padding-bottom:40px;border-bottom:1px solid var(--bd);margin-bottom:28px;
-}
-.fbrand{
-  font-family:'Cormorant Garamond',serif;font-weight:600;font-size:1.2rem;
-  letter-spacing:.02em;color:var(--cr);
-  display:flex;align-items:center;gap:9px;margin-bottom:12px;
-}
-.flm{width:26px;height:26px;background:var(--mint);border-radius:7px;display:flex;align-items:center;justify-content:center;box-shadow:0 0 14px var(--mg)}
-.flm svg{width:13px;height:13px;fill:var(--bg)}
-.fdesc{font-size:.79rem;line-height:1.75;color:var(--dim);max-width:210px;font-style:italic}
-.fcol h5{font-size:.64rem;font-weight:700;color:var(--dim);letter-spacing:.1em;text-transform:uppercase;margin-bottom:16px;font-family:'Space Mono',monospace}
+.ftop{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:44px;padding-bottom:40px;border-bottom:1px solid var(--bd);margin-bottom:28px}
+.fbrand{font-family:'Gloock',serif;font-size:1.1rem;letter-spacing:-.01em;color:var(--cream);display:flex;align-items:center;gap:9px;margin-bottom:12px}
+.flm{width:26px;height:26px;background:var(--coral);border-radius:7px;display:flex;align-items:center;justify-content:center;box-shadow:0 0 14px var(--cg)}
+.flm svg{width:13px;height:13px;fill:white}
+.fdesc{font-size:.79rem;line-height:1.75;color:var(--dim);max-width:210px}
+.fcol h5{font-size:.63rem;font-weight:700;color:var(--dim);letter-spacing:.12em;text-transform:uppercase;margin-bottom:16px;font-family:'JetBrains Mono',monospace}
 .fl{list-style:none;display:flex;flex-direction:column;gap:9px}
-.fl a{font-size:.82rem;color:var(--dim);transition:color .2s}
-.fl a:hover{color:var(--mint)}
+.fl a{font-size:.82rem;color:var(--dim);transition:color .2s;font-weight:500}
+.fl a:hover{color:var(--coral2)}
 .fbot{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
 .fcopy{font-size:.74rem;color:var(--vdim)}
 .fstat{display:flex;align-items:center;gap:7px;font-size:.74rem;color:var(--vdim)}
@@ -772,176 +743,174 @@ footer{
 /* ── RESPONSIVE ─────────────────────────────────────── */
 @media(max-width:1024px){.trgrid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:900px){
-  .nl{display:none}.ham{display:flex}
-  .nl.open{
-    display:flex;flex-direction:column;gap:4px;
-    position:absolute;top:68px;left:0;right:0;
-    background:rgba(3,13,7,.97);backdrop-filter:blur(20px);
-    padding:18px 24px 26px;border-bottom:1px solid var(--bd);
-  }
-  .nl.open a{font-size:1rem;padding:10px 0;border-bottom:1px solid var(--bd)}
+  .nav-links{display:none}
+  .ham-wrap{display:flex}
+  .ham{display:flex}
   .hero-in{grid-template-columns:1fr;min-height:auto;padding:0}
   .hright{display:none}
-  .h-metrics{grid-template-columns:1fr 1fr}
-  .stats-row{grid-template-columns:repeat(2,1fr)}
+  .rings-inner{grid-template-columns:repeat(2,1fr)}
+  .how-steps{grid-template-columns:1fr}.how-steps::before{display:none}
   .ba{grid-template-columns:1fr}.ba-a{border-left:none;border-top:1px solid var(--bd)}
+  .tab-panel{grid-template-columns:1fr}.tab-vis{border-left:none;border-top:1px solid var(--bd)}
+  .tslide{grid-template-columns:1fr;gap:24px}.ts-stats{flex-direction:row;flex-wrap:wrap}
   .pcards{grid-template-columns:1fr;max-width:460px}
   .trgrid{grid-template-columns:repeat(2,1fr)}
-  .cta-split{grid-template-columns:1fr}
-  .cta-op{border-right:none;border-bottom:1px solid var(--bd)}
+  .cta-grid{grid-template-columns:1fr}.cta-left{padding-right:0;border-right:none;border-bottom:1px solid var(--bd);padding-bottom:60px}.cta-right{padding-left:0;padding-top:60px}
   .ftop{grid-template-columns:1fr 1fr;gap:28px}
   .s{padding:72px 5%}
 }
 @media(max-width:600px){
-  .h1-serif,.h1-sans{font-size:clamp(2.4rem,10vw,3.2rem)}
+  .nav-links{display:none}
+  .h-word.serif,.h-word.sans{font-size:clamp(2.4rem,9.5vw,3.2rem)}
   .h-ctas{flex-direction:column}
   .bxl{width:100%;justify-content:center}
-  .stats-row{grid-template-columns:1fr}
-  .stat{border-right:none;border-bottom:1px solid var(--bd)}
-  .stat:last-child{border-bottom:none}
+  .rings-inner{grid-template-columns:1fr}
   .trgrid,.ftop{grid-template-columns:1fr}
   .fbot{flex-direction:column;align-items:flex-start}
+  .tslide{padding:32px 24px}
+  .ts-stats{flex-direction:column}
   .cta-btns{flex-direction:column;align-items:stretch}
   .cta-btns .bxl{max-width:360px;margin:0 auto}
-  .h-metrics{flex-direction:column;border-radius:0}
-  .hm{border-right:none;border-bottom:1px solid var(--bd)}
-  .hm:last-child{border-bottom:none}
 }
 </style>
 </head>
 <body>
 
-<div class="circuit"></div>
-<div class="blob-hero"></div>
-<div class="blob-2"></div>
+<!-- ── SVG DEFS ───────────────────────────────────────────── -->
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#FF4F33"/>
+      <stop offset="60%" stop-color="#FFB800"/>
+      <stop offset="100%" stop-color="#00D4AA"/>
+    </linearGradient>
+  </defs>
+</svg>
+
+<!-- ── CANVAS + UI CHROME ────────────────────────────────── -->
+<canvas id="aurora"></canvas>
 <div id="prog"></div>
-<div id="cur-blob"></div>
 <div id="cur"></div>
 <div id="cur-r"></div>
 
-<!-- ── NAV ──────────────────────────────────────────────── -->
-<nav id="nav">
-  <a href="#" class="nlogo">
-    <div class="nm"><svg viewBox="0 0 20 20"><path d="M4 3h12a1 1 0 011 1v3a1 1 0 01-1 1H4a1 1 0 01-1-1V4a1 1 0 011-1zm0 6h12a1 1 0 011 1v3a1 1 0 01-1 1H4a1 1 0 01-1-1v-3a1 1 0 011-1zm0 6h6a1 1 0 011 1v.5a1 1 0 01-1 1H4a1 1 0 01-1-1V16a1 1 0 011-1z"/></svg></div>
-    CampusCopy
-  </a>
-  <ul class="nl" id="nl">
-    <li><a href="#how">How it works</a></li>
-    <li><a href="#features">Features</a></li>
-    <li><a href="#pricing">Pricing</a></li>
-    <li><a href="#faq">FAQ</a></li>
-  </ul>
-  <div class="nr">
-    <a href="https://campuscopy.pages.dev/app" class="btn bglass">Try Demo</a>
-    <a href="https://campuscopy.pages.dev/signup" class="btn bmint">Register →</a>
+<!-- ── FLOATING PILL NAV ─────────────────────────────────── -->
+<div class="nav-wrap">
+  <div class="nav-pill">
+    <a href="#" class="nav-logo">
+      <div class="nav-mark"><svg viewBox="0 0 20 20"><path d="M4 3h12a1 1 0 011 1v3a1 1 0 01-1 1H4a1 1 0 01-1-1V4a1 1 0 011-1zm0 6h12a1 1 0 011 1v3a1 1 0 01-1 1H4a1 1 0 01-1-1v-3a1 1 0 011-1zm0 6h6a1 1 0 011 1v.5a1 1 0 01-1 1H4a1 1 0 01-1-1V16a1 1 0 011-1z"/></svg></div>
+      CampusCopy
+    </a>
+    <nav class="nav-links">
+      <a href="#how">How it works</a>
+      <a href="#features">Features</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#reviews">Reviews</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <div class="nav-cta">
+      <a href="https://campuscopy.pages.dev/app" class="btn bglass">Try Demo</a>
+      <a href="https://campuscopy.pages.dev/signup" class="btn bcoral">Register →</a>
+      <div class="ham-wrap">
+        <button class="ham" id="ham"><span></span><span></span><span></span></button>
+      </div>
+    </div>
   </div>
-  <button class="ham" id="ham"><span></span><span></span><span></span></button>
-</nav>
+</div>
 
 <!-- ── HERO ──────────────────────────────────────────────── -->
 <div id="hero" class="hero">
   <div class="hero-in">
     <div class="hleft">
-      <div class="h-badge"><span class="ldot"></span>Live · Indian Campuses · Razorpay</div>
+      <div class="h-eyebrow"><span class="ldot"></span>Live · Indian Campuses · Razorpay</div>
 
-      <div class="h-clip-wrap">
-        <span class="h1-serif">Campus printing,</span>
-      </div>
-      <div class="h-clip-wrap">
-        <span class="h1-sans">reimagined.</span>
+      <div class="hero-headline">
+        <div class="h-word-row">
+          <span class="h-word serif" style="animation-delay:.2s">Campus</span>
+          <span class="h-word serif" style="animation-delay:.3s">&nbsp;printing,</span>
+        </div>
+        <div class="h-word-row" style="margin-top:4px">
+          <span class="h-word sans accent" style="animation-delay:.45s">reimagined</span>
+          <span class="h-word sans" style="animation-delay:.55s;color:var(--cream)">.</span>
+        </div>
       </div>
 
-      <p class="h-sub">Students upload, pay via Razorpay, and collect — no queues, no cash, no chaos. Shop owners get live orders, WhatsApp alerts &amp; loyalty tools. Up in under 2 minutes.</p>
+      <p class="h-sub">Students upload, pay via Razorpay, and collect — no queues, no cash, no chaos. Shop owners get live orders, WhatsApp alerts &amp; loyalty tools. Live in under 2 minutes.</p>
 
       <div class="h-ctas">
-        <a href="https://campuscopy.pages.dev/signup" class="btn bmint bxl">🏫 Register Your College</a>
+        <a href="https://campuscopy.pages.dev/signup" class="btn bcoral bxl">🏫 Register Your College</a>
         <a href="https://campuscopy.pages.dev/app" class="btn bglass bxl">🎓 Try as Student</a>
       </div>
 
-      <div class="h-metrics">
-        <div class="hm">
-          <div class="hm-n" data-t="0" data-pre="₹" data-su="">₹0</div>
-          <div class="hm-l">Setup cost</div>
-          <div class="stat-bar"></div>
-        </div>
-        <div class="hm">
-          <div class="hm-n" data-t="2" data-pre="" data-su="min">2min</div>
-          <div class="hm-l">To go live</div>
-          <div class="stat-bar"></div>
-        </div>
-        <div class="hm">
-          <div class="hm-n" data-t="3" data-pre="" data-su="%">3%</div>
-          <div class="hm-l">Only fee</div>
-          <div class="stat-bar"></div>
-        </div>
-        <div class="hm">
-          <div class="hm-n" data-t="40" data-pre="+" data-su="%">+40%</div>
-          <div class="hm-l">Revenue lift</div>
-          <div class="stat-bar"></div>
-        </div>
+      <div class="h-live">
+        <span class="h-live-dot"></span>
+        <span class="h-live-text"><span id="live-orders">14</span> orders placed today</span>
+        <div class="h-live-divider"></div>
+        <span class="h-live-amt" id="live-total">₹ 336</span>
+        <div class="h-live-divider"></div>
+        <span class="h-live-text">across <span>5</span> campuses</span>
       </div>
     </div>
 
     <div class="hright">
-      <div class="depth-stack">
-        <!-- Back card with notifications -->
-        <div class="card-back">
-          <div class="notif">
-            <div class="notif-icon ni-green">✅</div>
-            <div class="notif-info">
-              <div class="notif-title">Order #CC-1247 collected</div>
-              <div class="notif-sub">Ananya S. · VIT Pune</div>
+      <div class="card-stage">
+        <!-- floating stat -->
+        <div class="hero-stat-float">
+          <div class="hsf-n">+40%</div>
+          <div class="hsf-l">Revenue lift<br>for operators</div>
+        </div>
+
+        <!-- Back notification cards -->
+        <div class="back-cards">
+          <div class="ncard">
+            <div class="nc-dot nc-g">✅</div>
+            <div class="nc-info">
+              <div class="nc-title">Order #CC-1247 collected</div>
+              <div class="nc-sub">Ananya S. · VIT Pune · 12pg B&W</div>
             </div>
-            <div class="notif-amt">₹24</div>
+            <div class="nc-amt">₹24</div>
           </div>
-          <div class="notif">
-            <div class="notif-icon ni-mint">⚡</div>
-            <div class="notif-info">
-              <div class="notif-title">New order received</div>
-              <div class="notif-sub">Rahul M. · COEP · 8pg Colour</div>
+          <div class="ncard">
+            <div class="nc-dot nc-c">⚡</div>
+            <div class="nc-info">
+              <div class="nc-title">New order received</div>
+              <div class="nc-sub">Rahul M. · COEP · 8pg Colour</div>
             </div>
-            <div class="notif-amt">₹40</div>
+            <div class="nc-amt">₹40</div>
           </div>
-          <div class="notif">
-            <div class="notif-icon ni-gold">🎁</div>
-            <div class="notif-info">
-              <div class="notif-title">Loyalty points redeemed</div>
-              <div class="notif-sub">Priya K. · 100pts = ₹10 off</div>
+          <div class="ncard">
+            <div class="nc-dot nc-t">🎁</div>
+            <div class="nc-info">
+              <div class="nc-title">Loyalty points redeemed</div>
+              <div class="nc-sub">Priya K. · 100pts = ₹10 off</div>
             </div>
-            <div class="notif-amt">-₹10</div>
+            <div class="nc-amt" style="color:var(--coral)">−₹10</div>
           </div>
         </div>
 
-        <!-- Floating stat -->
-        <div class="float-badge">
-          <div class="fb-n">+40%</div>
-          <div class="fb-l">Revenue lift<br>for operators</div>
-        </div>
-
-        <!-- Front card -->
-        <div class="card-front">
-          <div class="cf-top-line"></div>
-          <div class="cf-bar">
-            <div class="cf-logo">Campus<span>Copy</span></div>
-            <div class="cf-pill"><span style="width:6px;height:6px;background:var(--mint);border-radius:50%;animation:lp 2s infinite;display:inline-block"></span>LIVE</div>
+        <!-- Main card -->
+        <div class="main-card">
+          <div class="mc-accent"></div>
+          <div class="mc-top">
+            <div class="mc-logo">Campus<span>Copy</span></div>
+            <div class="mc-status"><span style="width:5px;height:5px;background:var(--teal);border-radius:50%;animation:lp 2s infinite;display:inline-block"></span>LIVE</div>
           </div>
-          <div class="cf-body">
-            <div class="upzone">
-              <span class="uz-i">📄</span>
-              <div class="uz-l">Drop your PDF here</div>
-              <div class="uz-s">or tap to browse · PDF, DOC, PPT</div>
+          <div class="mc-body">
+            <div class="mc-upzone">
+              <span class="mc-upzone-i">📄</span>
+              <div class="mc-upzone-l">Drop your PDF here</div>
+              <div class="mc-upzone-s">or tap to browse · PDF, DOC, PPT</div>
             </div>
-            <div class="cf-opts">
-              <div class="cf-opt"><div class="cf-opt-l">Type</div><div class="cf-opt-v">B&amp;W</div></div>
-              <div class="cf-opt"><div class="cf-opt-l">Copies</div><div class="cf-opt-v">02</div></div>
-              <div class="cf-opt"><div class="cf-opt-l">Pages</div><div class="cf-opt-v">12</div></div>
-              <div class="cf-opt"><div class="cf-opt-l">Layout</div><div class="cf-opt-v">A4</div></div>
+            <div class="mc-opts">
+              <div class="mc-opt"><div class="mc-opt-l">Type</div><div class="mc-opt-v">B&amp;W</div></div>
+              <div class="mc-opt"><div class="mc-opt-l">Copies</div><div class="mc-opt-v">02</div></div>
+              <div class="mc-opt"><div class="mc-opt-l">Pages</div><div class="mc-opt-v">12</div></div>
+              <div class="mc-opt"><div class="mc-opt-l">Layout</div><div class="mc-opt-v">A4</div></div>
             </div>
-            <div class="cf-total">
-              <span class="cf-total-l">Total (24 pages)</span>
-              <span class="cf-total-v">₹ 24</span>
+            <div class="mc-price">
+              <span class="mc-price-l">Total (24 pages)</span>
+              <span class="mc-price-v">₹ 24</span>
             </div>
-            <button class="cf-btn">⚡ Pay via UPI / Card</button>
+            <button class="mc-btn">⚡ Pay via UPI / Card</button>
           </div>
         </div>
       </div>
@@ -949,7 +918,7 @@ footer{
   </div>
 </div>
 
-<!-- ── TICKER ─────────────────────────────────────────────── -->
+<!-- ── CAMPUS TICKER ──────────────────────────────────────── -->
 <div class="ticker">
   <div class="tt">
     <span class="ti">🏫 VIT Pune</span>
@@ -957,86 +926,111 @@ footer{
     <span class="ti">🏫 Symbiosis</span>
     <span class="ti">🏫 MIT Aurangabad</span>
     <span class="ti">🏫 PICT Pune</span>
-    <span class="ti">⚡ <span class="hi">2 min</span> to go live</span>
+    <span class="ti">⚡ <span class="hc">2 min</span> setup</span>
     <span class="ti">💳 Razorpay secured</span>
-    <span class="ti">🔔 WhatsApp alerts</span>
-    <span class="ti">📊 <span class="hi">3%</span> fee only</span>
+    <span class="ti">🔔 <span class="ht">WhatsApp</span> alerts</span>
+    <span class="ti">📊 <span class="hc">3%</span> fee only</span>
     <span class="ti">✅ <span class="hg">Zero queues</span></span>
     <span class="ti">🏫 VIT Pune</span>
     <span class="ti">🏫 COEP Pune</span>
     <span class="ti">🏫 Symbiosis</span>
     <span class="ti">🏫 MIT Aurangabad</span>
     <span class="ti">🏫 PICT Pune</span>
-    <span class="ti">⚡ <span class="hi">2 min</span> to go live</span>
+    <span class="ti">⚡ <span class="hc">2 min</span> setup</span>
     <span class="ti">💳 Razorpay secured</span>
-    <span class="ti">🔔 WhatsApp alerts</span>
-    <span class="ti">📊 <span class="hi">3%</span> fee only</span>
+    <span class="ti">🔔 <span class="ht">WhatsApp</span> alerts</span>
+    <span class="ti">📊 <span class="hc">3%</span> fee only</span>
     <span class="ti">✅ <span class="hg">Zero queues</span></span>
   </div>
 </div>
 
-<!-- ── STATS ──────────────────────────────────────────────── -->
-<div style="padding:60px 5%;position:relative;z-index:10">
-  <div class="stats-row">
-    <div class="stat rv"><div class="stat-n" data-t="0" data-pre="₹" data-su="">₹0</div><div class="stat-l">Setup cost. No hardware needed.</div><div class="stat-bar"></div></div>
-    <div class="stat rv d1"><div class="stat-n" data-t="2" data-pre="" data-su=" min">2 min</div><div class="stat-l">From signup to fully live.</div><div class="stat-bar"></div></div>
-    <div class="stat rv d2"><div class="stat-n" data-t="3" data-pre="" data-su="%">3%</div><div class="stat-l">Fee per transaction. Nothing else.</div><div class="stat-bar"></div></div>
-    <div class="stat rv d3"><div class="stat-n" data-t="40" data-pre="+" data-su="%">+40%</div><div class="stat-l">Avg. revenue lift for operators.</div><div class="stat-bar"></div></div>
+<!-- ── METRIC RINGS ────────────────────────────────────────── -->
+<div class="rings-section">
+  <div class="rings-inner">
+    <div class="ring-card rv">
+      <svg class="ring-svg" viewBox="0 0 100 100">
+        <circle class="ring-track" cx="50" cy="50" r="35"/>
+        <circle class="ring-fill ring-c" cx="50" cy="50" r="35" data-pct="100"/>
+      </svg>
+      <div class="ring-val" style="position:relative;top:auto;left:auto;transform:none;text-align:center;margin-top:-8px;margin-bottom:10px">₹0</div>
+      <div class="ring-label">Setup Cost</div>
+      <div class="ring-desc">No hardware, no contracts. Zero upfront investment.</div>
+    </div>
+    <div class="ring-card rv d1">
+      <svg class="ring-svg" viewBox="0 0 100 100">
+        <circle class="ring-track" cx="50" cy="50" r="35"/>
+        <circle class="ring-fill ring-c" cx="50" cy="50" r="35" data-pct="95"/>
+      </svg>
+      <div class="ring-val" style="position:relative;top:auto;left:auto;transform:none;text-align:center;margin-top:-8px;margin-bottom:10px">2 min</div>
+      <div class="ring-label">Time to Live</div>
+      <div class="ring-desc">From signup to a fully live campus portal.</div>
+    </div>
+    <div class="ring-card rv d2">
+      <svg class="ring-svg" viewBox="0 0 100 100">
+        <circle class="ring-track" cx="50" cy="50" r="35"/>
+        <circle class="ring-fill ring-c" cx="50" cy="50" r="35" data-pct="97"/>
+      </svg>
+      <div class="ring-val" style="position:relative;top:auto;left:auto;transform:none;text-align:center;margin-top:-8px;margin-bottom:10px">3%</div>
+      <div class="ring-label">Only Fee</div>
+      <div class="ring-desc">Per transaction. No monthly charges, ever.</div>
+    </div>
+    <div class="ring-card rv d3">
+      <svg class="ring-svg" viewBox="0 0 100 100">
+        <circle class="ring-track" cx="50" cy="50" r="35"/>
+        <circle class="ring-fill ring-c" cx="50" cy="50" r="35" data-pct="40"/>
+      </svg>
+      <div class="ring-val" style="position:relative;top:auto;left:auto;transform:none;text-align:center;margin-top:-8px;margin-bottom:10px">+40%</div>
+      <div class="ring-label">Revenue Lift</div>
+      <div class="ring-desc">Average increase for operators in first month.</div>
+    </div>
   </div>
 </div>
 
-<div class="div div-m"></div>
+<div class="div-line div-coral"></div>
 
 <!-- ── HOW IT WORKS ────────────────────────────────────────── -->
 <section id="how" class="s">
   <div class="inn">
-    <div class="sec-hd sc rv">
-      <div class="sec-label">How it works</div>
-      <h2 class="sec-title">Three steps to <em>zero queues</em></h2>
-      <p class="sec-sub">No apps. No cash. Upload, pay, collect.</p>
+    <div style="text-align:center;margin-bottom:64px">
+      <div class="sec-eyebrow rv">How it works</div>
+      <h2 class="sec-title rv d1">Three steps to <em>zero queues</em></h2>
+      <p class="sec-sub rv d2" style="margin:0 auto">No app downloads. No cash. Upload, pay, collect.</p>
     </div>
-    <div class="timeline inn-sm">
-      <div class="tl-line"></div>
-      <div class="tl-item rvl">
-        <div class="tl-node">01</div>
-        <div class="tl-body">
-          <span class="tl-emo">📄</span>
-          <h3>Upload your document</h3>
-          <p>Visit your campus portal on any device. Upload a PDF or doc, choose settings — pages, copies, B&amp;W or colour. Takes under 30 seconds from any browser.</p>
-        </div>
+    <div class="how-steps rv">
+      <div class="hstep">
+        <div class="hs-num">01</div>
+        <span class="hs-emoji">📄</span>
+        <h3>Upload your document</h3>
+        <p>Visit your campus portal on any device. Upload a PDF, choose settings — pages, copies, B&amp;W or colour, single or double sided. Takes under 30 seconds.</p>
       </div>
-      <div class="tl-item rvl d1">
-        <div class="tl-node">02</div>
-        <div class="tl-body">
-          <span class="tl-emo">💳</span>
-          <h3>Pay via Razorpay</h3>
-          <p>One tap via UPI, card, or wallet. PCI-DSS compliant. Confirms in under 10 seconds. No cash, no coins, no waiting at a counter just to pay.</p>
-        </div>
+      <div class="hstep">
+        <div class="hs-num">02</div>
+        <span class="hs-emoji">💳</span>
+        <h3>Pay via Razorpay</h3>
+        <p>One tap via UPI, card, or wallet. PCI-DSS compliant checkout. Confirms in under 10 seconds. No cash, no coins, no waiting at a counter just to pay.</p>
       </div>
-      <div class="tl-item rvl d2">
-        <div class="tl-node">03</div>
-        <div class="tl-body">
-          <span class="tl-emo">✅</span>
-          <h3>Walk in and collect</h3>
-          <p>Shop gets an instant WhatsApp + dashboard alert. Walk in, show your order ID, done. Average wait time: under 2 minutes.</p>
-        </div>
+      <div class="hstep">
+        <div class="hs-num">03</div>
+        <span class="hs-emoji">✅</span>
+        <h3>Walk in and collect</h3>
+        <p>Shop gets an instant WhatsApp + dashboard alert. Walk in, show your order ID, done. Average wait time: under 2 minutes.</p>
       </div>
     </div>
   </div>
 </section>
 
-<div class="div"></div>
+<div class="div-line"></div>
 
 <!-- ── BEFORE / AFTER ─────────────────────────────────────── -->
 <section class="s" style="padding-top:60px">
   <div class="inn">
-    <div class="sec-hd rv">
-      <div class="sec-label">The transformation</div>
-      <h2 class="sec-title">Before vs. <em>after</em></h2>
+    <div style="margin-bottom:48px">
+      <div class="sec-eyebrow rv">The Transformation</div>
+      <h2 class="sec-title rv d1">Before vs. <em>after</em> CampusCopy</h2>
     </div>
     <div class="ba rv">
       <div class="ba-col ba-b">
-        <div class="ba-lbl bbl">✕ Before CampusCopy</div>
+        <div class="ba-label lb">✕ Before CampusCopy</div>
         <div class="ba-items">
           <div class="ba-item"><span class="ib">✕</span>Students queue 20–30 min during peak hours</div>
           <div class="ba-item"><span class="ib">✕</span>Cash-only causes errors and disputes</div>
@@ -1047,7 +1041,7 @@ footer{
         </div>
       </div>
       <div class="ba-col ba-a">
-        <div class="ba-lbl bal">✓ After CampusCopy</div>
+        <div class="ba-label la">✓ After CampusCopy</div>
         <div class="ba-items">
           <div class="ba-item"><span class="ia">✓</span>Students pre-order, walk in when ready — zero queue</div>
           <div class="ba-item"><span class="ia">✓</span>Razorpay handles all payments instantly and securely</div>
@@ -1061,115 +1055,120 @@ footer{
   </div>
 </section>
 
-<div class="div"></div>
+<div class="div-line"></div>
 
-<!-- ── FEATURES — HORIZONTAL SCROLL ──────────────────────── -->
-<section id="features" class="s" style="padding-bottom:0">
-  <div class="inn" style="margin-bottom:48px">
-    <div class="sec-hd rv">
-      <div class="sec-label">Features</div>
-      <h2 class="sec-title">Everything for <em>smarter</em> print shops</h2>
+<!-- ── FEATURE TABS ────────────────────────────────────────── -->
+<section id="features" class="s" style="padding-top:60px">
+  <div class="inn">
+    <div style="margin-bottom:48px">
+      <div class="sec-eyebrow rv">Features</div>
+      <h2 class="sec-title rv d1">Everything for <em>smarter</em> print shops</h2>
     </div>
-  </div>
-</section>
-
-<div class="feat-scroll-wrap rv" style="position:relative;z-index:10;padding-bottom:60px">
-  <div class="feat-scroll-track" id="featTrack">
-    <div class="feat-card">
-      <div class="fc-icon">📊</div>
-      <h3>Live Operator Dashboard</h3>
-      <p>Every order appears the moment it's placed — pre-paid, file attached, specs confirmed. No missed orders during the morning rush.</p>
-      <div class="feat-mini">
-        <div class="fm-hd"><span class="fm-l">Live orders</span><span class="fm-r">14 · ₹336</span></div>
-        <div class="fm-rows">
-          <div class="fm-row"><div class="fdot fdg"></div><span class="fm-n">Ananya S. · 12 pg B&W</span><span class="fm-a">₹24</span></div>
-          <div class="fm-row"><div class="fdot fdo"></div><span class="fm-n">Rahul M. · 8 pg Colour</span><span class="fm-a">₹40</span></div>
-          <div class="fm-row"><div class="fdot fdg"></div><span class="fm-n">Priya K. · 24 pg B&W</span><span class="fm-a">₹24</span></div>
-        </div>
+    <div class="feat-tabs-wrap rv">
+      <div class="tab-nav" id="tabNav">
+        <div class="tab-indicator" id="tabIndicator"></div>
+        <button class="tab-btn active" data-tab="0" onclick="switchTab(0)">📊 Dashboard</button>
+        <button class="tab-btn" data-tab="1" onclick="switchTab(1)">🔔 WhatsApp</button>
+        <button class="tab-btn" data-tab="2" onclick="switchTab(2)">🎁 Loyalty</button>
+        <button class="tab-btn" data-tab="3" onclick="switchTab(3)">🏢 Multi-College</button>
       </div>
-    </div>
-    <div class="feat-card">
-      <div class="fc-icon">🔔</div>
-      <h3>WhatsApp &amp; Push Alerts</h3>
-      <p>Instant WhatsApp message plus dashboard notification the moment a student pays. Never miss an order — even away from the screen.</p>
-      <div class="feat-mini" style="margin-top:18px">
-        <div class="fm-hd"><span class="fm-l">WhatsApp · Live</span><span class="fm-r" style="color:var(--mint)">●</span></div>
-        <div class="fm-rows">
-          <div class="fm-row"><span class="fm-n" style="font-size:.68rem">NEW ORDER #CC‑1247 · ₹24 · Paid ✓</span></div>
-          <div class="fm-row"><span class="fm-n" style="font-size:.68rem">NEW ORDER #CC‑1248 · ₹40 · Paid ✓</span></div>
-          <div class="fm-row"><span class="fm-n" style="font-size:.68rem">NEW ORDER #CC‑1249 · ₹24 · Paid ✓</span></div>
+      <div class="tab-panels">
+        <!-- Panel 0 -->
+        <div class="tab-panel active">
+          <div class="tab-text">
+            <h3>Live Operator Dashboard</h3>
+            <p>Every order appears the moment it's placed — pre-paid, file attached, specs confirmed. No missed orders during the morning rush or peak exam season. One screen, total control.</p>
+            <div style="display:flex;gap:10px;flex-wrap:wrap">
+              <span style="font-size:.75rem;color:var(--teal);background:rgba(0,212,170,.1);border:1px solid rgba(0,212,170,.25);padding:4px 12px;border-radius:var(--r999)">Real-time updates</span>
+              <span style="font-size:.75rem;color:var(--coral2);background:rgba(255,79,51,.1);border:1px solid rgba(255,79,51,.25);padding:4px 12px;border-radius:var(--r999)">Pre-paid orders only</span>
+            </div>
+          </div>
+          <div class="tab-vis">
+            <div class="t-dash">
+              <div class="td-hd"><span class="td-l">Live Orders Today</span><span class="td-r">14 · ₹336</span></div>
+              <div class="td-rows">
+                <div class="td-row"><div class="fdot dg"></div><span class="td-n">Ananya S. · 12 pg B&W</span><span class="td-a">₹24</span></div>
+                <div class="td-row"><div class="fdot dc"></div><span class="td-n">Rahul M. · 8 pg Colour</span><span class="td-a">₹40</span></div>
+                <div class="td-row"><div class="fdot dg"></div><span class="td-n">Priya K. · 24 pg B&W</span><span class="td-a">₹24</span></div>
+                <div class="td-row"><div class="fdot dd"></div><span class="td-n">Arjun P. · 6 pg B&W</span><span class="td-a">₹6</span></div>
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
-    <div class="feat-card">
-      <div class="fc-icon">🎁</div>
-      <h3>Loyalty Engine Built-in</h3>
-      <p>Students earn points on every order and redeem for discounts. Operators retain regulars automatically — zero extra setup needed.</p>
-      <div class="feat-mini" style="margin-top:18px">
-        <div class="fm-hd"><span class="fm-l">Loyalty Card</span><span class="fm-r">340 pts</span></div>
-        <div class="fm-rows">
-          <div class="fm-row"><span class="fm-n">Ananya Sharma</span><span class="fm-a">₹34 value</span></div>
-          <div class="fm-row" style="padding:4px 8px;background:rgba(10,255,108,.06);border-radius:6px">
-            <div style="flex:1;height:4px;background:rgba(10,255,108,.15);border-radius:2px;overflow:hidden">
-              <div style="width:68%;height:100%;background:linear-gradient(90deg,var(--mint),var(--gold))"></div>
+        <!-- Panel 1 -->
+        <div class="tab-panel">
+          <div class="tab-text">
+            <h3>WhatsApp &amp; Push Alerts</h3>
+            <p>Instant WhatsApp message plus dashboard notification the moment a student pays. Never miss an order — even when you're away from the screen or helping another customer.</p>
+            <div style="display:flex;gap:10px;flex-wrap:wrap">
+              <span style="font-size:.75rem;color:var(--teal);background:rgba(0,212,170,.1);border:1px solid rgba(0,212,170,.25);padding:4px 12px;border-radius:var(--r999)">Instant delivery</span>
+              <span style="font-size:.75rem;color:var(--gold);background:rgba(255,184,0,.1);border:1px solid rgba(255,184,0,.25);padding:4px 12px;border-radius:var(--r999)">Every single order</span>
+            </div>
+          </div>
+          <div class="tab-vis">
+            <div class="t-wa">
+              <div class="t-wa-hd"><span style="color:var(--teal)">●</span> WhatsApp Alerts · Live</div>
+              <div class="wa-msgs">
+                <div class="wa-m"><div class="wa-mh">NEW ORDER #CC‑1247</div><div class="wa-mt">Ananya S. · 12 pg B&W · ₹24 · Paid ✓</div></div>
+                <div class="wa-m"><div class="wa-mh">NEW ORDER #CC‑1248</div><div class="wa-mt">Rahul M. · 8 pg Colour · ₹40 · Paid ✓</div></div>
+                <div class="wa-m"><div class="wa-mh">NEW ORDER #CC‑1249</div><div class="wa-mt">Priya K. · 24 pg B&W · ₹24 · Paid ✓</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Panel 2 -->
+        <div class="tab-panel">
+          <div class="tab-text">
+            <h3>Loyalty Engine Built-in</h3>
+            <p>Students earn points on every order and redeem them for discounts. Operators retain regulars automatically — zero extra setup, zero maintenance, zero additional cost.</p>
+            <div style="display:flex;gap:10px;flex-wrap:wrap">
+              <span style="font-size:.75rem;color:var(--coral2);background:rgba(255,79,51,.1);border:1px solid rgba(255,79,51,.25);padding:4px 12px;border-radius:var(--r999)">Auto-accrual</span>
+              <span style="font-size:.75rem;color:var(--gold);background:rgba(255,184,0,.1);border:1px solid rgba(255,184,0,.25);padding:4px 12px;border-radius:var(--r999)">+60% repeat orders</span>
+            </div>
+          </div>
+          <div class="tab-vis">
+            <div class="t-loy">
+              <div class="tl-hd"><span>◆</span> Loyalty Card</div>
+              <div class="tl-name">Ananya Sharma</div>
+              <div class="tl-pts">340</div>
+              <div class="tl-sub">points · worth ₹34 in discounts</div>
+              <div class="tl-bg"><div class="tl-fg"></div></div>
+            </div>
+          </div>
+        </div>
+        <!-- Panel 3 -->
+        <div class="tab-panel">
+          <div class="tab-text">
+            <h3>Multi-College, Multi-Shop</h3>
+            <p>Each campus gets isolated data, custom branding, and its own operator panel. One platform powers unlimited colleges — fully scoped, fully secure, no data leakage.</p>
+            <div style="display:flex;gap:10px;flex-wrap:wrap">
+              <span style="font-size:.75rem;color:var(--teal);background:rgba(0,212,170,.1);border:1px solid rgba(0,212,170,.25);padding:4px 12px;border-radius:var(--r999)">Isolated data</span>
+              <span style="font-size:.75rem;color:var(--coral2);background:rgba(255,79,51,.1);border:1px solid rgba(255,79,51,.25);padding:4px 12px;border-radius:var(--r999)">Unlimited colleges</span>
+            </div>
+          </div>
+          <div class="tab-vis">
+            <div class="t-ms">
+              <div class="ms-r"><span class="ms-n">VIT Pune</span><span class="ms-badge mb-t">Live · 8 orders</span></div>
+              <div class="ms-r"><span class="ms-n">COEP Campus</span><span class="ms-badge mb-t">Live · 4 orders</span></div>
+              <div class="ms-r"><span class="ms-n">Symbiosis</span><span class="ms-badge mb-c">Setting up…</span></div>
+              <div class="ms-r"><span class="ms-n">MIT Aurangabad</span><span class="ms-badge mb-t">Live · 2 orders</span></div>
             </div>
           </div>
         </div>
       </div>
     </div>
-    <div class="feat-card">
-      <div class="fc-icon">🏢</div>
-      <h3>Multi-College, Multi-Shop</h3>
-      <p>Each campus gets isolated data, custom branding, and its own operator panel. One platform, unlimited colleges, fully scoped.</p>
-      <div class="feat-mini" style="margin-top:18px">
-        <div class="fm-hd"><span class="fm-l">All Colleges</span></div>
-        <div class="fm-rows">
-          <div class="fm-row"><div class="fdot fdg"></div><span class="fm-n">VIT Pune</span><span class="fm-a">8 orders</span></div>
-          <div class="fm-row"><div class="fdot fdg"></div><span class="fm-n">COEP Campus</span><span class="fm-a">4 orders</span></div>
-          <div class="fm-row"><div class="fdot fdo"></div><span class="fm-n">Symbiosis</span><span class="fm-a">Setting up</span></div>
-        </div>
-      </div>
-    </div>
-    <div class="feat-card">
-      <div class="fc-icon">💳</div>
-      <h3>Razorpay Direct Payouts</h3>
-      <p>All payments are collected via Razorpay's PCI-DSS compliant gateway and deposited directly into your linked bank account — no intermediaries.</p>
-      <div class="feat-mini" style="margin-top:18px">
-        <div class="fm-hd"><span class="fm-l">Today's earnings</span></div>
-        <div class="fm-rows">
-          <div class="fm-row"><span class="fm-n">Gross revenue</span><span class="fm-a">₹336</span></div>
-          <div class="fm-row"><span class="fm-n">Platform fee (3%)</span><span class="fm-a" style="color:var(--dim)">−₹10</span></div>
-          <div class="fm-row" style="background:rgba(10,255,108,.06)"><span class="fm-n" style="font-weight:700;color:var(--cr)">Net payout</span><span class="fm-a" style="color:var(--mint)">₹326</span></div>
-        </div>
-      </div>
-    </div>
-    <div class="feat-card">
-      <div class="fc-icon">📴</div>
-      <h3>Offline PWA</h3>
-      <p>Students can queue orders even on spotty campus WiFi. The app works offline and syncs automatically when connectivity is restored — no orders lost.</p>
-      <div class="feat-mini" style="margin-top:18px">
-        <div class="fm-hd"><span class="fm-l">Network status</span><span class="fm-r" style="color:var(--gold)">Offline</span></div>
-        <div class="fm-rows">
-          <div class="fm-row"><span class="fm-n">2 orders queued locally</span><span class="fm-a" style="color:var(--gold)">Pending</span></div>
-          <div class="fm-row"><span class="fm-n">Will sync on reconnect</span></div>
-        </div>
-      </div>
-    </div>
   </div>
-  <div class="scroll-hint rv">
-    <span>←</span> drag to explore all features <span>→</span>
-  </div>
-</div>
+</section>
 
-<div class="div div-m"></div>
+<div class="div-line div-coral"></div>
 
 <!-- ── PRICING ─────────────────────────────────────────────── -->
 <section id="pricing" class="s">
   <div class="inn">
-    <div class="sec-hd sc rv">
-      <div class="sec-label">Pricing</div>
-      <h2 class="sec-title">Transparent. <em>Fair. Always.</em></h2>
-      <p class="sec-sub">No monthly subscriptions. No setup fees. We only earn when you earn.</p>
+    <div style="text-align:center;margin-bottom:52px">
+      <div class="sec-eyebrow rv">Pricing</div>
+      <h2 class="sec-title rv d1">Transparent. <em>Fair.</em> <strong>Always.</strong></h2>
+      <p class="sec-sub rv d2" style="margin:0 auto">No monthly subscriptions. No setup fees. We only earn when you earn.</p>
     </div>
     <div class="pcards">
       <div class="pc rv">
@@ -1205,60 +1204,103 @@ footer{
           <li><span class="ck"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></span>Razorpay direct payouts</li>
           <li><span class="ck"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></span>2-minute onboarding</li>
         </ul>
-        <a href="https://campuscopy.pages.dev/signup" class="btn bmint" style="width:100%;justify-content:center">Register Your College →</a>
+        <a href="https://campuscopy.pages.dev/signup" class="btn bcoral" style="width:100%;justify-content:center">Register Your College →</a>
       </div>
     </div>
   </div>
 </section>
 
-<div class="div"></div>
+<div class="div-line"></div>
 
-<!-- ── TESTIMONIALS — DUAL MARQUEE ────────────────────────── -->
-<section id="reviews" class="s">
-  <div class="inn" style="margin-bottom:48px">
-    <div class="sec-hd sc rv">
-      <div class="sec-label">Reviews</div>
-      <h2 class="sec-title">Loved by students <em>&amp; operators</em></h2>
+<!-- ── TESTIMONIALS — CAROUSEL ────────────────────────────── -->
+<section id="reviews" class="s" style="padding-top:60px">
+  <div class="inn">
+    <div style="text-align:center;margin-bottom:48px">
+      <div class="sec-eyebrow rv">Reviews</div>
+      <h2 class="sec-title rv d1">Loved by students <em>&amp; operators</em></h2>
     </div>
-  </div>
-  <div class="tmarquee-wrap rv">
-    <!-- Row 1: forward -->
-    <div class="tmarquee fwd">
-      <div class="tcard"><div class="tstars"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div><p class="ttext">"No more standing in line between lectures. I upload from the hostel, pay in 10 seconds, and walk in. Genuinely changed my college life."</p><div class="tauth"><div class="tav" style="background:linear-gradient(135deg,#3b82f6,#8b5cf6)">A</div><div><div class="tname">Ananya Sharma</div><div class="trole">B.Tech CSE, VIT Pune</div></div></div></div>
-      <div class="tcard"><div class="tstars"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div><p class="ttext">"Revenue is up 40% because we handle twice the volume with the same staff. Peak hour chaos is completely gone."</p><div class="tauth"><div class="tav" style="background:linear-gradient(135deg,#f59e0b,#ef4444)">R</div><div><div class="tname">Rajiv Mehta</div><div class="trole">Shop Owner, COEP Campus</div></div></div></div>
-      <div class="tcard"><div class="tstars"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div><p class="ttext">"Setup took 2 minutes. The WhatsApp notification for each order is a game changer — I don't need to watch the screen constantly anymore."</p><div class="tauth"><div class="tav" style="background:linear-gradient(135deg,#10b981,#3b82f6)">P</div><div><div class="tname">Priya Kulkarni</div><div class="trole">Operator, Symbiosis</div></div></div></div>
-      <div class="tcard"><div class="tstars"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div><p class="ttext">"The loyalty points are brilliant. Students actively prefer our shop now. Repeat orders went up by 60% in the first month."</p><div class="tauth"><div class="tav" style="background:linear-gradient(135deg,#ec4899,#f59e0b)">S</div><div><div class="tname">Suresh Nair</div><div class="trole">Shop Owner, MIT Aurangabad</div></div></div></div>
-      <!-- Duplicate for seamless loop -->
-      <div class="tcard"><div class="tstars"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div><p class="ttext">"No more standing in line between lectures. I upload from the hostel, pay in 10 seconds, and walk in. Genuinely changed my college life."</p><div class="tauth"><div class="tav" style="background:linear-gradient(135deg,#3b82f6,#8b5cf6)">A</div><div><div class="tname">Ananya Sharma</div><div class="trole">B.Tech CSE, VIT Pune</div></div></div></div>
-      <div class="tcard"><div class="tstars"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div><p class="ttext">"Revenue is up 40% because we handle twice the volume with the same staff. Peak hour chaos is completely gone."</p><div class="tauth"><div class="tav" style="background:linear-gradient(135deg,#f59e0b,#ef4444)">R</div><div><div class="tname">Rajiv Mehta</div><div class="trole">Shop Owner, COEP Campus</div></div></div></div>
-      <div class="tcard"><div class="tstars"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div><p class="ttext">"Setup took 2 minutes. The WhatsApp notification for each order is a game changer — I don't need to watch the screen constantly anymore."</p><div class="tauth"><div class="tav" style="background:linear-gradient(135deg,#10b981,#3b82f6)">P</div><div><div class="tname">Priya Kulkarni</div><div class="trole">Operator, Symbiosis</div></div></div></div>
-      <div class="tcard"><div class="tstars"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div><p class="ttext">"The loyalty points are brilliant. Students actively prefer our shop now. Repeat orders went up by 60% in the first month."</p><div class="tauth"><div class="tav" style="background:linear-gradient(135deg,#ec4899,#f59e0b)">S</div><div><div class="tname">Suresh Nair</div><div class="trole">Shop Owner, MIT Aurangabad</div></div></div></div>
-    </div>
-    <!-- Row 2: reverse -->
-    <div class="tmarquee rev">
-      <div class="tcard"><div class="tstars"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div><p class="ttext">"I was sceptical at first but setup was genuinely under 2 minutes. Students started ordering the same day we went live."</p><div class="tauth"><div class="tav" style="background:linear-gradient(135deg,#06b6d4,#3b82f6)">K</div><div><div class="tname">Kiran Desai</div><div class="trole">Shop Owner, PICT Pune</div></div></div></div>
-      <div class="tcard"><div class="tstars"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div><p class="ttext">"Finally I can order prints from my phone before I even leave my hostel. By the time I walk to the shop, it's ready."</p><div class="tauth"><div class="tav" style="background:linear-gradient(135deg,#8b5cf6,#ec4899)">M</div><div><div class="tname">Meera Iyer</div><div class="trole">M.Tech ECE, COEP Pune</div></div></div></div>
-      <div class="tcard"><div class="tstars"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div><p class="ttext">"The coupon system lets me offer discounts during exam season. It drives huge volume spikes and keeps students loyal."</p><div class="tauth"><div class="tav" style="background:linear-gradient(135deg,#f59e0b,#10b981)">D</div><div><div class="tname">Deepak Rao</div><div class="trole">Operator, Symbiosis Pune</div></div></div></div>
-      <div class="tcard"><div class="tstars"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div><p class="ttext">"The order history and digital receipts have eliminated all disputes. No more 'I paid you but I don't have proof' situations."</p><div class="tauth"><div class="tav" style="background:linear-gradient(135deg,#ef4444,#f59e0b)">V</div><div><div class="tname">Vikram Joshi</div><div class="trole">B.Com, VIT Pune</div></div></div></div>
-      <!-- Duplicates -->
-      <div class="tcard"><div class="tstars"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div><p class="ttext">"I was sceptical at first but setup was genuinely under 2 minutes. Students started ordering the same day we went live."</p><div class="tauth"><div class="tav" style="background:linear-gradient(135deg,#06b6d4,#3b82f6)">K</div><div><div class="tname">Kiran Desai</div><div class="trole">Shop Owner, PICT Pune</div></div></div></div>
-      <div class="tcard"><div class="tstars"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div><p class="ttext">"Finally I can order prints from my phone before I even leave my hostel. By the time I walk to the shop, it's ready."</p><div class="tauth"><div class="tav" style="background:linear-gradient(135deg,#8b5cf6,#ec4899)">M</div><div><div class="tname">Meera Iyer</div><div class="trole">M.Tech ECE, COEP Pune</div></div></div></div>
-      <div class="tcard"><div class="tstars"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div><p class="ttext">"The coupon system lets me offer discounts during exam season. It drives huge volume spikes and keeps students loyal."</p><div class="tauth"><div class="tav" style="background:linear-gradient(135deg,#f59e0b,#10b981)">D</div><div><div class="tname">Deepak Rao</div><div class="trole">Operator, Symbiosis Pune</div></div></div></div>
-      <div class="tcard"><div class="tstars"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div><p class="ttext">"The order history and digital receipts have eliminated all disputes. No more 'I paid you but I don't have proof' situations."</p><div class="tauth"><div class="tav" style="background:linear-gradient(135deg,#ef4444,#f59e0b)">V</div><div><div class="tname">Vikram Joshi</div><div class="trole">B.Com, VIT Pune</div></div></div></div>
+    <div class="tcarousel rv" id="carousel">
+      <div class="tc-progress"><div class="tc-progress-fill" id="tcProg" style="width:0%"></div></div>
+      <div class="tslides" id="tslides">
+
+        <div class="tslide">
+          <div>
+            <p class="ts-quote">"No more standing in line between lectures. I upload from the hostel, pay in 10 seconds, and walk in. CampusCopy genuinely changed my college life."</p>
+            <div class="ts-author">
+              <div class="ts-av" style="background:linear-gradient(135deg,#3b82f6,#8b5cf6)">A</div>
+              <div><div class="ts-name">Ananya Sharma</div><div class="ts-role">B.Tech CSE, VIT Pune</div></div>
+            </div>
+          </div>
+          <div class="ts-stats">
+            <div class="ts-stat"><div class="ts-stat-n">10 sec</div><div class="ts-stat-l">Average payment time</div></div>
+            <div class="ts-stat"><div class="ts-stat-n">&lt; 2 min</div><div class="ts-stat-l">Average collection wait</div></div>
+          </div>
+        </div>
+
+        <div class="tslide">
+          <div>
+            <p class="ts-quote">"Our peak hour chaos is completely gone. Orders come in pre-paid with clear specs. Revenue is up 40% — we handle twice the volume with the same staff."</p>
+            <div class="ts-author">
+              <div class="ts-av" style="background:linear-gradient(135deg,#f59e0b,#ef4444)">R</div>
+              <div><div class="ts-name">Rajiv Mehta</div><div class="ts-role">Shop Owner, COEP Campus</div></div>
+            </div>
+          </div>
+          <div class="ts-stats">
+            <div class="ts-stat"><div class="ts-stat-n">+40%</div><div class="ts-stat-l">Revenue increase</div></div>
+            <div class="ts-stat"><div class="ts-stat-n">2×</div><div class="ts-stat-l">Volume with same staff</div></div>
+          </div>
+        </div>
+
+        <div class="tslide">
+          <div>
+            <p class="ts-quote">"Setup literally took 2 minutes. The WhatsApp notification for each order is a game changer — I don't even need to watch the screen constantly anymore."</p>
+            <div class="ts-author">
+              <div class="ts-av" style="background:linear-gradient(135deg,#10b981,#3b82f6)">P</div>
+              <div><div class="ts-name">Priya Kulkarni</div><div class="ts-role">Print Shop Operator, Symbiosis</div></div>
+            </div>
+          </div>
+          <div class="ts-stats">
+            <div class="ts-stat"><div class="ts-stat-n">2 min</div><div class="ts-stat-l">Time to go live</div></div>
+            <div class="ts-stat"><div class="ts-stat-n">Zero</div><div class="ts-stat-l">Missed orders since launch</div></div>
+          </div>
+        </div>
+
+        <div class="tslide">
+          <div>
+            <p class="ts-quote">"The loyalty points are brilliant. Students actively prefer our shop now because they're earning rewards. Repeat orders went up 60% in the first month."</p>
+            <div class="ts-author">
+              <div class="ts-av" style="background:linear-gradient(135deg,#ec4899,#f59e0b)">S</div>
+              <div><div class="ts-name">Suresh Nair</div><div class="ts-role">Shop Owner, MIT Aurangabad</div></div>
+            </div>
+          </div>
+          <div class="ts-stats">
+            <div class="ts-stat"><div class="ts-stat-n">+60%</div><div class="ts-stat-l">Repeat orders (Month 1)</div></div>
+            <div class="ts-stat"><div class="ts-stat-n">₹0</div><div class="ts-stat-l">Extra cost for loyalty system</div></div>
+          </div>
+        </div>
+
+      </div>
+      <div class="tc-controls">
+        <div class="tc-dots" id="tcDots"></div>
+        <div class="tc-arrows">
+          <button class="tc-arrow" onclick="carouselPrev()">‹</button>
+          <button class="tc-arrow" onclick="carouselNext()">›</button>
+        </div>
+      </div>
     </div>
   </div>
 </section>
 
-<div class="div div-m"></div>
+<div class="div-line div-coral"></div>
 
 <!-- ── TECH ────────────────────────────────────────────────── -->
 <section id="tech" class="s">
   <div class="inn">
-    <div class="sec-hd sc rv">
-      <div class="sec-label">Tech Stack</div>
-      <h2 class="sec-title">Built for <em>reliability at scale</em></h2>
+    <div style="text-align:center;margin-bottom:52px">
+      <div class="sec-eyebrow rv">Tech Stack</div>
+      <h2 class="sec-title rv d1">Built for <em>reliability</em> at scale</h2>
     </div>
-    <div class="mq rv">
+    <div class="mq-wrap rv">
       <div class="mqt">
         <span class="chip">⚡ Next.js</span><span class="chip">🔥 Firebase</span><span class="chip">💳 Razorpay</span><span class="chip">💬 WhatsApp API</span><span class="chip">☁️ Cloudflare Pages</span><span class="chip">▲ Vercel</span><span class="chip">🔔 Firebase FCM</span><span class="chip">📦 Node.js</span><span class="chip">🎨 Tailwind CSS</span><span class="chip">🔐 JWT Auth</span><span class="chip">📱 PWA Offline</span><span class="chip">🛡️ RLS Policies</span>
         <span class="chip">⚡ Next.js</span><span class="chip">🔥 Firebase</span><span class="chip">💳 Razorpay</span><span class="chip">💬 WhatsApp API</span><span class="chip">☁️ Cloudflare Pages</span><span class="chip">▲ Vercel</span><span class="chip">🔔 Firebase FCM</span><span class="chip">📦 Node.js</span><span class="chip">🎨 Tailwind CSS</span><span class="chip">🔐 JWT Auth</span><span class="chip">📱 PWA Offline</span><span class="chip">🛡️ RLS Policies</span>
@@ -1273,14 +1315,14 @@ footer{
   </div>
 </section>
 
-<div class="div"></div>
+<div class="div-line"></div>
 
 <!-- ── FAQ ─────────────────────────────────────────────────── -->
 <section id="faq" class="s">
   <div class="inn-sm">
-    <div class="sec-hd sc rv">
-      <div class="sec-label">FAQ</div>
-      <h2 class="sec-title">Common <em>questions</em></h2>
+    <div style="text-align:center;margin-bottom:52px">
+      <div class="sec-eyebrow rv">FAQ</div>
+      <h2 class="sec-title rv d1">Common <em>questions</em></h2>
     </div>
     <div class="faq rv">
       <div class="faq-i"><button class="faq-q" onclick="tf(this)">Do I need software installs or hardware?<span class="faq-ch">+</span></button><div class="faq-a"><div class="faq-a-in">No. CampusCopy is fully web-based. Students use any browser on any device. Operators use a web dashboard. No printer integration required — the system delivers the file and specs; the printer works as normal.</div></div></div>
@@ -1293,35 +1335,40 @@ footer{
   </div>
 </section>
 
-<!-- ── SPLIT CTA ───────────────────────────────────────────── -->
-<div class="cta-split">
-  <div class="cta-half cta-op">
-    <div class="cta-wm">Shop</div>
-    <div class="cta-pill">🏫 For Shop Owners</div>
-    <div class="cta-big">Register your<br>college <em>today</em></div>
-    <p class="cta-p">Zero setup cost. Go live in 2 minutes. Earn 40% more revenue with the same staff — no hardware investment required.</p>
-    <div class="cta-steps">
-      <div class="cs"><div class="csn">1</div><span>Register your college</span></div>
-      <div class="cs"><div class="csn">2</div><span>Connect your Razorpay account</span></div>
-      <div class="cs"><div class="csn">3</div><span>Share the student portal URL</span></div>
+<!-- ── ELITE SPLIT CTA ─────────────────────────────────────── -->
+<div class="cta-elite">
+  <div class="cta-mesh"></div>
+  <div class="cta-grid">
+    <div class="cta-wm cta-wm-l">Shop</div>
+    <div class="cta-wm cta-wm-r" style="left:auto">Study</div>
+
+    <div class="cta-left">
+      <div class="cta-for cta-for-op rv">🏫 For Shop Owners</div>
+      <div class="cta-title rv d1">Register your<br>college <em>today</em></div>
+      <p class="cta-p rv d2">Zero setup cost. Go live in 2 minutes. Handle twice the volume with the same staff — no hardware investment required.</p>
+      <div class="cta-mini-steps rv d2">
+        <div class="cms"><div class="cms-n">1</div><span>Register your college</span></div>
+        <div class="cms"><div class="cms-n">2</div><span>Connect your Razorpay account</span></div>
+        <div class="cms"><div class="cms-n">3</div><span>Share the student portal URL</span></div>
+      </div>
+      <div class="cta-btns rv d3">
+        <a href="https://campuscopy.pages.dev/signup" class="btn bcoral bxl">Register Your College →</a>
+      </div>
     </div>
-    <div class="cta-btns">
-      <a href="https://campuscopy.pages.dev/signup" class="btn bmint bxl">Register Your College →</a>
-    </div>
-  </div>
-  <div class="cta-half cta-st">
-    <div class="cta-wm">Study</div>
-    <div class="cta-pill">🎓 For Students</div>
-    <div class="cta-big">Print without<br>the <em>queue</em></div>
-    <p class="cta-p">Upload from your hostel, pay instantly via UPI or card, and walk in when it's ready. No cash, no waiting, no stress.</p>
-    <div class="cta-steps">
-      <div class="cs"><div class="csn">1</div><span>Upload your PDF from any device</span></div>
-      <div class="cs"><div class="csn">2</div><span>Pay via UPI, card, or wallet</span></div>
-      <div class="cs"><div class="csn">3</div><span>Walk in and collect in minutes</span></div>
-    </div>
-    <div class="cta-btns">
-      <a href="https://campuscopy.pages.dev/app" class="btn bgold bxl">Open Student App →</a>
-      <a href="https://campuscopy.vercel.app" class="btn bglass blg">Admin Dashboard</a>
+
+    <div class="cta-right">
+      <div class="cta-for cta-for-st rv">🎓 For Students</div>
+      <div class="cta-title rv d1">Print without<br>the <em>queue</em></div>
+      <p class="cta-p rv d2">Upload from your hostel, pay instantly via UPI or card, and walk in when it's ready. No cash, no waiting, no stress.</p>
+      <div class="cta-mini-steps rv d2">
+        <div class="cms"><div class="cms-n">1</div><span>Upload your PDF from any device</span></div>
+        <div class="cms"><div class="cms-n">2</div><span>Pay via UPI, card, or wallet</span></div>
+        <div class="cms"><div class="cms-n">3</div><span>Walk in and collect in minutes</span></div>
+      </div>
+      <div class="cta-btns rv d3">
+        <a href="https://campuscopy.pages.dev/app" class="btn bteal bxl">Open Student App →</a>
+        <a href="https://campuscopy.vercel.app" class="btn bglass blg">Admin Dashboard</a>
+      </div>
     </div>
   </div>
 </div>
@@ -1346,68 +1393,173 @@ footer{
 </footer>
 
 <script>
-/* ── CURSOR ─────────────────────────────────────────── */
-const cur=document.getElementById('cur'),cr=document.getElementById('cur-r'),blob=document.getElementById('cur-blob');
-let mx=0,my=0,rx=0,ry=0,bx=0,by=0;
-document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px'},{passive:true});
-(function ar(){
-  rx+=(mx-rx)*.1;ry+=(my-ry)*.1;
-  bx+=(mx-bx)*.04;by+=(my-by)*.04;
-  cr.style.left=rx+'px';cr.style.top=ry+'px';
-  blob.style.left=bx+'px';blob.style.top=by+'px';
-  requestAnimationFrame(ar);
+/* ── AURORA CANVAS ──────────────────────────────────── */
+(function(){
+  const c=document.getElementById('aurora');
+  const ctx=c.getContext('2d');
+  let W,H,t=0;
+  function resize(){W=c.width=window.innerWidth;H=c.height=window.innerHeight}
+  resize();window.addEventListener('resize',resize,{passive:true});
+  const orbs=[
+    {x:.15,y:.2,r:.45,c:[255,79,51],s:1},
+    {x:.85,y:.15,r:.5,c:[0,212,170],s:.8},
+    {x:.5,y:.8,r:.4,c:[255,184,0],s:.6},
+    {x:.1,y:.7,r:.35,c:[255,79,51],s:.5},
+    {x:.9,y:.7,r:.3,c:[0,212,170],s:.4},
+  ];
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    t+=.003;
+    orbs.forEach((o,i)=>{
+      const ox=W*(o.x+Math.sin(t*o.s+i)*0.15);
+      const oy=H*(o.y+Math.cos(t*o.s*1.3+i)*0.12);
+      const r=Math.min(W,H)*o.r;
+      const grd=ctx.createRadialGradient(ox,oy,0,ox,oy,r);
+      grd.addColorStop(0,`rgba(${o.c.join(',')},0.14)`);
+      grd.addColorStop(1,`rgba(${o.c.join(',')},0)`);
+      ctx.beginPath();ctx.arc(ox,oy,r,0,Math.PI*2);
+      ctx.fillStyle=grd;ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
 })();
 
-/* ── PROGRESS ───────────────────────────────────────── */
-window.addEventListener('scroll',()=>{
-  document.getElementById('prog').style.width=Math.min((window.scrollY/(document.body.scrollHeight-window.innerHeight))*100,100)+'%';
-},{passive:true});
+/* ── CURSOR ─────────────────────────────────────────── */
+const cur=document.getElementById('cur'),cr=document.getElementById('cur-r');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px'},{passive:true});
+(function ar(){rx+=(mx-rx)*.1;ry+=(my-ry)*.1;cr.style.left=rx+'px';cr.style.top=ry+'px';requestAnimationFrame(ar)})();
 
-/* ── NAV ────────────────────────────────────────────── */
-const nav=document.getElementById('nav');
-window.addEventListener('scroll',()=>nav.classList.toggle('sc',window.scrollY>40),{passive:true});
+/* ── PROGRESS ───────────────────────────────────────── */
+window.addEventListener('scroll',()=>document.getElementById('prog').style.width=Math.min((window.scrollY/(document.body.scrollHeight-window.innerHeight))*100,100)+'%',{passive:true});
 
 /* ── HAMBURGER ──────────────────────────────────────── */
-const ham=document.getElementById('ham'),nl=document.getElementById('nl');
-ham.addEventListener('click',()=>{ham.classList.toggle('open');nl.classList.toggle('open')});
-nl.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{ham.classList.remove('open');nl.classList.remove('open')}));
+const ham=document.getElementById('ham');
+if(ham){
+  ham.addEventListener('click',()=>ham.classList.toggle('open'));
+}
 
-/* ── REVEAL + SECTION UNDERLINE ─────────────────────── */
+/* ── REVEAL ─────────────────────────────────────────── */
 const obs=new IntersectionObserver(es=>{
   es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('on');obs.unobserve(e.target)}});
-},{threshold:.08,rootMargin:'0px 0px -40px 0px'});
-document.querySelectorAll('.rv,.rvl,.rvr,.sec-hd').forEach(el=>obs.observe(el));
+},{threshold:.07,rootMargin:'0px 0px -36px 0px'});
+document.querySelectorAll('.rv,.rvl').forEach(el=>obs.observe(el));
 
-/* ── COUNTERS ───────────────────────────────────────── */
-function animCnt(el){
-  const t=parseInt(el.dataset.t)||0,pre=el.dataset.pre||'',su=el.dataset.su||'';
-  if(t===0){el.textContent=pre+'0'+su;return}
-  const s=Date.now(),d=1300;
-  (function f(){
-    const p=Math.min((Date.now()-s)/d,1),ease=1-Math.pow(1-p,3);
-    el.textContent=pre+Math.round(ease*t)+su;
-    if(p<1)requestAnimationFrame(f);
-  })();
+/* ── ANIMATED RINGS ─────────────────────────────────── */
+const ringObs=new IntersectionObserver(es=>{
+  es.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.querySelectorAll('.ring-fill').forEach(ring=>{
+        const pct=parseFloat(ring.dataset.pct)||100;
+        const circ=2*Math.PI*35;
+        const offset=circ*(1-pct/100);
+        setTimeout(()=>ring.style.strokeDashoffset=offset,200);
+      });
+      ringObs.unobserve(e.target);
+    }
+  });
+},{threshold:.3});
+document.querySelectorAll('.ring-card').forEach(el=>ringObs.observe(el));
+
+/* ── LIVE ORDER COUNTER ──────────────────────────────── */
+let orderCount=14,total=336;
+const names=['Aditya K.','Meera P.','Rohan S.','Tanvi B.','Kiran M.','Sanjay R.'];
+const types=['12 pg B&W','8 pg Colour','24 pg B&W','6 pg B&W','18 pg B&W'];
+const amts={'12 pg B&W':12,'8 pg Colour':40,'24 pg B&W':24,'6 pg B&W':6,'18 pg B&W':18};
+setInterval(()=>{
+  if(Math.random()>.5){
+    const t=types[Math.floor(Math.random()*types.length)];
+    orderCount++;total+=amts[t];
+    const el=document.getElementById('live-orders');
+    const tel=document.getElementById('live-total');
+    if(el)el.textContent=orderCount;
+    if(tel)tel.textContent='₹ '+total;
+  }
+},4800);
+
+/* ── FEATURE TABS ───────────────────────────────────── */
+function switchTab(idx){
+  const tabs=document.querySelectorAll('.tab-btn');
+  const panels=document.querySelectorAll('.tab-panel');
+  const ind=document.getElementById('tabIndicator');
+  tabs.forEach((t,i)=>t.classList.toggle('active',i===idx));
+  panels.forEach((p,i)=>p.classList.toggle('active',i===idx));
+  // position indicator
+  const activeTab=tabs[idx];
+  const nav=document.getElementById('tabNav');
+  const navRect=nav.getBoundingClientRect();
+  const tabRect=activeTab.getBoundingClientRect();
+  ind.style.left=(tabRect.left-navRect.left)+'px';
+  ind.style.width=tabRect.width+'px';
 }
-const cobs=new IntersectionObserver(es=>{
-  es.forEach(e=>{if(e.isIntersecting){e.target.querySelectorAll('[data-t]').forEach(n=>animCnt(n));cobs.unobserve(e.target)}});
-},{threshold:.2});
-document.querySelectorAll('.stats-row,.h-metrics').forEach(el=>cobs.observe(el));
+// init indicator
+window.addEventListener('load',()=>{
+  const tabs=document.querySelectorAll('.tab-btn');
+  const ind=document.getElementById('tabIndicator');
+  const nav=document.getElementById('tabNav');
+  if(tabs[0]&&nav){
+    const nr=nav.getBoundingClientRect();
+    const tr=tabs[0].getBoundingClientRect();
+    ind.style.left=(tr.left-nr.left)+'px';
+    ind.style.width=tr.width+'px';
+  }
+});
+// Also init on DOMContentLoaded as fallback
+document.addEventListener('DOMContentLoaded',()=>{setTimeout(()=>switchTab(0),100)});
 
-/* ── HORIZONTAL DRAG SCROLL ─────────────────────────── */
-const track=document.getElementById('featTrack');
-let isDown=false,startX,scrollLeft;
-track.addEventListener('mousedown',e=>{isDown=true;track.classList.add('dragging');startX=e.pageX-track.offsetLeft;scrollLeft=track.scrollLeft});
-track.addEventListener('mouseleave',()=>{isDown=false;track.classList.remove('dragging')});
-track.addEventListener('mouseup',()=>{isDown=false;track.classList.remove('dragging')});
-track.addEventListener('mousemove',e=>{if(!isDown)return;e.preventDefault();const x=e.pageX-track.offsetLeft;track.scrollLeft=scrollLeft-(x-startX)*1.5});
+/* ── CAROUSEL ───────────────────────────────────────── */
+let slide=0,autoTimer,progTimer,progVal=0;
+const SLIDES=4,AUTO_INTERVAL=5500,PROG_TICK=50;
+
+function buildDots(){
+  const dc=document.getElementById('tcDots');
+  if(!dc)return;
+  dc.innerHTML='';
+  for(let i=0;i<SLIDES;i++){
+    const d=document.createElement('div');
+    d.className='tc-dot'+(i===0?' on':'');
+    d.style.width=i===0?'28px':'14px';
+    d.onclick=()=>goSlide(i);
+    dc.appendChild(d);
+  }
+}
+
+function goSlide(n){
+  slide=((n%SLIDES)+SLIDES)%SLIDES;
+  const sl=document.getElementById('tslides');
+  if(sl)sl.style.transform=`translateX(-${slide*100}%)`;
+  document.querySelectorAll('.tc-dot').forEach((d,i)=>{
+    d.classList.toggle('on',i===slide);
+    d.style.width=i===slide?'28px':'14px';
+  });
+  resetProg();
+}
+
+function carouselNext(){goSlide(slide+1)}
+function carouselPrev(){goSlide(slide-1)}
+
+function resetProg(){
+  clearInterval(progTimer);progVal=0;
+  const pf=document.getElementById('tcProg');
+  if(pf)pf.style.width='0%';
+  clearInterval(autoTimer);
+  progTimer=setInterval(()=>{
+    progVal+=PROG_TICK/(AUTO_INTERVAL)*100;
+    if(pf)pf.style.width=Math.min(progVal,100)+'%';
+    if(progVal>=100)carouselNext();
+  },PROG_TICK);
+}
+
+buildDots();
+resetProg();
 
 /* ── TILT CARDS ─────────────────────────────────────── */
-document.querySelectorAll('.feat-card,.trc,.pc,.tl-item,.hm').forEach(card=>{
+document.querySelectorAll('.pc,.trc,.ring-card,.hstep,.ts-stat,.ba-col').forEach(card=>{
   card.addEventListener('mousemove',e=>{
     const r=card.getBoundingClientRect();
     const x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;
-    card.style.transform=`perspective(900px) rotateY(${x*5}deg) rotateX(${-y*5}deg) translateY(-4px)`;
+    card.style.transform=`perspective(900px) rotateY(${x*4}deg) rotateX(${-y*4}deg) translateY(-4px)`;
   });
   card.addEventListener('mouseleave',()=>{
     card.style.transform='';
@@ -1417,10 +1569,10 @@ document.querySelectorAll('.feat-card,.trc,.pc,.tl-item,.hm').forEach(card=>{
 });
 
 /* ── MAGNETIC BUTTONS ───────────────────────────────── */
-document.querySelectorAll('.bmint,.bgold,.bink').forEach(b=>{
+document.querySelectorAll('.bcoral,.bteal,.bgold,.bwhite').forEach(b=>{
   b.addEventListener('mousemove',e=>{
     const r=b.getBoundingClientRect();
-    b.style.transform=`translate(${(e.clientX-r.left-r.width/2)*.1}px,${(e.clientY-r.top-r.height/2)*.1}px) translateY(-2px)`;
+    b.style.transform=`translate(${(e.clientX-r.left-r.width/2)*.1}px,${(e.clientY-r.top-r.height/2)*.1}px) translateY(-1px)`;
   });
   b.addEventListener('mouseleave',()=>b.style.transform='');
 });
